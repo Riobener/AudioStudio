@@ -10,9 +10,9 @@
 #include <atomic>
 #include <memory>
 
-
 class Synth {
 public:
+    double sec(float frames);
     void makeSound(float* audioData, int32_t frames);
     void setAmplitude(float amp);
     void setFrequency(float freq);
@@ -20,10 +20,12 @@ public:
 private:
     // Stream params
     static int constexpr kChannelCount = 2;
-    static int constexpr kSampleRate = 48000;
+    static int constexpr kSampleRate = 44100;
     static float constexpr kPI = M_PI;
     static float constexpr kTwoPi = kPI * 2;
-
+    int metronomeInterval = 0.5*kSampleRate;
+    bool play = false;
+    int metronomeCounter = 0;
     float kAmplitude = 0.5f;
     float kFrequency = 440;
     double  mPhaseIncrement = kFrequency * kTwoPi / (double) kSampleRate;

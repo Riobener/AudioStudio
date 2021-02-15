@@ -1,10 +1,7 @@
-//
-// Created by Asus on 13.02.2021.
-//
 
 #include "AudioEngine.h"
 #include "Synth.h"
-
+#include <android/log.h>
 void AudioEngine::startAudio() {
     AudioStreamBuilder builder;
     builder.setCallback(this);
@@ -12,16 +9,17 @@ void AudioEngine::startAudio() {
     builder.setChannelCount(Stereo);
     builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
     builder.setSharingMode(oboe::SharingMode::Exclusive);
-
     builder.openStream(&stream);
     stream->setBufferSizeInFrames(stream->getFramesPerBurst()*2);
     stream->requestStart();
-
 }
 
 DataCallbackResult
 AudioEngine::onAudioReady(AudioStream *audioStream, void *audioData, int32_t numFrames) {
+
     synth.makeSound(static_cast<float *>(audioData),numFrames);
+
+
     return DataCallbackResult::Continue;
 }
 
