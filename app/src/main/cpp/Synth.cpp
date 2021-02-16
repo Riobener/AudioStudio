@@ -15,16 +15,38 @@ void Synth::setAmplitude(float amp) {
 
 void Synth::makeSound(float *audioData, int32_t frames) {
 
-    play = false;
     //__android_log_print(ANDROID_LOG_INFO, "MyTag", "The value of frame %d", audioStream->getFramesPerBurst());
     if(isWaveOn){
+
         for (int i = 0; i < frames; ++i) {
-            if(++metronomeCounter>=metronomeInterval){
+            /*float sampleValue;
+            if (mPhase <= kPI){
+                sampleValue = -kAmplitude;
+            } else {
+                sampleValue= kAmplitude;
+            }*/
+
+            float sampleValue = kAmplitude * sinf(mPhase);
+            for (int j = 0; j < kChannelCount; j++) {
+                audioData[i * kChannelCount + j] = sampleValue;
+            }
+            mPhase += mPhaseIncrement;
+
+            if (mPhase >= kTwoPi) mPhase -= kTwoPi;
+            /*if(++metronomeCounter>=metronomeInterval){
+                __android_log_print(ANDROID_LOG_INFO, "MyTag", "The value of cp %d", metronomeCounter);
                 metronomeCounter = 0;
                 play = true;
-            }
-            if(play){
-                float sampleValue = kAmplitude * sinf(mPhase);
+            }*/
+            /*if(play){
+                float sampleValue;
+                if (mPhase <= kPI){
+                    sampleValue = -kAmplitude;
+                } else {
+                    sampleValue= kAmplitude;
+                }
+
+                //float sampleValue = kAmplitude * sinf(mPhase);
                 for (int j = 0; j < kChannelCount; j++) {
                     audioData[i * kChannelCount + j] = sampleValue;
                 }
@@ -32,12 +54,13 @@ void Synth::makeSound(float *audioData, int32_t frames) {
 
                 if (mPhase >= kTwoPi) mPhase -= kTwoPi;
             }else{
-                memset(audioData,0,frames*sizeof(float)*kChannelCount);memset(audioData,0,frames*sizeof(float)*kChannelCount);
-            }
+                for (int j = 0; j < kChannelCount; j++) {
+                    audioData[i * kChannelCount + j] = 0;
+                }
+            }*/
         }
 
     }else{
-
         memset(audioData,0,frames*sizeof(float)*kChannelCount);
     }
 
