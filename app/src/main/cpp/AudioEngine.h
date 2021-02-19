@@ -12,6 +12,9 @@ class AudioEngine: AudioStreamCallback {
 public:
     void startAudio();
     void setWaveOn(bool);
+    void resetSongPos(bool);
+    void setWaveType(int i);
+    void setBpm(int i);
 
 private:
     DataCallbackResult
