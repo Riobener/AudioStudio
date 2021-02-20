@@ -3,7 +3,6 @@
 #include "Synth.h"
 #include <android/log.h>
 static constexpr int64_t kMillisecondsInSecond = 1000;
-static constexpr int64_t kNanosecondsInMillisecond = 1000000;
 std::atomic<int64_t> mCurrentFrame { 0 };
 std::atomic<int64_t> mSongPositionMs { 0 };
 bool isPlaying = false;
@@ -29,8 +28,8 @@ constexpr int64_t convertFramesToMillis(const int64_t frames, const int sampleRa
     return static_cast<int64_t>((static_cast<double>(frames)/ sampleRate) * kMillisecondsInSecond);
 }
 
+
 void AudioEngine::startAudio() {
-    AudioStreamBuilder builder;
     builder.setCallback(this);
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setChannelCount(Stereo);
@@ -38,7 +37,6 @@ void AudioEngine::startAudio() {
     builder.setSharingMode(oboe::SharingMode::Exclusive);
     builder.openStream(&stream);
     stream->setBufferSizeInFrames(stream->getFramesPerBurst()*2);
-    stream->requestStart();
 }
 
 DataCallbackResult
@@ -58,12 +56,6 @@ AudioEngine::onAudioReady(AudioStream *audioStream, void *audioData, int32_t num
             synth.setFrequency(melody[index]);
             zeroInterval();
         }
-        /*if(mSongPositionMs>3000&&mSongPositionMs<6000){
-            setWaveOn(true);
-        }else{
-            setWaveOn(false);
-        }*/
-
 
         mCurrentFrame++;
         synth.makeSound(static_cast<float *>(audioData), numFrames, i);
@@ -78,6 +70,10 @@ void AudioEngine::setWaveOn(bool i) {
 void AudioEngine::resetSongPos(bool state) {
     if(!state){
         zeroInterval();
+        stream->stop();
+    }else{
+        zeroInterval();
+        stream->start();
     }
 
 }

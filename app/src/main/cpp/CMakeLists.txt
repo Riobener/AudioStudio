@@ -24,6 +24,8 @@ add_library( # Sets the name of the library.
              native-lib.cpp
         AudioEngine.cpp
         Synth.cpp
+        Mixer.h
+        IRenderableAudio.h
         )
 # Find the Oboe package
 find_package (oboe REQUIRED CONFIG)

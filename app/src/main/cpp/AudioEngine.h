@@ -17,6 +17,7 @@ public:
     void setBpm(int i);
 
 private:
+    AudioStreamBuilder builder;
     DataCallbackResult
     onAudioReady(AudioStream *audioStream, void *audioData, int32_t numFrames) override;
     Synth synth;
