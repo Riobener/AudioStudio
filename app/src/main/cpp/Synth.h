@@ -9,8 +9,7 @@
 
 class Synth {
 public:
-    double sec(float frames);
-    void makeSound(float* audioData, int32_t frames, int32_t i );
+    void makeSound(float *audioData, int32_t frames, int32_t mTotalFrames, int16_t* mData );
     void setAmplitude(float amp);
     void setFrequency(float freq);
     void setWaveOn(bool state);
@@ -22,7 +21,9 @@ private:
 
 
     // Stream params
-    static int constexpr kChannelCount = 2;
+    int32_t mChannelCount = 2; // TODO: move this into a konstant and maybe add as parameter to ctor
+    int32_t mReadFrameIndex = 0;
+    //static int constexpr kChannelCount = 2;
     static int constexpr kSampleRate = 48000;
     static float constexpr kPI = M_PI;
     static float constexpr kTwoPi = kPI * 2;

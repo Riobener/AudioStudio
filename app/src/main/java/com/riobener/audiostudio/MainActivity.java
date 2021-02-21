@@ -2,6 +2,7 @@ package com.riobener.audiostudio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
+    private AssetManager mgr;
     RadioGroup radioGroup;
     RadioButton sin;
     RadioButton square;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mgr = getResources().getAssets();
+        load(mgr);
         setWaveType(1);
         radioGroup = findViewById(R.id.waveChoosing);
         sin = new RadioButton(this);
@@ -98,4 +102,5 @@ public class MainActivity extends AppCompatActivity {
     public native void tap(boolean i);
     public native void setWaveType(int i);//1-sine, 2 - square
     public native void setBpm(int bpm);
+    private static native void load(AssetManager mgr);
 }

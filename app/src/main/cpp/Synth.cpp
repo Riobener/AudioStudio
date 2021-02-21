@@ -13,9 +13,28 @@ void Synth::setAmplitude(float amp) {
     kAmplitude = amp;
 }
 
-void Synth::makeSound(float *audioData, int32_t frames, int32_t i) {
 
-    //__android_log_print(ANDROID_LOG_INFO, "MyTag", "The value of frame %d", audioStream->getFramesPerBurst());
+
+void Synth::makeSound(float *targetData, int32_t numFrames, int32_t mTotalFrames, int16_t* mData ){
+    if (isWaveOn){
+
+        for (int i = 0; i < numFrames; ++i) {
+            for (int j = 0; j < mChannelCount; ++j) {
+                targetData[(i*mChannelCount)+j] = mData[(mReadFrameIndex*mChannelCount)+j];
+            }
+
+            // Increment and handle wraparound
+            if (++mReadFrameIndex >= mTotalFrames) mReadFrameIndex = 0;
+
+        }
+
+    } /*else {
+        // fill with zeros to output silence
+        for (int i = 0; i < numFrames * mChannelCount; ++i) {
+            targetData[i] = 0;
+        }
+    }*/
+    /*//__android_log_print(ANDROID_LOG_INFO, "MyTag", "The value of frame %d", audioStream->getFramesPerBurst());
     if (isWaveOn) {
         updatePhaseInc();
         float sampleValue;
@@ -42,7 +61,7 @@ void Synth::makeSound(float *audioData, int32_t frames, int32_t i) {
 
     } else {
         memset(audioData, 0, frames * sizeof(float) * kChannelCount);
-    }
+    }*/
 
 }
 
