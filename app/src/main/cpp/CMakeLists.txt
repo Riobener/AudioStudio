@@ -5,6 +5,10 @@
 
 cmake_minimum_required(VERSION 3.10.2)
 
+file(TO_CMAKE_PATH ${PATH_TO_SUPERPOWERED} PATH_TO_SUPERPOWERED)
+
+include_directories(src/main/cpp)
+include_directories(${PATH_TO_SUPERPOWERED})
 # Declares and names the project.
 
 project("audiostudio")
@@ -22,11 +26,10 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         native-lib.cpp
-        AudioEngine.cpp
-        Synth.cpp
+        ${PATH_TO_SUPERPOWERED}/OpenSource/SuperpoweredAndroidAudioIO.cpp
         )
 # Find the Oboe package
-find_package(oboe REQUIRED CONFIG)
+
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
@@ -47,8 +50,9 @@ find_library( # Sets the name of the path variable.
 target_link_libraries( # Specifies the target library.
         native-lib
         android
-
+        OpenSLES
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib}
-        oboe::oboe)
+        ${PATH_TO_SUPERPOWERED}/libSuperpoweredAndroid${ANDROID_ABI}.a
+        )

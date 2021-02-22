@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
 }
-
+def superpowered_sdk_path = new File(projectDir, '../../../Superpowered')
 android {
     compileSdkVersion 29
 
@@ -12,9 +12,15 @@ android {
         versionCode 1
         versionName "1.0"
 
+        compileOptions {
+            incremental false
+        }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
+                arguments '-DANDROID_PLATFORM=android-19', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=c++_static', "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}"
+                cFlags '-O3', '-fsigned-char' // full optimization, char data type is signed
+                cppFlags '-fsigned-char', "-I${superpowered_sdk_path}"
                 cppFlags ""
                 arguments "-DANDROID_STL=c++_shared"
             }
@@ -43,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.oboe:oboe:1.5.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
