@@ -7,12 +7,6 @@ android {
     defaultConfig {
         applicationId "com.riobener.audiostudio"
 
-        // NOTE: the value of minSdkVersion is used by the native build as the target APP_PLATFORM
-        // meaning the app will not run on devices with an older Android version! The minimum supported SDK
-        // version for com.riobener.audiostudio.MWEngine is 16 (Jelly Bean/4.1). While support of AAudio was only added in version 26 (Oreo/8),
-        // we can still provide AAudio by loading it at runtime when the device supports it. You can
-        // thus set the value of minSdkVersion to whatever fits your use case.
-
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
@@ -73,6 +67,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.github.convergencelab:PianoView:v0.1'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -84,6 +79,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
