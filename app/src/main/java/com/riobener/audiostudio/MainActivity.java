@@ -37,6 +37,7 @@ public final class MainActivity extends Activity {
     private LPFHPFilter _lpfhpf;
     private SynthInstrument _synth1;
     private SynthInstrument _synth2;
+    private SynthInstrument _synth3;
     private SampledInstrument _sampler;
     private Filter _filter;
     private Phaser _phaser;
@@ -45,6 +46,7 @@ public final class MainActivity extends Activity {
     private SequencerController _sequencerController;
     private Vector<SynthEvent> _synth1Events;
     private Vector<SynthEvent> _synth2Events;
+    private Vector<SynthEvent> _synth3Events;
     private Vector<SampleEvent> _drumEvents;
     private SynthEvent _liveEvent;
 
@@ -150,6 +152,8 @@ public final class MainActivity extends Activity {
 
         _synth1Events = new Vector<SynthEvent>();
         _synth2Events = new Vector<SynthEvent>();
+        _synth3Events = new Vector<SynthEvent>();
+
         _drumEvents = new Vector<SampleEvent>();
 
         setupSong();
@@ -171,199 +175,43 @@ public final class MainActivity extends Activity {
         } else {
             ((Spinner) findViewById(R.id.DriverSpinner)).setOnItemSelectedListener(new DriverChangeHandler());
         }
+        String[] notes = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+        final SynthEvent[] liveEvents = new SynthEvent[24];
+        int counter = 0;
+        int octave = 3;
+        for (int i = 0; i < 24; i++) {
+            if (i == 12) {
+                counter = 0;
+                octave = 4;
+            }
+
+
+            liveEvents[i] = new SynthEvent((float) Pitch.note(notes[counter], octave), _synth3);
+
+            //liveEvents[i].calculateBuffers();
+            counter++;
+        }
 
         _inited = true;
-        pianoView = findViewById(R.id.piano);
+        pianoView = findViewById(R.id.pianoView);
         pianoView.addPianoTouchListener(new PianoTouchListener() {
             @Override
             public void onKeyDown(@NonNull PianoView piano, int key) {
-                Log.d(LOG_TAG, "KEY PRESSED IS" + key);
-                switch (key) {
-                    case 0:
-                        _liveEvent.setFrequency((float) Pitch.note("C", 3));
-                        break;
-                    case 1:
-                        _liveEvent.setFrequency((float) Pitch.note("C#", 3));
-
-                        break;
-                    case 2:
-                        _liveEvent.setFrequency((float) Pitch.note("D", 3));
-
-                        break;
-                    case 3:
-                        _liveEvent.setFrequency((float) Pitch.note("D#", 3));
-
-                        break;
-                    case 4:
-                        _liveEvent.setFrequency((float) Pitch.note("E", 3));
-
-                        break;
-                    case 5:
-                        _liveEvent.setFrequency((float) Pitch.note("F", 3));
-
-                        break;
-                    case 6:
-                        _liveEvent.setFrequency((float) Pitch.note("F#", 3));
-
-                        break;
-                    case 7:
-                        _liveEvent.setFrequency((float) Pitch.note("G", 3));
-
-                        break;
-                    case 8:
-                        _liveEvent.setFrequency((float) Pitch.note("G#", 3));
-
-                        break;
-                    case 9:
-                        _liveEvent.setFrequency((float) Pitch.note("A", 3));
-
-                        break;
-                    case 10:
-                        _liveEvent.setFrequency((float) Pitch.note("A#", 3));
-
-                        break;
-                    case 11:
-                        _liveEvent.setFrequency((float) Pitch.note("B", 3));
-                        break;
-                    case 12:
-                        _liveEvent.setFrequency((float) Pitch.note("C", 4));
-                        break;
-                    case 13:
-                        _liveEvent.setFrequency((float) Pitch.note("C#", 4));
-                        break;
-                    case 14:
-                        _liveEvent.setFrequency((float) Pitch.note("D", 4));
-                        break;
-                    case 15:
-                        _liveEvent.setFrequency((float) Pitch.note("D#", 4));
-
-                        break;
-                    case 16:
-                        _liveEvent.setFrequency((float) Pitch.note("E", 4));
-                        break;
-                    case 17:
-                        _liveEvent.setFrequency((float) Pitch.note("F", 4));
-                        break;
-                    case 18:
-                        _liveEvent.setFrequency((float) Pitch.note("F#", 4));
-                        break;
-                    case 19:
-                        _liveEvent.setFrequency((float) Pitch.note("G", 4));
-                        break;
-                    case 20:
-                        _liveEvent.setFrequency((float) Pitch.note("G#", 4));
-                        break;
-                    case 21:
-                        _liveEvent.setFrequency((float) Pitch.note("A", 4));
-                        break;
-                    case 22:
-                        _liveEvent.setFrequency((float) Pitch.note("A#", 4));
-
-                        break;
-                    case 23:
-                        _liveEvent.setFrequency((float) Pitch.note("B", 4));
-
-                        break;
-                }
-                _liveEvent.play();
-
+                Log.d(LOG_TAG, "KEY PRESSED IS " + key);
+                liveEvents[key].play();
             }
 
             @Override
             public void onKeyUp(@NonNull PianoView piano, int key) {
-                _liveEvent.stop();
+                Log.d(LOG_TAG, "KEY UPED IS " + key);
+                liveEvents[key].stop();
+
             }
+
 
             @Override
             public void onKeyClick(@NonNull PianoView piano, int key) {
-                switch (key) {
-                    case 0:
-                        _liveEvent.setFrequency((float) Pitch.note("C", 3));
-                        break;
-                    case 1:
-                        _liveEvent.setFrequency((float) Pitch.note("C#", 3));
 
-                        break;
-                    case 2:
-                        _liveEvent.setFrequency((float) Pitch.note("D", 3));
-
-                        break;
-                    case 3:
-                        _liveEvent.setFrequency((float) Pitch.note("D#", 3));
-
-                        break;
-                    case 4:
-                        _liveEvent.setFrequency((float) Pitch.note("E", 3));
-
-                        break;
-                    case 5:
-                        _liveEvent.setFrequency((float) Pitch.note("F", 3));
-
-                        break;
-                    case 6:
-                        _liveEvent.setFrequency((float) Pitch.note("F#", 3));
-
-                        break;
-                    case 7:
-                        _liveEvent.setFrequency((float) Pitch.note("G", 3));
-
-                        break;
-                    case 8:
-                        _liveEvent.setFrequency((float) Pitch.note("G#", 3));
-
-                        break;
-                    case 9:
-                        _liveEvent.setFrequency((float) Pitch.note("A", 3));
-
-                        break;
-                    case 10:
-                        _liveEvent.setFrequency((float) Pitch.note("A#", 3));
-
-                        break;
-                    case 11:
-                        _liveEvent.setFrequency((float) Pitch.note("B", 3));
-                        break;
-                    case 12:
-                        _liveEvent.setFrequency((float) Pitch.note("C", 4));
-                        break;
-                    case 13:
-                        _liveEvent.setFrequency((float) Pitch.note("C#", 4));
-                        break;
-                    case 14:
-                        _liveEvent.setFrequency((float) Pitch.note("D", 4));
-                        break;
-                    case 15:
-                        _liveEvent.setFrequency((float) Pitch.note("D#", 4));
-
-                        break;
-                    case 16:
-                        _liveEvent.setFrequency((float) Pitch.note("E", 4));
-                        break;
-                    case 17:
-                        _liveEvent.setFrequency((float) Pitch.note("F", 4));
-                        break;
-                    case 18:
-                        _liveEvent.setFrequency((float) Pitch.note("F#", 4));
-                        break;
-                    case 19:
-                        _liveEvent.setFrequency((float) Pitch.note("G", 4));
-                        break;
-                    case 20:
-                        _liveEvent.setFrequency((float) Pitch.note("G#", 4));
-                        break;
-                    case 21:
-                        _liveEvent.setFrequency((float) Pitch.note("A", 4));
-
-                        break;
-                    case 22:
-                        _liveEvent.setFrequency((float) Pitch.note("A#", 4));
-
-                        break;
-                    case 23:
-                        _liveEvent.setFrequency((float) Pitch.note("B", 4));
-
-                        break;
-                }
             }
         });
     }
@@ -396,12 +244,15 @@ public final class MainActivity extends Activity {
 
         _synth1 = new SynthInstrument();
         _synth2 = new SynthInstrument();
+        _synth3 = new SynthInstrument();
         _sampler = new SampledInstrument();
 
         _synth1.getOscillatorProperties(0).setWaveform(2); // sawtooth (see global.h for enumerations)
         _synth2.getOscillatorProperties(0).setWaveform(5); // pulse width modulation
+        _synth3.getOscillatorProperties(0).setWaveform(1); // pulse width modulation
 
         // a short decay for synth 1 with a 0 sustain level (provides a bubbly effect)
+        _synth3.getAdsr().setReleaseTime(0.5f);
         _synth1.getAdsr().setDecayTime(.1f);
         _synth1.getAdsr().setSustainLevel(0.0f);
         // a short release for synth 2 (smooth fade out)
@@ -426,7 +277,6 @@ public final class MainActivity extends Activity {
 
         // adjust synthesizer volumes
         _synth2.getAudioChannel().setVolume(.7f);
-
         // STEP 2 : Sample events to play back a drum beat
 
         createDrumEvent("hat", 2);  // hi-hat on the second 8th note after the first beat of the bar
@@ -468,9 +318,6 @@ public final class MainActivity extends Activity {
         createSynthEvent(_synth2, Pitch.note("A", 3), 8);
         createSynthEvent(_synth2, Pitch.note("C", 3), 8);
         createSynthEvent(_synth2, Pitch.note("F", 3), 8);
-
-        // a C note to be synthesized live when holding down the corresponding button
-        _liveEvent = new SynthEvent((float) Pitch.note("C", 3), _synth2);
 
 
     }
@@ -756,11 +603,11 @@ public final class MainActivity extends Activity {
         final SynthEvent event = new SynthEvent((float) frequency, position, duration, synth);
 
         event.calculateBuffers();
-
         if (synth == _synth1)
             _synth1Events.add(event);
         else
             _synth2Events.add(event);
+
     }
 
     /**
