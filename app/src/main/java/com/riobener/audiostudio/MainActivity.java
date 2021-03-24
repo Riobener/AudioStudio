@@ -23,6 +23,8 @@ import androidx.annotation.NonNull;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 public final class MainActivity extends Activity {
@@ -155,7 +157,6 @@ public final class MainActivity extends Activity {
         _synth3Events = new Vector<SynthEvent>();
 
         _drumEvents = new Vector<SampleEvent>();
-
         setupSong();
 
         // STEP 3 : start your engine!
@@ -166,7 +167,7 @@ public final class MainActivity extends Activity {
         _engine.start();
 
         // STEP 4 : attach event handlers to the UI elements (see main.xml layout)
-
+        findViewById( R.id.noteon ).setOnTouchListener( new LiveNoteHandler() );
         findViewById(R.id.PlayPauseButton).setOnClickListener(new PlayClickHandler());
         findViewById(R.id.RecordButton).setOnClickListener(new RecordOutputHandler());
 
@@ -175,49 +176,15 @@ public final class MainActivity extends Activity {
         } else {
             ((Spinner) findViewById(R.id.DriverSpinner)).setOnItemSelectedListener(new DriverChangeHandler());
         }
-        String[] notes = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-        final SynthEvent[] liveEvents = new SynthEvent[24];
-        int counter = 0;
-        int octave = 3;
-        for (int i = 0; i < 24; i++) {
-            if (i == 12) {
-                counter = 0;
-                octave = 4;
-            }
 
-
-            liveEvents[i] = new SynthEvent((float) Pitch.note(notes[counter], octave), _synth3);
-
-            //liveEvents[i].calculateBuffers();
-            counter++;
-        }
 
         _inited = true;
-        pianoView = findViewById(R.id.pianoView);
-        pianoView.addPianoTouchListener(new PianoTouchListener() {
-            @Override
-            public void onKeyDown(@NonNull PianoView piano, int key) {
-                Log.d(LOG_TAG, "KEY PRESSED IS " + key);
-                liveEvents[key].play();
-            }
 
-            @Override
-            public void onKeyUp(@NonNull PianoView piano, int key) {
-                Log.d(LOG_TAG, "KEY UPED IS " + key);
-                liveEvents[key].stop();
-
-            }
-
-
-            @Override
-            public void onKeyClick(@NonNull PianoView piano, int key) {
-
-            }
-        });
     }
 
     /* protected methods */
-
+    HashMap<Integer, SynthEvent> map = new HashMap<>();
+    HashMap<Integer, SynthInstrument> instruments = new HashMap<>();
     protected void setupSong() {
         _sequencerController = _engine.getSequencerController();
         _sequencerController.setTempoNow(130.0f, 4, 4); // 130 BPM in 4/4 time
@@ -319,7 +286,58 @@ public final class MainActivity extends Activity {
         createSynthEvent(_synth2, Pitch.note("C", 3), 8);
         createSynthEvent(_synth2, Pitch.note("F", 3), 8);
 
+        _liveEvent = new SynthEvent(( float ) Pitch.note( "C", 3 ), _synth3 );
+        final String[] notes = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B","C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+        Log.d(LOG_TAG, "POLYPHONY SIZE  " + instruments.size());
+        pianoView = findViewById(R.id.pianoView);
+        pianoView.addPianoTouchListener(new PianoTouchListener() {
+            @Override
+            public void onKeyDown(@NonNull PianoView piano, int key) {
 
+               // Log.d(LOG_TAG, "KEY PRESSED IS " + key);
+
+                    instruments.put(key,new SynthInstrument());
+                    instruments.get(key).getOscillatorProperties(0).setWaveform(5);
+
+                /*instrument = new SynthInstrument();
+                instrument.getOscillatorProperties(0).setWaveform(5); // pulse width modulation*/
+                if(key<12){
+                    map.put(key,new SynthEvent((float) Pitch.note(notes[key], 3), instruments.get(key)));
+                }else{
+                    map.put(key,new SynthEvent((float) Pitch.note(notes[key], 4), instruments.get(key)));
+                }
+                map.get(key).play();
+                Log.d(LOG_TAG, "POLYPHONY SIZE AFTER NEW INSTRUMENTS  " + instruments.size());
+                /*_synth3Events.add(liveEvents[key]);
+                int index = _synth3Events.indexOf(liveEvents[key]);
+                _synth3.addEvent(_synth3Events.get(index),true);*/
+            }
+
+            @Override
+            public void onKeyUp(@NonNull PianoView piano, int key) {
+                //Log.d(LOG_TAG, "KEY UPED IS " + key);
+                /*instrument.delete();
+                instrument = null;*/
+                instruments.get(key).delete();
+                instruments.put(key, null);
+                instruments.remove(key);
+                map.get(key).stop();
+                map.get(key).getInstrument().delete();
+                map.get(key).delete();
+                map.put(key, null);
+                map.remove(key);
+                /*int index = _synth3Events.indexOf(liveEvents[key]);
+                _synth3.removeEvent(_synth3Events.get(index),true);
+                _synth3Events.remove(liveEvents[key]);*/
+
+            }
+
+
+            @Override
+            public void onKeyClick(@NonNull PianoView piano, int key) {
+
+            }
+        });
     }
 
     protected void flushSong() {

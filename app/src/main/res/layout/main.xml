@@ -62,6 +62,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rec_btn_on" />
+            <Button
+                android:id="@+id/noteon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOTEON" />
         </LinearLayout>
 
         <!-- effects text -->
