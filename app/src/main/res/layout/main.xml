@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout android:orientation="vertical"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <!-- intro text -->
 
@@ -15,7 +15,7 @@
             android:padding="15dip"
             android:text="@string/app_help"
             android:layout_marginBottom="5dip"
-        />
+            />
 
         <!-- auio driver selection -->
 
@@ -25,13 +25,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
-        >
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/driver"
                 android:paddingRight="15dip"
-            />
+                />
             <Spinner
                 android:id="@+id/DriverSpinner"
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:background="@android:drawable/btn_dropdown"
                 android:spinnerMode="dropdown"
                 android:entries="@array/drivers"
-            />
+                />
         </LinearLayout>
 
         <!-- play/pause buttons -->
@@ -50,7 +50,7 @@
             android:layout_marginBottom="1dip"
             android:layout_gravity="center"
             android:orientation="horizontal"
-        >
+            >
             <Button
                 android:id="@+id/PlayPauseButton"
                 android:layout_width="wrap_content"
@@ -81,19 +81,19 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 app:showPressMode="onKeyDown"
-            app:enableMultiKeyHighlighting="true"
-            app:blackKeyColor="@color/blackKeyColor"
-            app:whiteKeyColor="@color/whiteKeyColor"
-            app:keyPressedColor="@color/pressedKeyColor"
-            app:blackKeyHeightScale="0.7"
-            app:blackKeyWidthScale="0.5"
-            app:keyCornerRadius="2dp"
-            app:keyStrokeWidth="1dp"
-            app:keyStrokeColor="@color/keyStrokeColor"
-            app:numberOfKeys="24"
+                app:enableMultiKeyHighlighting="true"
+                app:blackKeyColor="@color/blackKeyColor"
+                app:whiteKeyColor="@color/whiteKeyColor"
+                app:keyPressedColor="@color/pressedKeyColor"
+                app:blackKeyHeightScale="0.7"
+                app:blackKeyWidthScale="0.5"
+                app:keyCornerRadius="2dp"
+                app:keyStrokeWidth="1dp"
+                app:keyStrokeColor="@color/keyStrokeColor"
+                app:numberOfKeys="24"
                 android:id="@+id/pianoView"
 
-                 />
+                />
 
         </LinearLayout>
 
