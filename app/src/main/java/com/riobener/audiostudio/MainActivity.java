@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,8 +21,11 @@ import android.widget.Spinner;
 
 import com.convergencelabstfx.pianoview.PianoTouchListener;
 import com.convergencelabstfx.pianoview.PianoView;
+import com.riobener.audiostudio.Fragments.UltraPagerAdapter;
+import com.tmall.ultraviewpager.UltraViewPager;
 
 import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
@@ -29,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public final class MainActivity extends Activity implements PianoTouchListener {
+public final class MainActivity extends Activity {
     /**
      * IMPORTANT : when creating native layer objects through JNI it
      * is important to remember that when the Java references go out of scope
@@ -110,15 +116,39 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
             notes.add( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), _synth2 ));
         }
-        pianoView = findViewById(R.id.pianoView);
-        pianoView.addPianoTouchListener(this);
-
+        /*pianoView = findViewById(R.id.pianoView);
+        pianoView.addPianoTouchListener(this);*/
+        defaultUltraViewPager();
 
 
 
 
     }
+    private void defaultUltraViewPager() {
+        UltraViewPager ultraViewPager = (UltraViewPager) findViewById(R.id.ultra_viewpager);
+        ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
+        //initialize UltraPagerAdapter，and add child view to UltraViewPager
+        PagerAdapter adapter = new UltraPagerAdapter(false);
+        ultraViewPager.setAdapter(adapter);
 
+        //initialize built-in indicator
+        ultraViewPager.initIndicator();
+        //set style of indicators
+        ultraViewPager.getIndicator()
+                .setOrientation(UltraViewPager.Orientation.HORIZONTAL)
+                .setFocusColor(Color.GREEN)
+                .setNormalColor(Color.WHITE)
+                .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+        //set the alignment
+        ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        //construct built-in indicator, and add it to  UltraViewPager
+        ultraViewPager.getIndicator().build();
+
+        //set an infinite loop
+        ultraViewPager.setInfiniteLoop(true);
+        //enable auto-scroll mode
+        ultraViewPager.setAutoScroll(2000);
+    }
     private SynthEvent getSynthEventForKeyIndex(int index) {
         return notes.get(index);
     }
@@ -190,7 +220,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         _engine.start();
 
         // STEP 4 : attach event handlers to the UI elements (see main.xml layout)
-        findViewById( R.id.noteon ).setOnTouchListener( new LiveNoteHandler() );
+        /*findViewById( R.id.noteon ).setOnTouchListener( new LiveNoteHandler() );
         findViewById(R.id.PlayPauseButton).setOnClickListener(new PlayClickHandler());
         findViewById(R.id.RecordButton).setOnClickListener(new RecordOutputHandler());
 
@@ -199,7 +229,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             findViewById(R.id.DriverSelection).setVisibility(View.GONE);
         } else {
             ((Spinner) findViewById(R.id.DriverSpinner)).setOnItemSelectedListener(new DriverChangeHandler());
-        }
+        }*/
         _inited = true;
     }
 
@@ -353,7 +383,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         }
     }
 
-    @Override
+    /*@Override
     public void onKeyDown(@NonNull PianoView piano, int key) {
 
 
@@ -375,7 +405,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     public void onKeyClick(@NonNull PianoView piano, int key) {
 
     }
-
+*/
 
 
     /* event handlers */

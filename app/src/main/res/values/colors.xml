@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="pressedKeyColor">#FF03DAC5</color>
+    <color name="bottomCenter">#E6E6FA</color>
+    <color name="bottomStart">#708090</color>
 </resources>

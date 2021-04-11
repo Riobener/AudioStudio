@@ -1,101 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout android:orientation="vertical"
+
+    <com.tmall.ultraviewpager.UltraViewPager
+        android:id="@+id/ultra_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_above="@id/bottomPanel"
+        android:background="@android:color/darker_gray" />
+    <LinearLayout
+        android:id="@+id/bottomPanel"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <!-- intro text -->
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity=""
+        android:padding="10dp"
+        android:background="@drawable/bottom_panel"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/playButton"
+            android:layout_weight="1"
+            android:text="Play"
+            android:textAllCaps="false"></Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stopButton"
+            android:layout_weight="1"
+            android:text="Stop"
+            android:layout_marginLeft="10dp"
+            android:textAllCaps="false"></Button>
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dip"
-            android:text="@string/app_help"
-            android:layout_marginBottom="5dip"
-            />
-
-        <!-- auio driver selection -->
-
-        <LinearLayout
-            android:id="@+id/DriverSelection"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/driver"
-                android:paddingRight="15dip"
-                />
-            <Spinner
-                android:id="@+id/DriverSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
-                android:spinnerMode="dropdown"
-                android:entries="@array/drivers"
-                />
-        </LinearLayout>
-
-        <!-- play/pause buttons -->
-
-        <LinearLayout
+            android:layout_weight="5"
+            android:text="Название композиции"
+            android:textAllCaps="false"
+            android:textSize="15dp"></TextView>
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dip"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            >
-            <Button
-                android:id="@+id/PlayPauseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/play_btn" />
+            android:id="@+id/pianoRollButton"
+            android:layout_weight="1"
+            android:text="PRoll"
+            android:textAllCaps="false"></Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mixer"
+            android:text="Mixer"
+            android:layout_marginLeft="10dp"
+            android:textAllCaps="false"
+            android:layout_weight="1"></Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sequencer"
+            android:text="Stop"
+            android:layout_marginLeft="10dp"
+            android:textAllCaps="false"
+            android:layout_weight="1"></Button>
 
-            <Button
-                android:id="@+id/RecordButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/rec_btn_on" />
-            <Button
-                android:id="@+id/noteon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NOTEON" />
-        </LinearLayout>
-
-        <!-- effects text -->
-
-        <!-- synth 1 filter cutoff -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.convergencelabstfx.pianoview.PianoView
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                app:showPressMode="onKeyDown"
-                app:enableMultiKeyHighlighting="true"
-                app:blackKeyColor="@color/blackKeyColor"
-                app:whiteKeyColor="@color/whiteKeyColor"
-                app:keyPressedColor="@color/pressedKeyColor"
-                app:blackKeyHeightScale="0.7"
-                app:blackKeyWidthScale="0.5"
-                app:keyCornerRadius="2dp"
-                app:keyStrokeWidth="1dp"
-                app:keyStrokeColor="@color/keyStrokeColor"
-                app:numberOfKeys="24"
-                android:id="@+id/pianoView"
-
-                />
-
-        </LinearLayout>
 
     </LinearLayout>
-</LinearLayout>
+
+
+</RelativeLayout>
