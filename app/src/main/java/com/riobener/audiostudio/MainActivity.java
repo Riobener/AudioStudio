@@ -16,22 +16,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 
 
-import com.convergencelabstfx.pianoview.PianoTouchListener;
 import com.convergencelabstfx.pianoview.PianoView;
-import com.riobener.audiostudio.Fragments.UltraPagerAdapter;
+import com.riobener.audiostudio.Views.UltraPagerAdapter;
 import com.tmall.ultraviewpager.UltraViewPager;
 
-import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -138,16 +133,17 @@ public final class MainActivity extends Activity {
                 .setOrientation(UltraViewPager.Orientation.HORIZONTAL)
                 .setFocusColor(Color.GREEN)
                 .setNormalColor(Color.WHITE)
-                .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+                .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         //set the alignment
         ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        ultraViewPager.getIndicator().setIndicatorPadding(20);
+        ultraViewPager.getIndicator().setMargin(0,0,0,10);
         //construct built-in indicator, and add it to  UltraViewPager
         ultraViewPager.getIndicator().build();
 
         //set an infinite loop
         ultraViewPager.setInfiniteLoop(true);
-        //enable auto-scroll mode
-        ultraViewPager.setAutoScroll(2000);
+
     }
     private SynthEvent getSynthEventForKeyIndex(int index) {
         return notes.get(index);

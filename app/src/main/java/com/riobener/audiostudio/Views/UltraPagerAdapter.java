@@ -1,10 +1,11 @@
-package com.riobener.audiostudio.Fragments;
+package com.riobener.audiostudio.Views;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.riobener.audiostudio.R;
@@ -16,15 +17,16 @@ import androidx.viewpager.widget.PagerAdapter;
  */
 public class UltraPagerAdapter extends PagerAdapter {
     private boolean isMultiScr;
-
+    private int count = 5;
     public UltraPagerAdapter(boolean isMultiScr) {
         this.isMultiScr = isMultiScr;
     }
 
     @Override
     public int getCount() {
-        return 5;
+        return count;
     }
+    public void setCount(int count){this.count=count;}
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
@@ -33,10 +35,9 @@ public class UltraPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.pager_text, null);
+        ScrollView linearLayout = (ScrollView) LayoutInflater.from(container.getContext()).inflate(R.layout.pager_text, null);
         //new LinearLayout(container.getContext());
-        TextView textView = (TextView) linearLayout.findViewById(R.id.pager_textview);
-        textView.setText(position + "");
+
         linearLayout.setId(R.id.item_id);
         switch (position) {
             case 0:
@@ -63,7 +64,7 @@ public class UltraPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        LinearLayout view = (LinearLayout) object;
+        ScrollView view = (ScrollView ) object;
         container.removeView(view);
     }
 }
