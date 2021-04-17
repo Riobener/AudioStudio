@@ -11,21 +11,27 @@ import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 
 
 import com.convergencelabstfx.pianoview.PianoView;
-import com.riobener.audiostudio.Views.UltraPagerAdapter;
-import com.tmall.ultraviewpager.UltraViewPager;
+import com.riobener.audiostudio.Controllers.InstrumentsManager;
+import com.riobener.audiostudio.Instruments.Synthesizer;
+import com.riobener.audiostudio.Views.InstrumentPager;
+
 
 import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -76,16 +82,21 @@ public final class MainActivity extends Activity {
      * Called when the activity is created. This also fires
      * on screen orientation changes.
      */
+    LayoutInflater inflater;
+    private ViewPager pager = null;
+    private InstrumentPager pagerAdapter = null;
+    ScrollView v1;
     PianoView pianoView;
     SynthInstrument instrument = new SynthInstrument();
     Vector<SynthEvent> notes = new Vector<SynthEvent>();
     static int BASE_OCTAVE = 3;
     static List<String> noteNames = Arrays.asList( "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" );
+
     @Override
     public void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        inflater = getLayoutInflater();
         // these may not necessarily all be required for your use case (e.g. if you're not recording
         // from device audio inputs or reading/writing files) but are here for self-documentatio
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -113,38 +124,38 @@ public final class MainActivity extends Activity {
         }
         /*pianoView = findViewById(R.id.pianoView);
         pianoView.addPianoTouchListener(this);*/
-        defaultUltraViewPager();
 
+        pagerAdapter = new InstrumentPager();
+        pager = (ViewPager) findViewById (R.id.view_pager);
+        pager.setAdapter (pagerAdapter);
 
+        // Create an initial view to display; must be a subclass of FrameLayout.
 
-
-    }
-    private void defaultUltraViewPager() {
-        UltraViewPager ultraViewPager = (UltraViewPager) findViewById(R.id.ultra_viewpager);
-        ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
-        //initialize UltraPagerAdapter，and add child view to UltraViewPager
-        PagerAdapter adapter = new UltraPagerAdapter(false);
-        ultraViewPager.setAdapter(adapter);
-
-        //initialize built-in indicator
-        ultraViewPager.initIndicator();
-        //set style of indicators
-        ultraViewPager.getIndicator()
-                .setOrientation(UltraViewPager.Orientation.HORIZONTAL)
-                .setFocusColor(Color.GREEN)
-                .setNormalColor(Color.WHITE)
-                .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-        //set the alignment
-        ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-        ultraViewPager.getIndicator().setIndicatorPadding(20);
-        ultraViewPager.getIndicator().setMargin(0,0,0,10);
-        //construct built-in indicator, and add it to  UltraViewPager
-        ultraViewPager.getIndicator().build();
-
-        //set an infinite loop
-        ultraViewPager.setInfiniteLoop(true);
+        ScrollView v0 = (ScrollView) inflater.inflate (R.layout.pager_text, null);
+        v1 = (ScrollView) inflater.inflate (R.layout.pager_text, null);
+        pagerAdapter.addView (v0, 0);
+        pagerAdapter.notifyDataSetChanged();
+        Button newInstrument = findViewById(R.id.createPage);
+        newInstrument.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                ScrollView v4 = (ScrollView) inflater.inflate (R.layout.pager_text, null);
+                addView( v4);
+            }
+        });
 
     }
+    //-----------------------------------------------------------------------------
+    // Here's what the app should do to add a view to the ViewPager.
+    public void addView (View newPage)
+    {
+        int pageIndex = pagerAdapter.addView (newPage);
+        pagerAdapter.notifyDataSetChanged();
+        // You might want to make "newPage" the currently displayed page:
+        pager.setCurrentItem (pageIndex, true);
+    }
+
+
     private SynthEvent getSynthEventForKeyIndex(int index) {
         return notes.get(index);
     }

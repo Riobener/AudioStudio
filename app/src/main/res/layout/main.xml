@@ -2,22 +2,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tmall.ultraviewpager.UltraViewPager
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/topPanel">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Здесь будут настройки ">
+    </TextView>
+    <Button
+        android:id="@+id/createPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create new"></Button>
+</LinearLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_above="@id/bottomPanel"
+        android:layout_below="@+id/topPanel"></androidx.viewpager.widget.ViewPager>
+    <!--<com.tmall.ultraviewpager.UltraViewPager
         android:id="@+id/ultra_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:layout_above="@id/bottomPanel"
-        android:background="@android:color/darker_gray" />
+        android:layout_below="@+id/topPanel"
+        android:background="@android:color/darker_gray" />-->
     <LinearLayout
         android:id="@+id/bottomPanel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity=""
-        android:padding="10dp"
+        android:padding="2dp"
         android:background="@drawable/bottom_panel"
         >
         <Button

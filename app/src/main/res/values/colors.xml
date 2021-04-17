@@ -10,4 +10,6 @@
     <color name="pressedKeyColor">#FF03DAC5</color>
     <color name="bottomCenter">#E6E6FA</color>
     <color name="bottomStart">#708090</color>
+    <color name="backgroundColor">#515151</color>
+    <color name="textColor">#F7F7F7</color>
 </resources>
