@@ -1,20 +1,28 @@
 package com.riobener.audiostudio.Controllers;
 
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ScrollView;
+
 import com.riobener.audiostudio.Instruments.Synthesizer;
+import com.riobener.audiostudio.R;
 
 import java.util.ArrayList;
 
 public class InstrumentsManager {
 
-    ArrayList<Object> instruments = new ArrayList<>();
-    public InstrumentsManager(){
-        instruments.add(new Synthesizer());
-    }
-    public int getCount() {
-        return instruments.size();
+   private ArrayList<Object> instruments = new ArrayList<>();
+    public View createSynthView(Context context){
+        Synthesizer synth = new Synthesizer();
+        instruments.add(synth);
+        return synth.createView(context);
     }
 
-    public void addInstrument() {
-        instruments.add(new Synthesizer());
+    public Object getInstruments(int index) {
+        return instruments.get(index);
     }
+
+
 }

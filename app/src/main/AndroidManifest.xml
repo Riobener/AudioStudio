@@ -27,7 +27,7 @@
         android:configChanges="orientation|keyboardHidden"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        tools:replace="android:label"
+        tools:replace="android:label,android:icon"
         android:theme="@style/Theme.AudioStudio">
         <activity android:name=".MainActivity"
             android:screenOrientation="landscape">

@@ -4,13 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,16 +19,13 @@ import android.widget.SeekBar;
 
 import com.convergencelabstfx.pianoview.PianoView;
 import com.riobener.audiostudio.Controllers.InstrumentsManager;
-import com.riobener.audiostudio.Instruments.Synthesizer;
 import com.riobener.audiostudio.Views.InstrumentPager;
 
 
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -82,10 +76,10 @@ public final class MainActivity extends Activity {
      * Called when the activity is created. This also fires
      * on screen orientation changes.
      */
+    InstrumentsManager manager = new InstrumentsManager();
     LayoutInflater inflater;
     private ViewPager pager = null;
     private InstrumentPager pagerAdapter = null;
-    ScrollView v1;
     PianoView pianoView;
     SynthInstrument instrument = new SynthInstrument();
     Vector<SynthEvent> notes = new Vector<SynthEvent>();
@@ -131,16 +125,16 @@ public final class MainActivity extends Activity {
 
         // Create an initial view to display; must be a subclass of FrameLayout.
 
-        ScrollView v0 = (ScrollView) inflater.inflate (R.layout.pager_text, null);
-        v1 = (ScrollView) inflater.inflate (R.layout.pager_text, null);
-        pagerAdapter.addView (v0, 0);
+
+
+        pagerAdapter.addView (manager.createSynthView(getApplicationContext()),0);
         pagerAdapter.notifyDataSetChanged();
         Button newInstrument = findViewById(R.id.createPage);
         newInstrument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                ScrollView v4 = (ScrollView) inflater.inflate (R.layout.pager_text, null);
-                addView( v4);
+
+                addView(manager.createSynthView(getApplicationContext()));
             }
         });
 
