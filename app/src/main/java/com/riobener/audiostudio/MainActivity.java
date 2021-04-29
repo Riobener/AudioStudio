@@ -116,15 +116,15 @@ public final class MainActivity extends Activity {
             int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
             notes.add( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), _synth2 ));
         }
-        /*pianoView = findViewById(R.id.pianoView);
-        pianoView.addPianoTouchListener(this);*/
-
         pagerAdapter = new InstrumentPager();
         pager = (ViewPager) findViewById (R.id.view_pager);
         pager.setAdapter (pagerAdapter);
 
         // Create an initial view to display; must be a subclass of FrameLayout.
 
+
+        /*pianoView = findViewById(R.id.pianoView);
+        pianoView.addPianoTouchListener(this);*/
 
 
         pagerAdapter.addView (manager.createSynthView(getApplicationContext()),0);

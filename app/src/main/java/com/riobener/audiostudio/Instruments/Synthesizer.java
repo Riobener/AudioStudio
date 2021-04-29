@@ -1,13 +1,12 @@
 package com.riobener.audiostudio.Instruments;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -15,75 +14,94 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 
+import com.nex3z.flowlayout.FlowLayout;
 import com.riobener.audiostudio.R;
 
 
-import org.apmem.tools.layouts.FlowLayout;
+// org.apmem.tools.layouts.FlowLayout;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
+
+
+import java.util.Random;
+
 import me.tankery.lib.circularseekbar.CircularSeekBar;
-import nl.igorski.mwengine.core.ADSR;
-import nl.igorski.mwengine.core.LFO;
-import nl.igorski.mwengine.core.OscillatorProperties;
-import nl.igorski.mwengine.core.RouteableOscillator;
+
 import nl.igorski.mwengine.core.SynthInstrument;
-import nl.igorski.mwengine.core.WaveForms;
+
 
 public class Synthesizer {
-    final ViewGroup.LayoutParams fullWRAP = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT);
-    final ViewGroup.LayoutParams fullMATCH = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT);
+    LinearLayout.LayoutParams fullWRAP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT);
+    LinearLayout.LayoutParams fullMATCH = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT);
     SynthInstrument synth;
 
     ScrollView synthView;
     FlowLayout flowLayout;
 
-    //ADSR View
+    int instrumentColor;
 
+    //ADSR View
     CircularSeekBar attack;
-    CircularSeekBar  decay;
-    CircularSeekBar  release;
+    CircularSeekBar decay;
+    CircularSeekBar release;
+    CircularSeekBar sustain;
     TextView attackText;
     TextView decayText;
     TextView releaseText;
+    TextView sustainText;
     TextView labelADSR;
 
 
-    public Synthesizer(){
+    public Synthesizer() {
+        Random rnd = new Random();
+        instrumentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+        fullWRAP.setMargins(20,20,20,20);
         synth = new SynthInstrument();
         synth.setOscillatorAmount(3);
         synth.getOscillatorProperties(0).setWaveform(2);
         synth.getOscillatorProperties(1).setWaveform(2);
         synth.getOscillatorProperties(2).setWaveform(5);
     }
-    public View createView(Context context){
+
+    public View createView(Context context) {
         synthView = new ScrollView(context);
 
         int backgroundColor = ContextCompat.getColor(context, R.color.backgroundColor);
         synthView.setBackgroundColor(backgroundColor);
-        synthView.setLayoutParams(fullMATCH);
+        synthView.setLayoutParams(fullWRAP);
         flowLayout = new FlowLayout(context);
-        flowLayout.setOrientation(FlowLayout.HORIZONTAL);
-        flowLayout.setGravity(Gravity.FILL);
-        flowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        flowLayout.setRowSpacing(4);
+        flowLayout.setChildSpacing(4);
+        flowLayout.setRtl(false);
+        flowLayout.addView(createADSR(context));
+        flowLayout.addView(createADSR(context));
         flowLayout.addView(createADSR(context));
         synthView.addView(flowLayout);
         return synthView;
     }
+    final float PARAM_PADDING = 80;
+    public View createADSR(Context context) {
 
-    public View createADSR(Context context){
         LinearLayout adsrLayout;
         LinearLayout adsrLay;
-        LinearLayout controllerLayout;
+        FlowLayout controllerLayout;
         adsrLayout = new LinearLayout(context);
 
         adsrLayout.setLayoutParams(fullWRAP);
+
         adsrLayout.setOrientation(LinearLayout.VERTICAL);
-        adsrLayout.setPadding(7,7,7,7);
+        adsrLayout.setPadding(7, 7, 7, 7);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            adsrLayout.setBackground(context.getDrawable(R.drawable.instrument_attributes_back));
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadii(new float[] { PARAM_PADDING,PARAM_PADDING,PARAM_PADDING,PARAM_PADDING,
+                    PARAM_PADDING,PARAM_PADDING,PARAM_PADDING,PARAM_PADDING});
+            shape.setColor(Color.BLACK);
+
+            shape.setStroke(5, instrumentColor);
+            adsrLayout.setBackground(shape);
         }
         //label
         labelADSR = new TextView(adsrLayout.getContext());
@@ -92,57 +110,102 @@ public class Synthesizer {
         labelADSR.setGravity(Gravity.CENTER);
         labelADSR.setTextColor(Color.WHITE);
         adsrLayout.addView(labelADSR);
-
         //controllers Layout
         adsrLay = new LinearLayout(context);
         adsrLay.setLayoutParams(fullWRAP);
-        adsrLay.setOrientation(LinearLayout.HORIZONTAL);
+        adsrLay.setOrientation(LinearLayout.VERTICAL);
 
 
         //controllers
-        controllerLayout = new LinearLayout(context);
-        controllerLayout.setLayoutParams(fullWRAP);
-        controllerLayout.setOrientation(LinearLayout.VERTICAL);
+        controllerLayout = new FlowLayout(context);
+        controllerLayout.setGravity(Gravity.FILL);
+        controllerLayout.setChildSpacing(30);
 
+        //attack
+        LinearLayout atck = new LinearLayout(context);
+        atck.setLayoutParams(fullWRAP);
+        atck.setOrientation(LinearLayout.VERTICAL);
         attack = new CircularSeekBar(context);
-        attack.setLayoutParams(new ViewGroup.LayoutParams(200,200));
+        attack.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
         attack.setRotation(180);
         attack.setCircleStyle(Paint.Cap.ROUND);
         attack.setCircleStrokeWidth(40);
-
-
         attackText = new TextView(context);
         attackText.setTextSize(20);
         attackText.setText("Attack");
         attackText.setAllCaps(false);
         attackText.setGravity(Gravity.CENTER);
         attackText.setTextColor(Color.WHITE);
+        atck.addView(attack);
+        atck.addView(attackText);
+        controllerLayout.addView(atck);
 
-        controllerLayout.setPadding(20,20,20,20);
-        controllerLayout.addView(attack);
-        controllerLayout.addView(attackText);
+        //decay
+        LinearLayout dec = new LinearLayout(context);
+        dec.setLayoutParams(fullWRAP);
+        dec.setOrientation(LinearLayout.VERTICAL);
+        decay = new CircularSeekBar(context);
+        decay.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        decay.setRotation(180);
+        decay.setCircleStyle(Paint.Cap.ROUND);
+        decay.setCircleStrokeWidth(40);
+        decayText = new TextView(context);
+        decayText.setTextSize(20);
+        decayText.setText("Decay");
+        decayText.setAllCaps(false);
+        decayText.setGravity(Gravity.CENTER);
+        decayText.setTextColor(Color.WHITE);
+        dec.addView(decay);
+        dec.addView(decayText);
+        controllerLayout.addView(dec);
+
+        //sustain
+        LinearLayout sust = new LinearLayout(context);
+        sust.setLayoutParams(fullWRAP);
+        sust.setOrientation(LinearLayout.VERTICAL);
+        sustain = new CircularSeekBar(context);
+        sustain.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        sustain.setRotation(180);
+        sustain.setCircleStyle(Paint.Cap.ROUND);
+        sustain.setCircleStrokeWidth(40);
+        sustainText = new TextView(context);
+        sustainText.setTextSize(20);
+        sustainText.setText("Sustain");
+        sustainText.setAllCaps(false);
+        sustainText.setGravity(Gravity.CENTER);
+        sustainText.setTextColor(Color.WHITE);
+        sust.addView(sustain);
+        sust.addView(sustainText);
+        controllerLayout.addView(sust);
+
+        //release
+        LinearLayout rel = new LinearLayout(context);
+        rel.setLayoutParams(fullWRAP);
+        rel.setOrientation(LinearLayout.VERTICAL);
+        release = new CircularSeekBar(context);
+        release.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        release.setRotation(180);
+        release.setCircleStyle(Paint.Cap.ROUND);
+        release.setCircleStrokeWidth(40);
+        releaseText = new TextView(context);
+        releaseText.setTextSize(20);
+        releaseText.setText("Release");
+        releaseText.setAllCaps(false);
+        releaseText.setGravity(Gravity.CENTER);
+        releaseText.setTextColor(Color.WHITE);
+        rel.addView(release);
+        rel.addView(releaseText);
+        controllerLayout.addView(rel);
+
+        controllerLayout.setPadding(10, 10, 10, 10);
 
         adsrLay.addView(controllerLayout);
-        if(labelADSR.getParent() !=null){
-            ((ViewGroup)labelADSR.getParent()).removeView(labelADSR); // <- fix
+        if (labelADSR.getParent() != null) {
+            ((ViewGroup) labelADSR.getParent()).removeView(labelADSR); // <- fix
         }
         adsrLayout.addView(labelADSR);
         adsrLayout.addView(adsrLay);
         return adsrLayout;
 
     }
-/*
- <com.triggertrap.seekarc.SeekArc
-    android:id="@+id/seekArc"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:padding="30dp"
-    seekarc:rotation="180"
-    seekarc:startAngle="30"
-    seekarc:sweepAngle="300"
-    seekarc:touchInside="true" />*/
-
-
-
 }

@@ -2,9 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<LinearLayout
+<com.nex3z.flowlayout.FlowLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -19,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new"></Button>
-</LinearLayout>
+</com.nex3z.flowlayout.FlowLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
@@ -27,20 +26,14 @@
         android:layout_centerInParent="true"
         android:layout_above="@id/bottomPanel"
         android:layout_below="@+id/topPanel"></androidx.viewpager.widget.ViewPager>
-    <!--<com.tmall.ultraviewpager.UltraViewPager
-        android:id="@+id/ultra_viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_above="@id/bottomPanel"
-        android:layout_below="@+id/topPanel"
-        android:background="@android:color/darker_gray" />-->
-    <LinearLayout
+    <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/bottomPanel"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="2dp"
+        app:flChildSpacing="auto"
+        app:flChildSpacingForLastRow="align"
+        app:flRowSpacing="8dp"
         android:background="@drawable/bottom_panel"
         >
         <Button
@@ -92,7 +85,7 @@
             android:layout_weight="1"></Button>
 
 
-    </LinearLayout>
+    </com.nex3z.flowlayout.FlowLayout>
 
 
 </RelativeLayout>
