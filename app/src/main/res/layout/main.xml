@@ -7,10 +7,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/topPanel">
+    android:id="@+id/topPanel"
+    android:background="#000000">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:text="Здесь будут настройки ">
     </TextView>
     <Button
@@ -26,15 +28,12 @@
         android:layout_centerInParent="true"
         android:layout_above="@id/bottomPanel"
         android:layout_below="@+id/topPanel"></androidx.viewpager.widget.ViewPager>
-    <com.nex3z.flowlayout.FlowLayout
+    <LinearLayout
         android:id="@+id/bottomPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:flChildSpacing="auto"
-        app:flChildSpacingForLastRow="align"
-        app:flRowSpacing="8dp"
-        android:background="@drawable/bottom_panel"
+        android:background="#000000"
         >
         <Button
             android:layout_width="wrap_content"
@@ -58,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:text="Название композиции"
+            android:textColor="#ffffff"
             android:textAllCaps="false"
             android:textSize="15dp"></TextView>
         <Button
@@ -85,7 +85,7 @@
             android:layout_weight="1"></Button>
 
 
-    </com.nex3z.flowlayout.FlowLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

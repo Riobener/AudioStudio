@@ -2,6 +2,7 @@ package com.riobener.audiostudio.Instruments;
 
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -44,12 +47,14 @@ public class Synthesizer {
             LinearLayout.LayoutParams.MATCH_PARENT);
     LinearLayout.LayoutParams wrapMatch = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.MATCH_PARENT);
+
     SynthInstrument synth;
 
     ScrollView synthView;
     FlowLayout flowLayout;
-    final int LABEL_TEXTSIZE = 30;
-
+    final int LABEL_TEXTSIZE = 25;
+    int TEXT_SIZE = 15;
+    int CHILD_SPACING = 25;
     int instrumentColor;
 
     //ADSR View
@@ -73,6 +78,57 @@ public class Synthesizer {
     ImageButton square;
     ImageButton sawtooth;
     ImageButton triangular;
+
+    //OSC2 View
+    TextView oscLabel1;
+    CircularSeekBar octaveBar1;
+    TextView octaveText1;
+    CircularSeekBar detuneBar1;
+    TextView detuneText1;
+    ImageButton sin1;
+    ImageButton square1;
+    ImageButton sawtooth1;
+    ImageButton triangular1;
+    RadioButton toggleButton;
+
+    //Volume View
+    TextView volumeLabel;
+    CircularSeekBar volume;
+    TextView volumeText;
+
+    //Filter View
+    TextView filterLabel;
+    CircularSeekBar cutoff;
+    TextView cutoffText;
+    CircularSeekBar reso;
+    TextView resoText;
+
+    //LFO View
+    TextView lfoLabel;
+    CircularSeekBar lfo;
+    TextView lfoText;
+    RadioButton waveChooser;
+
+    //TODO
+    //Arpeggiator View
+    CircularSeekBar step1;
+    CircularSeekBar step2;
+    CircularSeekBar step3;
+    CircularSeekBar step4;
+    CircularSeekBar step5;
+    CircularSeekBar step6;
+    CircularSeekBar step7;
+    CircularSeekBar step8;
+    TextView step1Text;
+    TextView step2Text;
+    TextView step3Text;
+    TextView step4Text;
+    TextView step5Text;
+    TextView step6Text;
+    TextView step7Text;
+    TextView step8Text;
+    TextView arpeggioLabel;
+
 
     public Synthesizer() {
 
@@ -123,8 +179,12 @@ public class Synthesizer {
         flowLayout.setRowSpacing(4);
         flowLayout.setChildSpacing(4);
         flowLayout.setRtl(false);
-        flowLayout.addView(createADSR(context));
+        flowLayout.addView(createVolume(context));
+        flowLayout.addView(createOSC(context));
         flowLayout.addView(createOSC1(context));
+        flowLayout.addView(createADSR(context));
+        flowLayout.addView(createFilter(context));
+        flowLayout.addView(createLFO(context));
         synthView.addView(flowLayout);
 
         return synthView;
@@ -152,7 +212,7 @@ public class Synthesizer {
         //controllers
         controllerLayout = new FlowLayout(context);
         controllerLayout.setGravity(Gravity.FILL);
-        controllerLayout.setChildSpacing(30);
+        controllerLayout.setChildSpacing(CHILD_SPACING);
 
         //attack
         LinearLayout atck = new LinearLayout(context);
@@ -163,8 +223,10 @@ public class Synthesizer {
         attack.setRotation(180);
         attack.setCircleStyle(Paint.Cap.ROUND);
         attack.setCircleStrokeWidth(40);
+        attack.setCircleProgressColor(instrumentColor);
+        attack.setPointerColor(instrumentColor);
         attackText = new TextView(context);
-        attackText.setTextSize(20);
+        attackText.setTextSize(TEXT_SIZE);
         attackText.setText("Attack");
         attackText.setAllCaps(false);
         attackText.setGravity(Gravity.CENTER);
@@ -182,8 +244,10 @@ public class Synthesizer {
         decay.setRotation(180);
         decay.setCircleStyle(Paint.Cap.ROUND);
         decay.setCircleStrokeWidth(40);
+        decay.setCircleProgressColor(instrumentColor);
+        decay.setPointerColor(instrumentColor);
         decayText = new TextView(context);
-        decayText.setTextSize(20);
+        decayText.setTextSize(TEXT_SIZE);
         decayText.setText("Decay");
         decayText.setAllCaps(false);
         decayText.setGravity(Gravity.CENTER);
@@ -201,8 +265,10 @@ public class Synthesizer {
         sustain.setRotation(180);
         sustain.setCircleStyle(Paint.Cap.ROUND);
         sustain.setCircleStrokeWidth(40);
+        sustain.setCircleProgressColor(instrumentColor);
+        sustain.setPointerColor(instrumentColor);
         sustainText = new TextView(context);
-        sustainText.setTextSize(20);
+        sustainText.setTextSize(TEXT_SIZE);
         sustainText.setText("Sustain");
         sustainText.setAllCaps(false);
         sustainText.setGravity(Gravity.CENTER);
@@ -220,8 +286,10 @@ public class Synthesizer {
         release.setRotation(180);
         release.setCircleStyle(Paint.Cap.ROUND);
         release.setCircleStrokeWidth(40);
+        release.setCircleProgressColor(instrumentColor);
+        release.setPointerColor(instrumentColor);
         releaseText = new TextView(context);
-        releaseText.setTextSize(20);
+        releaseText.setTextSize(TEXT_SIZE);
         releaseText.setText("Release");
         releaseText.setAllCaps(false);
         releaseText.setGravity(Gravity.CENTER);
@@ -242,7 +310,7 @@ public class Synthesizer {
 
     }
 
-    private View createOSC1(Context context){
+    private View createOSC(Context context){
         LinearLayout mainLayout;
         FlowLayout controllerLayout;
         mainLayout = new LinearLayout(context);
@@ -262,7 +330,7 @@ public class Synthesizer {
         //controller
         controllerLayout = new FlowLayout(context);
         controllerLayout.setGravity(Gravity.FILL);
-        controllerLayout.setChildSpacing(30);
+        controllerLayout.setChildSpacing(CHILD_SPACING);
         controllerLayout.setPadding(8,8,0,8);
 
         //octave
@@ -274,8 +342,10 @@ public class Synthesizer {
         octaveBar.setRotation(180);
         octaveBar.setCircleStyle(Paint.Cap.ROUND);
         octaveBar.setCircleStrokeWidth(40);
+        octaveBar.setCircleProgressColor(instrumentColor);
+        octaveBar.setPointerColor(instrumentColor);
         octaveText = new TextView(context);
-        octaveText.setTextSize(20);
+        octaveText.setTextSize(TEXT_SIZE);
         octaveText.setText("Octave");
         octaveText.setAllCaps(false);
         octaveText.setGravity(Gravity.CENTER);
@@ -291,8 +361,10 @@ public class Synthesizer {
         detuneBar.setRotation(180);
         detuneBar.setCircleStyle(Paint.Cap.ROUND);
         detuneBar.setCircleStrokeWidth(40);
+        detuneBar.setCircleProgressColor(instrumentColor);
+        detuneBar.setPointerColor(instrumentColor);
         detuneText = new TextView(context);
-        detuneText.setTextSize(20);
+        detuneText.setTextSize(TEXT_SIZE);
         detuneText.setText("Detune");
         detuneText.setAllCaps(false);
         detuneText.setGravity(Gravity.CENTER);
@@ -329,6 +401,303 @@ public class Synthesizer {
         }
       /*  controllerLayout.addView(waveGroup);*/
         mainLayout.addView(oscLabel);
+        mainLayout.addView(controllerLayout);
+        return mainLayout;
+    }
+    private View createOSC1(Context context){
+        LinearLayout mainLayout;
+        FlowLayout controllerLayout;
+        mainLayout = new LinearLayout(context);
+
+        mainLayout.setLayoutParams(fullWRAP);
+
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setPadding(7, 7, 7, 7);
+        mainLayout.setBackground(createColorShape());
+        //label
+        oscLabel1 = new TextView(context);
+        oscLabel1.setTextSize(LABEL_TEXTSIZE);
+        oscLabel1.setText("Oscillator 2");
+        oscLabel1.setGravity(Gravity.CENTER);
+        oscLabel1.setTextColor(Color.WHITE);
+
+        //controller
+        controllerLayout = new FlowLayout(context);
+        controllerLayout.setGravity(Gravity.FILL);
+        controllerLayout.setChildSpacing(CHILD_SPACING);
+        controllerLayout.setPadding(3,3,3,3);
+
+        //toggle button
+        RadioGroup radioGroup = new RadioGroup(context);
+        radioGroup.setOrientation(LinearLayout.VERTICAL);
+        radioGroup.setLayoutParams(fullWRAP);
+        toggleButton = new RadioButton(context);
+        toggleButton.setText("Off");
+        toggleButton.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toggleButton.setButtonTintList(ColorStateList.valueOf(instrumentColor));
+        }
+
+        radioGroup.addView(toggleButton);
+
+        //octave
+        LinearLayout octave = new LinearLayout(context);
+        octave.setLayoutParams(fullWRAP);
+        octave.setOrientation(LinearLayout.VERTICAL);
+        octaveBar1 = new CircularSeekBar(context);
+        octaveBar1.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        octaveBar1.setRotation(180);
+        octaveBar1.setCircleStyle(Paint.Cap.ROUND);
+        octaveBar1.setCircleStrokeWidth(40);
+        octaveBar1.setCircleProgressColor(instrumentColor);
+        octaveBar1.setPointerColor(instrumentColor);
+        octaveText1 = new TextView(context);
+        octaveText1.setTextSize(TEXT_SIZE);
+        octaveText1.setText("Octave");
+        octaveText1.setAllCaps(false);
+        octaveText1.setGravity(Gravity.CENTER);
+        octaveText1.setTextColor(Color.WHITE);
+        octave.addView(octaveBar1);
+        octave.addView(octaveText1);
+        //detune
+        LinearLayout detune = new LinearLayout(context);
+        detune.setLayoutParams(fullWRAP);
+        detune.setOrientation(LinearLayout.VERTICAL);
+        detuneBar1 = new CircularSeekBar(context);
+        detuneBar1.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        detuneBar1.setRotation(180);
+        detuneBar1.setCircleStyle(Paint.Cap.ROUND);
+        detuneBar1.setCircleStrokeWidth(40);
+        detuneBar1.setCircleProgressColor(instrumentColor);
+        detuneBar1.setPointerColor(instrumentColor);
+        detuneText1 = new TextView(context);
+        detuneText1.setTextSize(TEXT_SIZE);
+        detuneText1.setText("Detune");
+        detuneText1.setAllCaps(false);
+        detuneText1.setGravity(Gravity.CENTER);
+        detuneText1.setTextColor(Color.WHITE);
+        detune.addView(detuneBar1);
+        detune.addView(detuneText1);
+        //buttons
+        sin1 = new ImageButton(context);
+        square1 = new ImageButton(context);
+        sawtooth1 = new ImageButton(context);
+        triangular1 = new ImageButton(context);
+
+        LinearLayout.LayoutParams resize = new LinearLayout.LayoutParams(500,
+                500);
+        //wave buttons
+        sin1.setLayoutParams(fullWRAP);
+        sin1.setImageDrawable(getImageForButton(context,"sin",octaveBar1.getLayoutParams().width,octaveBar1.getLayoutParams().height));
+        square1.setLayoutParams(fullWRAP);
+        square1.setImageDrawable(getImageForButton(context,"square",octaveBar1.getLayoutParams().width,octaveBar1.getLayoutParams().height));
+        sawtooth1.setLayoutParams(fullWRAP);
+        sawtooth1.setImageDrawable(getImageForButton(context,"sawtooth",octaveBar1.getLayoutParams().width,octaveBar1.getLayoutParams().height));
+        triangular1.setLayoutParams(fullWRAP);
+        triangular1.setImageDrawable(getImageForButton(context,"trin",octaveBar1.getLayoutParams().width,octaveBar1.getLayoutParams().height));
+
+        //add views
+        controllerLayout.addView(radioGroup);
+        controllerLayout.addView(sin1);
+        controllerLayout.addView(sawtooth1);
+        controllerLayout.addView(square1);
+        controllerLayout.addView(triangular1);
+
+
+        controllerLayout.addView(octave);
+        controllerLayout.addView(detune);
+        if (oscLabel1.getParent() != null) {
+            ((ViewGroup) oscLabel1.getParent()).removeView(oscLabel1); // <- fix
+        }
+        /*  controllerLayout.addView(waveGroup);*/
+        mainLayout.addView(oscLabel1);
+        mainLayout.addView(controllerLayout);
+        return mainLayout;
+    }
+    private View createVolume(Context context){
+        LinearLayout mainLayout;
+        FlowLayout controllerLayout;
+        mainLayout = new LinearLayout(context);
+        mainLayout.setLayoutParams(fullWRAP);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setPadding(7, 7, 7, 7);
+        mainLayout.setBackground(createColorShape());
+        //label
+        /*volumeLabel = new TextView(context);
+        volumeLabel.setTextSize(LABEL_TEXTSIZE);
+        volumeLabel.setText("Volume");
+        volumeLabel.setGravity(Gravity.CENTER);
+        volumeLabel.setTextColor(Color.WHITE);
+        volumeLabel.setPadding(30,30,30, 10);*/
+
+        //controller
+        controllerLayout = new FlowLayout(context);
+        controllerLayout.setGravity(Gravity.CENTER);
+        controllerLayout.setChildSpacing(CHILD_SPACING);
+        controllerLayout.setPadding(8,8,0,8);
+
+        //volume
+        LinearLayout volumeLayout = new LinearLayout(context);
+        volumeLayout.setLayoutParams(fullWRAP);
+        volumeLayout.setOrientation(LinearLayout.VERTICAL);
+        volume = new CircularSeekBar(context);
+        volume.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        volume.setRotation(180);
+        volume.setCircleStyle(Paint.Cap.ROUND);
+        volume.setCircleStrokeWidth(40);
+        volume.setCircleProgressColor(instrumentColor);
+        volume.setPointerColor(instrumentColor);
+        volumeText = new TextView(context);
+        volumeText.setTextSize(TEXT_SIZE);
+        volumeText.setText("Volume");
+        volumeText.setAllCaps(false);
+        volumeText.setGravity(Gravity.CENTER);
+        volumeText.setTextColor(Color.WHITE);
+        volumeLayout.addView(volume);
+        volumeLayout.addView(volumeText);
+        controllerLayout.addView(volumeLayout);
+        /*if (volumeLabel.getParent() != null) {
+            ((ViewGroup) volumeLabel.getParent()).removeView(volumeLabel); // <- fix
+        }*/
+        /*mainLayout.addView(volumeLabel);*/
+
+        mainLayout.addView(controllerLayout);
+        return mainLayout;
+    }
+    private View createFilter(Context context){
+
+        LinearLayout mainLayout;
+        FlowLayout controllerLayout;
+        mainLayout = new LinearLayout(context);
+        mainLayout.setLayoutParams(fullWRAP);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setPadding(7, 7, 7, 7);
+        mainLayout.setBackground(createColorShape());
+
+        //label
+        filterLabel = new TextView(context);
+        filterLabel.setTextSize(LABEL_TEXTSIZE);
+        filterLabel.setText("Filter");
+        filterLabel.setGravity(Gravity.CENTER);
+        filterLabel.setTextColor(Color.WHITE);
+
+        //controller
+        controllerLayout = new FlowLayout(context);
+        controllerLayout.setGravity(Gravity.FILL);
+        controllerLayout.setChildSpacing(CHILD_SPACING);
+        controllerLayout.setPadding(8,8,0,8);
+
+        //cutoff
+        LinearLayout cutoffLayout = new LinearLayout(context);
+        cutoffLayout.setLayoutParams(fullWRAP);
+        cutoffLayout.setOrientation(LinearLayout.VERTICAL);
+        cutoff = new CircularSeekBar(context);
+        cutoff.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        cutoff.setRotation(180);
+        cutoff.setCircleStyle(Paint.Cap.ROUND);
+        cutoff.setCircleStrokeWidth(40);
+        cutoff.setCircleProgressColor(instrumentColor);
+        cutoff.setPointerColor(instrumentColor);
+        cutoffText = new TextView(context);
+        cutoffText.setTextSize(TEXT_SIZE);
+        cutoffText.setText("Cutoff");
+        cutoffText.setAllCaps(false);
+        cutoffText.setGravity(Gravity.CENTER);
+        cutoffText.setTextColor(Color.WHITE);
+        cutoffLayout.addView(cutoff);
+        cutoffLayout.addView(cutoffText);
+        //res
+        LinearLayout resoLayout = new LinearLayout(context);
+        resoLayout.setLayoutParams(fullWRAP);
+        resoLayout.setOrientation(LinearLayout.VERTICAL);
+        reso = new CircularSeekBar(context);
+        reso.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        reso.setRotation(180);
+        reso.setCircleStyle(Paint.Cap.ROUND);
+        reso.setCircleStrokeWidth(40);
+        reso.setCircleProgressColor(instrumentColor);
+        reso.setPointerColor(instrumentColor);
+        resoText = new TextView(context);
+        resoText.setTextSize(TEXT_SIZE);
+        resoText.setText("Reso");
+        resoText.setAllCaps(false);
+        resoText.setGravity(Gravity.CENTER);
+        resoText.setTextColor(Color.WHITE);
+        resoLayout.addView(reso);
+        resoLayout.addView(resoText);
+
+        controllerLayout.addView(cutoffLayout);
+        controllerLayout.addView(resoLayout);
+
+        if (filterLabel.getParent() != null) {
+            ((ViewGroup) filterLabel.getParent()).removeView(filterLabel); // <- fix
+        }
+        /*  controllerLayout.addView(waveGroup);*/
+        mainLayout.addView(filterLabel);
+        mainLayout.addView(controllerLayout);
+        return mainLayout;
+    }
+    private View createLFO(Context context){
+        LinearLayout mainLayout;
+        FlowLayout controllerLayout;
+        mainLayout = new LinearLayout(context);
+        mainLayout.setLayoutParams(fullWRAP);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setPadding(7, 7, 7, 7);
+        mainLayout.setBackground(createColorShape());
+        //label
+        lfoLabel = new TextView(context);
+        lfoLabel.setTextSize(LABEL_TEXTSIZE);
+        lfoLabel.setText("LFO");
+        lfoLabel.setGravity(Gravity.CENTER);
+        lfoLabel.setTextColor(Color.WHITE);
+        lfoLabel.setPadding(30,30,30, 10);
+
+        //controller
+        controllerLayout = new FlowLayout(context);
+        controllerLayout.setGravity(Gravity.CENTER);
+        controllerLayout.setChildSpacing(CHILD_SPACING);
+        controllerLayout.setPadding(8,8,0,8);
+
+        //wave chooser
+        RadioGroup radioGroup = new RadioGroup(context);
+        radioGroup.setOrientation(LinearLayout.VERTICAL);
+        radioGroup.setLayoutParams(fullWRAP);
+        waveChooser = new RadioButton(context);
+        waveChooser.setText("Sine");
+        waveChooser.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            waveChooser.setButtonTintList(ColorStateList.valueOf(instrumentColor));
+        }
+        radioGroup.addView(waveChooser);
+
+        //volume
+        LinearLayout lfoLayout = new LinearLayout(context);
+        lfoLayout.setLayoutParams(fullWRAP);
+        lfoLayout.setOrientation(LinearLayout.VERTICAL);
+        lfo = new CircularSeekBar(context);
+        lfo.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+        lfo.setRotation(180);
+        lfo.setCircleStyle(Paint.Cap.ROUND);
+        lfo.setCircleStrokeWidth(40);
+        lfo.setCircleProgressColor(instrumentColor);
+        lfo.setPointerColor(instrumentColor);
+        lfoText = new TextView(context);
+        lfoText.setTextSize(TEXT_SIZE);
+        lfoText.setText("1");
+        lfoText.setAllCaps(false);
+        lfoText.setGravity(Gravity.CENTER);
+        lfoText.setTextColor(Color.WHITE);
+        lfoLayout.addView(lfo);
+        lfoLayout.addView(lfoText);
+
+        controllerLayout.addView(radioGroup);
+        controllerLayout.addView(lfoLayout);
+
+        if (lfoLabel.getParent() != null) {
+            ((ViewGroup) lfoLabel.getParent()).removeView(lfoLabel); // <- fix
+        }
+        mainLayout.addView(lfoLabel);
         mainLayout.addView(controllerLayout);
         return mainLayout;
     }
