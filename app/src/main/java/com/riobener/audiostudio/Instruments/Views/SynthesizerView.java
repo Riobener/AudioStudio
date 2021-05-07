@@ -552,6 +552,24 @@ public class SynthesizerView {
         volume.setCircleStrokeWidth(40);
         volume.setCircleProgressColor(instrumentColor);
         volume.setPointerColor(instrumentColor);
+        volume.setMax(10f);
+        volume.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
+                volumeText.setText(progress+"");
+                synthController.setVolume(progress);
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+        });
         volumeText = new TextView(context);
         volumeText.setTextSize(TEXT_SIZE);
         volumeText.setText("Volume");

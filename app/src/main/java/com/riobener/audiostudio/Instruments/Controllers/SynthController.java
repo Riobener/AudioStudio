@@ -24,4 +24,7 @@ public class SynthController {
     public SynthInstrument getSynth() {
         return synth;
     }
+    public void setVolume(float volume){
+        synth.getAudioChannel().setVolume(volume);
+    }
 }

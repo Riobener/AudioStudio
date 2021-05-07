@@ -119,8 +119,28 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         pagerAdapter = new InstrumentPager();
         pager = (ViewPager) findViewById (R.id.view_pager);
         pager.setAdapter (pagerAdapter);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+                notes.clear();
+                SynthInstrument synth = manager.getInstruments(position);
+                Log.d("VOLUME  ",synth.getAudioChannel().getVolume()+"");
+                for (int i = 0; i < 24; ++i ) {
+                    int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
+                    notes.add ( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), synth));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         // Create an initial view to display; must be a subclass of FrameLayout.
 
         pagerAdapter.addView (manager.createSynthView(getApplicationContext()),0);
@@ -130,7 +150,6 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             @Override
             public void onClick(View v){
                 addView(manager.createSynthView(getApplicationContext()));
-
             }
         });
 
@@ -150,12 +169,15 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         pianoStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notes.clear();
                 if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     Log.d("CURRENT ",pager.getCurrentItem()+"");
                    /* manager.getInstruments(pager.getCurrentItem());*/
+                    SynthInstrument synth = manager.getInstruments(pager.getCurrentItem());
+                    Log.d("VOLUME  ",synth.getAudioChannel().getVolume()+"");
                     for (int i = 0; i < 24; ++i ) {
                         int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
-                        notes.add ( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), (SynthInstrument) manager.getInstruments(pager.getCurrentItem())));
+                        notes.add ( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), synth));
                     }
 
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
