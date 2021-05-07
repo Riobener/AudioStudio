@@ -1,24 +1,10 @@
-package com.riobener.audiostudio.Views;
+package com.riobener.audiostudio;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import com.riobener.audiostudio.Controllers.InstrumentsManager;
-import com.riobener.audiostudio.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 

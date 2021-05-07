@@ -13,15 +13,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 
+import com.convergencelabstfx.pianoview.PianoTouchListener;
 import com.convergencelabstfx.pianoview.PianoView;
-import com.riobener.audiostudio.Controllers.InstrumentsManager;
-import com.riobener.audiostudio.Views.InstrumentPager;
+import com.flipboard.bottomsheet.BottomSheetLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
@@ -30,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-public final class MainActivity extends Activity {
+public final class MainActivity extends Activity implements PianoTouchListener {
     /**
      * IMPORTANT : when creating native layer objects through JNI it
      * is important to remember that when the Java references go out of scope
@@ -69,7 +72,7 @@ public final class MainActivity extends Activity {
     private static int STEPS_PER_MEASURE = 16;  // amount of subdivisions within a single measure
     private static String LOG_TAG = "MWENGINE"; // logcat identifier
     private static int PERMISSIONS_CODE = 8081981;
-
+    BottomSheetBehavior bottomSheetBehavior;
     /* public methods */
 
     /**
@@ -112,20 +115,13 @@ public final class MainActivity extends Activity {
 
 // set a positive release envelopes for a smoother fade out on noteOff
 
-        for (int i = 0; i < 24; ++i ) {
-            int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
-            notes.add( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), _synth2 ));
-        }
+
         pagerAdapter = new InstrumentPager();
         pager = (ViewPager) findViewById (R.id.view_pager);
         pager.setAdapter (pagerAdapter);
 
+
         // Create an initial view to display; must be a subclass of FrameLayout.
-
-
-        /*pianoView = findViewById(R.id.pianoView);
-        pianoView.addPianoTouchListener(this);*/
-
 
         pagerAdapter.addView (manager.createSynthView(getApplicationContext()),0);
         pagerAdapter.notifyDataSetChanged();
@@ -133,14 +129,59 @@ public final class MainActivity extends Activity {
         newInstrument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
                 addView(manager.createSynthView(getApplicationContext()));
+
             }
         });
 
+        initPiano();
     }
     //-----------------------------------------------------------------------------
     // Here's what the app should do to add a view to the ViewPager.
+    public void initPiano(){
+        //Piano bottom sheet
+        FrameLayout frameLayout = findViewById(R.id.pianoFrame);
+        bottomSheetBehavior = BottomSheetBehavior.from(frameLayout);
+        pianoView = findViewById(R.id.pianoView);
+        pianoView.addPianoTouchListener(this);
+        bottomSheetBehavior.setDraggable(false);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        Button pianoStart = findViewById(R.id.showPiano);
+        pianoStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    Log.d("CURRENT ",pager.getCurrentItem()+"");
+                   /* manager.getInstruments(pager.getCurrentItem());*/
+                    for (int i = 0; i < 24; ++i ) {
+                        int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
+                        notes.add ( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), (SynthInstrument) manager.getInstruments(pager.getCurrentItem())));
+                    }
+
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onKeyDown(@NonNull PianoView piano, int key) {
+        // get the synth event
+        getSynthEventForKeyIndex( key ).play(); // let's heard some sweet sound
+    }
+
+    @Override
+    public void onKeyUp(@NonNull PianoView piano, int key) {
+        // get the synth event
+        getSynthEventForKeyIndex( key ).stop(); // let's heard some sweet sound
+    }
+
+    @Override
+    public void onKeyClick(@NonNull PianoView piano, int key) {
+
+    }
     public void addView (View newPage)
     {
         int pageIndex = pagerAdapter.addView (newPage);
@@ -303,19 +344,9 @@ public final class MainActivity extends Activity {
         // Real-time synthesis events
 
         // bubbly sixteenth note bass line for synth 1
-
-
-
         // Off-beat minor seventh chord stabs for synth 2
 
-
-
-
-
-
     }
-
-
 
     protected void flushSong() {
         // this ensures that Song resources currently in use by the engine are released
@@ -383,31 +414,6 @@ public final class MainActivity extends Activity {
                 _engine.unpause(); // resumes existing audio rendering thread
         }
     }
-
-    /*@Override
-    public void onKeyDown(@NonNull PianoView piano, int key) {
-
-
-        // get the synth event
-
-            getSynthEventForKeyIndex( key ).play(); // let's heard some sweet sound
-
-    }
-
-    @Override
-    public void onKeyUp(@NonNull PianoView piano, int key) {
-        // get the synth event
-
-            getSynthEventForKeyIndex( key ).stop(); // let's heard some sweet sound
-
-    }
-
-    @Override
-    public void onKeyClick(@NonNull PianoView piano, int key) {
-
-    }
-*/
-
 
     /* event handlers */
 

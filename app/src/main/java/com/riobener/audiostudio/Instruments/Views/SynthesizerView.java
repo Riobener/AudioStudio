@@ -1,4 +1,4 @@
-package com.riobener.audiostudio.Instruments;
+package com.riobener.audiostudio.Instruments.Views;
 
 
 import android.content.Context;
@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 
 import com.nex3z.flowlayout.FlowLayout;
+import com.riobener.audiostudio.Instruments.Controllers.SynthController;
 import com.riobener.audiostudio.R;
 
 
@@ -40,7 +41,7 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 import nl.igorski.mwengine.core.SynthInstrument;
 
 //The class which creating view for synthesizer programmatically
-public class Synthesizer {
+public class SynthesizerView {
     LinearLayout.LayoutParams fullWRAP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT);
     LinearLayout.LayoutParams fullMATCH = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -129,13 +130,17 @@ public class Synthesizer {
     TextView step8Text;
     TextView arpeggioLabel;
 
+    SynthController synthController;
 
-    public Synthesizer() {
-
+    public SynthesizerView() {
+        synthController = new SynthController();
         Random rnd = new Random();
         instrumentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         fullWRAP.setMargins(20,20,20,20);
         synth = new SynthInstrument();
+    }
+    public SynthInstrument getSynth(){
+        return synthController.getSynth();
     }
     private Drawable getImageForButton(Context context, String name, int width, int height){
         try {

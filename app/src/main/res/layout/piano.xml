@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pianoFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:behavior_peekHeight="auto"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true"
+        android:layout_gravity="bottom">
+        <com.convergencelabstfx.pianoview.PianoView
+            android:id="@+id/pianoView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:numberOfKeys="24">
+        </com.convergencelabstfx.pianoview.PianoView>
+    </FrameLayout>

@@ -64,6 +64,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.flipboard:bottomsheet-core:1.5.3'
     implementation 'com.nex3z:flow-layout:1.3.3'
     implementation 'me.tankery.lib:circularSeekBar:1.3.0'
     implementation 'pro.alexzaitsev:freepager:1.0.1'

@@ -20,6 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new"></Button>
+    <Button
+        android:id="@+id/showPiano"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Piano"></Button>
 </com.nex3z.flowlayout.FlowLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
@@ -85,7 +90,20 @@
             android:layout_weight="1"></Button>
 
 
+
     </LinearLayout>
 
-
+        <LinearLayout
+            android:id="@+id/centerScreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"></LinearLayout>
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/centerScreen"
+            >
+            <include layout="@layout/piano"></include>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>
