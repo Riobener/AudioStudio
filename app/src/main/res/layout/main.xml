@@ -13,18 +13,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:text="Здесь будут настройки ">
+        android:text="--- ">
     </TextView>
     <Button
         android:id="@+id/createPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new"></Button>
-    <Button
-        android:id="@+id/showPiano"
+    <Spinner
+        android:id="@+id/DriverSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Piano"></Button>
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:entries="@array/drivers"
+        />
 </com.nex3z.flowlayout.FlowLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
@@ -73,6 +76,14 @@
             android:text="PRoll"
             android:textAllCaps="false"></Button>
         <Button
+            android:layout_marginLeft="10dp"
+            android:textAllCaps="false"
+            android:id="@+id/showPiano"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Piano"></Button>
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mixer"
@@ -89,21 +100,45 @@
             android:textAllCaps="false"
             android:layout_weight="1"></Button>
 
-
-
     </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/topScreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"></LinearLayout>
         <LinearLayout
             android:id="@+id/centerScreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"></LinearLayout>
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"></LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomPanel"
+        android:layout_below="@+id/centerScreen">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        >
+        <include layout="@layout/piano"></include>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomPanel">
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
-            android:layout_below="@+id/centerScreen"
+            android:layout_above="@+id/bottomPanel"
             >
-            <include layout="@layout/piano"></include>
+            <include layout="@layout/piano_roll"></include>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+
 </RelativeLayout>
