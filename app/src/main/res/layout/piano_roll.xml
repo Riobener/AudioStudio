@@ -21,11 +21,21 @@
         android:orientation="horizontal"
         android:background="#000000">
         <Button
-            android:id="@+id/closePianoRoll"
+            android:id="@+id/highLightCell"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ADDITIONAL BUTTON"
-            android:textSize="20dp"></Button>
+            android:text="Выделить"
+            android:textAllCaps="false"
+            android:textSize="18dp"></Button>
+        <Button
+            android:layout_marginLeft="15dp"
+            android:id="@+id/expandNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Продлить ноту"
+            android:textAllCaps="false"
+            android:textSize="18dp"></Button>
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"

@@ -17,15 +17,12 @@ public class SynthController {
     private Filter _filter;
     SynthInstrument synth;
     public SynthController(){
-        RouteableOscillator rosc = new RouteableOscillator();
-
-        rosc.setWave(4);
         synth = new SynthInstrument();
-        synth.setROsc(rosc);
+        synth.getOscillatorProperties(0).setWaveform(0);
         synth.getAudioChannel().setVolume(.7f);
        //synth.getAdsr().setReleaseTime(0.3f);
-        synth.getAdsr().setDecayTime( .5f );
-        synth.getAdsr().setSustainLevel( 1f );
+        synth.getAdsr().setAttackTime(0.01f);
+        synth.getAdsr().setReleaseTime(0.2f);
         float maxFilterCutoff = ( float ) 48000 / 8;
         float minFilterCutoff = 50.0f;
         _filter = new Filter(
@@ -41,4 +38,17 @@ public class SynthController {
     public void setVolume(float volume){
         synth.getAudioChannel().setVolume(volume);
     }
+    public void setAttack(float value){
+        synth.getAdsr().setAttackTime(value);
+    }
+    public void setDecay(float value){
+        synth.getAdsr().setDecayTime(value);
+    }
+    public void setSustain(float value){
+        synth.getAdsr().setSustainLevel(value);
+    }
+    public void setRelease(float value){
+        synth.getAdsr().setReleaseTime(value);
+    }
+
 }

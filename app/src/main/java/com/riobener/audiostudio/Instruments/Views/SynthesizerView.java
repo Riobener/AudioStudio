@@ -158,7 +158,7 @@ public class SynthesizerView {
     }
     private Drawable resize(Drawable image, Context context, int width, int height) {
             Bitmap b = ((BitmapDrawable)image).getBitmap();
-            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, width,height, false);
+            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, width-45,height-45, false);
             return new BitmapDrawable(context.getResources(), bitmapResized);
     }
     private GradientDrawable createColorShape(){
@@ -184,10 +184,10 @@ public class SynthesizerView {
         flowLayout.setRowSpacing(4);
         flowLayout.setChildSpacing(4);
         flowLayout.setRtl(false);
+        flowLayout.addView(createADSR(context));
         flowLayout.addView(createVolume(context));
         flowLayout.addView(createOSC(context));
         flowLayout.addView(createOSC1(context));
-        flowLayout.addView(createADSR(context));
         flowLayout.addView(createFilter(context));
         flowLayout.addView(createLFO(context));
         synthView.addView(flowLayout);
@@ -230,6 +230,24 @@ public class SynthesizerView {
         attack.setCircleStrokeWidth(40);
         attack.setCircleProgressColor(instrumentColor);
         attack.setPointerColor(instrumentColor);
+        attack.setMax(1f);
+        attack.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
+                attackText.setText(progress+"");
+                synthController.setAttack(progress);
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+        });
         attackText = new TextView(context);
         attackText.setTextSize(TEXT_SIZE);
         attackText.setText("Attack");
@@ -251,6 +269,24 @@ public class SynthesizerView {
         decay.setCircleStrokeWidth(40);
         decay.setCircleProgressColor(instrumentColor);
         decay.setPointerColor(instrumentColor);
+        decay.setMax(1f);
+        decay.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
+                synthController.setDecay(progress);
+                decayText.setText(progress+"");
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+        });
         decayText = new TextView(context);
         decayText.setTextSize(TEXT_SIZE);
         decayText.setText("Decay");
@@ -272,6 +308,24 @@ public class SynthesizerView {
         sustain.setCircleStrokeWidth(40);
         sustain.setCircleProgressColor(instrumentColor);
         sustain.setPointerColor(instrumentColor);
+        sustain.setMax(1f);
+        sustain.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
+                synthController.setSustain(progress);
+                sustainText.setText(progress+"");
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+        });
         sustainText = new TextView(context);
         sustainText.setTextSize(TEXT_SIZE);
         sustainText.setText("Sustain");
@@ -293,6 +347,24 @@ public class SynthesizerView {
         release.setCircleStrokeWidth(40);
         release.setCircleProgressColor(instrumentColor);
         release.setPointerColor(instrumentColor);
+        release.setMax(1f);
+        release.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
+                synthController.setRelease(progress);
+                releaseText.setText(progress+"");
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+        });
         releaseText = new TextView(context);
         releaseText.setTextSize(TEXT_SIZE);
         releaseText.setText("Release");
