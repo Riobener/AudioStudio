@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.convergencelabstfx.pianoview.PianoTouchListener;
 import com.convergencelabstfx.pianoview.PianoView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.riobener.audiostudio.Grid.Note;
 import com.riobener.audiostudio.Grid.PianoRoll;
 import com.riobener.audiostudio.R;
 
@@ -86,6 +87,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
     BottomSheetBehavior pianoSheetBehavior;
     BottomSheetBehavior pianoRollSheetBehavior;
+    PianoRoll pianoRoll;
     InstrumentsManager manager = new InstrumentsManager();
     LayoutInflater inflater;
     private ViewPager pager = null;
@@ -95,6 +97,9 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     Vector<SynthEvent> notes = new Vector<SynthEvent>();
     static int BASE_OCTAVE = 3;
     static List<String> noteNames = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B");
+    static List<String> noteNames1 = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
+            "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
+            "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,10 +136,10 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                 notes.clear();
                 SynthInstrument synth = manager.getInstruments(position);
                 Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
-                /*for (int i = 0; i < 24; ++i ) {
-                    int octave = (int) (BASE_OCTAVE + Math.ceil( i / 12 ));
-                    notes.add ( new SynthEvent(( float ) Pitch.note(noteNames.get(i % 12), octave), synth));
-                }*/
+                for (int i = 0; i < 24; ++i) {
+                    int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
+                    notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
+                }
             }
 
             @Override
@@ -159,8 +164,10 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updatePatternFromNotes(pianoRoll.getNoteMap());
                 _sequencerPlaying = !_sequencerPlaying;
                 _engine.getSequencerController().setPlaying(_sequencerPlaying);
+
             }
         });
         initPianoRoll();
@@ -204,9 +211,9 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     private void initPianoRoll() {
         //Piano bottom sheet
         FrameLayout frameLayout = findViewById(R.id.pianoRollFrame);
-        final PianoRoll pianoRoll = findViewById(R.id.pianoRoll);
+        pianoRoll = findViewById(R.id.pianoRoll);
         pianoRoll.setNumColumns(16);
-        pianoRoll.setNumRows(12);
+        pianoRoll.setNumRows(48);
         pianoRollSheetBehavior = BottomSheetBehavior.from(frameLayout);
         pianoRollSheetBehavior.setDraggable(false);
         pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -349,11 +356,32 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         _inited = true;
     }
 
+    private void updatePatternFromNotes(Note[][] noteMap) {
+
+            for(int a = 0; a<manager.size();a++) {
+                for (int i = 0; i < pianoRoll.getNumColumns(); i++) {
+
+                    for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+
+                        //Log.d("SSSSSSSSSS", "WHAT IN  " + i + "  " + j + "   instrument  " + noteMap.length);
+                        if (noteMap[i][j].isDrawable()) {
+                            createSynthEvent(manager.getInstruments(a), Pitch.note(noteNames1.get(j), pianoRoll.getOctave(j+4)), i, noteMap[i][j].getDuration());
+                        }
+
+
+                        //createSynthEvent( _synth1, Pitch.note( "C", 3 ),  2 );
+                    }
+
+
+                }
+
+        }
+    }
     /* protected methods */
 
     protected void setupSong() {
         _sequencerController = _engine.getSequencerController();
-        _sequencerController.setTempoNow(130.0f, 4, 4); // 130 BPM in 4/4 time
+        _sequencerController.setTempoNow(120.0f, 4, 4); // 130 BPM in 4/4 time
         _sequencerController.updateMeasures(1, STEPS_PER_MEASURE); // we'll loop just a single measure with given subdivisions
 
         // cache some of the engines properties
@@ -737,9 +765,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
         event.calculateBuffers();
 
-        if (synth == _synth1)
-            _synth1Events.add(event);
-        else
+
             _synth2Events.add(event);
     }
 

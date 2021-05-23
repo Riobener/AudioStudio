@@ -23,4 +23,7 @@ public class InstrumentsManager {
     }
 
 
+    public int size() {
+        return instruments.size();
+    }
 }

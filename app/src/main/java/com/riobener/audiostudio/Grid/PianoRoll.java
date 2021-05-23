@@ -1,6 +1,5 @@
 package com.riobener.audiostudio.Grid;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,23 +8,20 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 
-import com.riobener.audiostudio.MainActivity;
-import com.riobener.audiostudio.R;
-
-import java.util.HashMap;
+import java.util.Calendar;
 
 
 public class PianoRoll extends View {
 
     private int numColumns, numRows;
     private int cellWidth, cellHeight;
+    private int cWidth, cHeight;
     private Paint blackPaint = new Paint();
     private Paint paintBorder = new Paint();
     private Paint blackKeyRow = new Paint();
     private Paint paintForColumn = new Paint();
-
+    private Camera camera;
     private Note[][] noteMap;
 
     private boolean isHiglightMode = false;
@@ -36,18 +32,20 @@ public class PianoRoll extends View {
 
     public PianoRoll(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        blackPaint.setStrokeWidth(2);
         paintForColumn.setStrokeWidth(5);
         blackKeyRow.setColor(Color.GRAY);
         blackKeyRow.setStrokeWidth(10);
         blackKeyRow.setAlpha(64);
         paintBorder.setStyle(Paint.Style.STROKE);
-        paintBorder.setColor(Color.BLUE);
-        paintBorder.setStrokeWidth(7);
+        paintBorder.setColor(Color.rgb(255, 94, 19));
+        paintBorder.setStrokeWidth(10);
 
     }
 
-    public void getCellsArray() {
-
+    public Note[][] getNoteMap() {
+        return noteMap;
     }
 
     public void setNumColumns(int numColumns) {
@@ -75,12 +73,15 @@ public class PianoRoll extends View {
     }
 
     private void calculateDimensions() {
+
         if (numColumns < 1 || numRows < 1) {
             return;
         }
-
-        cellWidth = getWidth() / numColumns;
-        cellHeight = getHeight() / numRows;
+        cHeight = getHeight() * 3 - 300;
+        cWidth = getWidth();
+        camera = new Camera(0, 0);
+        cellWidth = cWidth / numColumns;
+        cellHeight = cHeight / numRows;
 
         noteMap = new Note[numColumns][numRows];
         for (int i = 0; i < numColumns; i++) {
@@ -92,23 +93,30 @@ public class PianoRoll extends View {
     }
 
 
-    final int RECTANGLE_PADDING = 15;
+    final int RECTANGLE_PADDING = 10;
 
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
 
+
+        //Log.d("WI", "WIDTH = " + cWidth);
         if (numColumns == 0 || numRows == 0) {
             return;
         }
-        int width = getWidth();
-        int height = getHeight();
+        if (camera.getOffsetY() < 0) {
+            camera.setOffsetY(0);
+        }
+        if (camera.getOffsetY() > cHeight - getHeight() - cellHeight + 25) {
+            camera.setOffsetY(cHeight - getHeight() - cellHeight + 35);
+        }
+
         //drawing black keys
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
-                if (j == 1 || j == 3 || j == 6 || j == 8 | j == 10)
-                    canvas.drawRect(i * cellWidth, j * cellHeight,
-                            (i + 1) * cellWidth, (j + 1) * cellHeight,
+                if (j == 1 || j == 3 || j == 6 || j == 8 | j == 10 | j == 47)
+                    canvas.drawRect(i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY(),
+                            (i + 1) * cellWidth - camera.getOffsetX(), (j + 1) * cellHeight - camera.getOffsetY(),
                             blackKeyRow);
             }
         }
@@ -116,17 +124,16 @@ public class PianoRoll extends View {
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
 
-
                 if (noteMap[i][j].isDrawable() && noteMap[i][j].isHighlighted()) {
-                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING, j * cellHeight + RECTANGLE_PADDING,
-                            (i + 1) * cellWidth - RECTANGLE_PADDING, (j + 1) * cellHeight - RECTANGLE_PADDING,
+                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
+                            (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
                             paintBorder);
-                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING, j * cellHeight + RECTANGLE_PADDING,
-                            (i + 1) * cellWidth - RECTANGLE_PADDING, (j + 1) * cellHeight - RECTANGLE_PADDING,
+                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
+                            (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
                             blackPaint);
                 } else if (noteMap[i][j].isDrawable() && !noteMap[i][j].isHighlighted()) {
-                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING, j * cellHeight + RECTANGLE_PADDING,
-                            (i + 1) * cellWidth - RECTANGLE_PADDING, (j + 1) * cellHeight - RECTANGLE_PADDING,
+                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
+                            (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
                             blackPaint);
                 }
 
@@ -135,40 +142,79 @@ public class PianoRoll extends View {
 
         for (int i = 1; i < numColumns; i++) {
             if (i % 4 == 0) {
-                canvas.drawLine(i * cellWidth, 0, i * cellWidth, height, paintForColumn);
+                canvas.drawLine(i * cellWidth - camera.getOffsetX(), 0 - camera.getOffsetY(),
+                        i * cellWidth - camera.getOffsetX(), cHeight - camera.getOffsetY(), paintForColumn);
             } else {
-                canvas.drawLine(i * cellWidth, 0, i * cellWidth, height, blackPaint);
+                canvas.drawLine(i * cellWidth - camera.getOffsetX(), 0 - camera.getOffsetY(),
+                        i * cellWidth - camera.getOffsetX(), cHeight - camera.getOffsetY(), blackPaint);
             }
 
         }
 
         for (int i = 1; i < numRows; i++) {
-            canvas.drawLine(0, i * cellHeight, width, i * cellHeight, blackPaint);
+            canvas.drawLine(0 - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(),
+                    cWidth - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(), blackPaint);
         }
 
     }
 
+    public float convertDpToPixel(float dp, Context context) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    float x, y;
+    private static final int MAX_CLICK_DURATION = 100;
+    private long startClickTime;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int column = (int) (event.getX() / cellWidth);
-            int row = (int) (event.getY() / cellHeight);
-            Log.v("Cell is ", column + " " + row);
-            if (!isHiglightMode) {
-                if (noteMap[column][row].isDrawable()) {
-                    noteMap[column][row].setDrawable(false);
-                } else {
-                    noteMap[column][row].setDrawable(true);
-                }
-            } else if (isHiglightMode) {
-                if (noteMap[column][row].isHighlighted() && noteMap[column][row].isDrawable()) {
-                    noteMap[column][row].setHighlighted(false);
-                } else if (!noteMap[column][row].isHighlighted() && noteMap[column][row].isDrawable()) {
-                    noteMap[column][row].setHighlighted(true);
-                }
+            startClickTime = Calendar.getInstance().getTimeInMillis();
+            x = event.getX();
+            y = event.getY();
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            float currX = event.getX();
+            float currY = event.getY();
+
+            float newOffsetX = (x - currX),
+                    newOffsetY = (y - currY);
+
+            if (camera.getOffsetY() >= 0 && camera.getOffsetY() <= cHeight - getHeight()) {
+                camera.addOffsetY(newOffsetY);
             }
+
+            Log.d("OFFSET", "OFFSEtY = " + camera.getOffsetY());
+
+            x = event.getX();
+            y = event.getY();
             invalidate();
         }
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
+            if (clickDuration < MAX_CLICK_DURATION) {
+                int column = (int) (event.getX() / cellWidth);
+                int row = (int) ((camera.getOffsetY() + event.getY()) / cellHeight);
+
+                Log.v("Cell is ", column + " " + row);
+                if (!isHiglightMode) {
+                    if (noteMap[column][row].isDrawable()) {
+                        noteMap[column][row].setDrawable(false);
+                    } else {
+                        noteMap[column][row].setDrawable(true);
+                    }
+                } else if (isHiglightMode) {
+                    if (noteMap[column][row].isHighlighted() && noteMap[column][row].isDrawable()) {
+                        noteMap[column][row].setHighlighted(false);
+                    } else if (!noteMap[column][row].isHighlighted() && noteMap[column][row].isDrawable()) {
+                        noteMap[column][row].setHighlighted(true);
+                    }
+                }
+                invalidate();
+            }
+
+        }
+        invalidate();
         return true;
     }
 
@@ -178,5 +224,8 @@ public class PianoRoll extends View {
 
     public boolean isHiglightMode() {
         return isHiglightMode;
+    }
+    public int getOctave(int row){
+        return numColumns/7;
     }
 }
