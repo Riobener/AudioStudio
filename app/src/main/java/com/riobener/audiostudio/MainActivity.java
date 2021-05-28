@@ -212,8 +212,8 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         //Piano bottom sheet
         FrameLayout frameLayout = findViewById(R.id.pianoRollFrame);
         pianoRoll = findViewById(R.id.pianoRoll);
-        pianoRoll.setNumColumns(16);
-        pianoRoll.setNumRows(48);
+        pianoRoll.setNumColumns(32);
+        pianoRoll.setNumRows(74);
         pianoRollSheetBehavior = BottomSheetBehavior.from(frameLayout);
         pianoRollSheetBehavior.setDraggable(false);
         pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);

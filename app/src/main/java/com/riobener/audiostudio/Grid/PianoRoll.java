@@ -21,6 +21,7 @@ public class PianoRoll extends View {
     private Paint paintBorder = new Paint();
     private Paint blackKeyRow = new Paint();
     private Paint paintForColumn = new Paint();
+    private Paint drawingText = new Paint();
     private Camera camera;
     private Note[][] noteMap;
 
@@ -41,6 +42,10 @@ public class PianoRoll extends View {
         paintBorder.setStyle(Paint.Style.STROKE);
         paintBorder.setColor(Color.rgb(255, 94, 19));
         paintBorder.setStrokeWidth(10);
+
+        drawingText.setColor(Color.BLACK);
+        drawingText.setStrokeWidth(2);
+
 
     }
 
@@ -77,12 +82,15 @@ public class PianoRoll extends View {
         if (numColumns < 1 || numRows < 1) {
             return;
         }
-        cHeight = getHeight() * 3 - 300;
-        cWidth = getWidth();
+        cellWidth = getWidth()/16;
+        cellHeight = getHeight()/12;
+        cHeight = cellHeight*numRows;
+        cWidth = cellWidth*numColumns;
+
         camera = new Camera(0, 0);
         cellWidth = cWidth / numColumns;
         cellHeight = cHeight / numRows;
-
+        drawingText.setTextSize(cellHeight);
         noteMap = new Note[numColumns][numRows];
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
@@ -94,6 +102,7 @@ public class PianoRoll extends View {
 
 
     final int RECTANGLE_PADDING = 10;
+    final int TEXTY = 10;
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -107,17 +116,46 @@ public class PianoRoll extends View {
         if (camera.getOffsetY() < 0) {
             camera.setOffsetY(0);
         }
-        if (camera.getOffsetY() > cHeight - getHeight() - cellHeight + 25) {
-            camera.setOffsetY(cHeight - getHeight() - cellHeight + 35);
+        if (camera.getOffsetY() > cHeight - getHeight() - cellHeight) {
+            camera.setOffsetY(cHeight - getHeight() - cellHeight);
+        }
+        if (camera.getOffsetX() < 0) {
+            camera.setOffsetX(0);
+        }
+        if (camera.getOffsetX() > cWidth - getWidth()) {
+            camera.setOffsetX(cWidth - getWidth());
         }
 
         //drawing black keys
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
-                if (j == 1 || j == 3 || j == 6 || j == 8 | j == 10 | j == 47)
+                if (j == 2 || j == 4 || j == 6 || j == 9 || j == 11 //C7
+                        || j == 14 || j == 16 || j == 18 || j == 21 || j == 23
+                        || j == 26 || j == 28 || j == 30 || j == 33 || j == 35
+                        || j == 38 || j == 40 || j == 42 || j == 45 || j == 47
+                        || j == 50 || j == 52 || j == 54 || j == 57 || j == 59
+                        || j == 62 || j == 64 || j == 66 || j == 69 || j == 71) //C2
                     canvas.drawRect(i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY(),
-                            (i + 1) * cellWidth - camera.getOffsetX(), (j + 1) * cellHeight - camera.getOffsetY(),
+                            (i + 1) * cellWidth- camera.getOffsetX(), (j + 1) * cellHeight - camera.getOffsetY(),
                             blackKeyRow);
+                if (i == 0) {
+                    if (j == 1) {
+                        canvas.drawText("C7", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    } else if (j == 13) {
+                        canvas.drawText("C6", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    } else if (j == 25) {
+                        canvas.drawText("C5", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    } else if (j == 37) {
+                        canvas.drawText("C4", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    } else if (j == 49) {
+                        canvas.drawText("C3", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    } else if (j == 61) {
+                        canvas.drawText("C2", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    } else if (j == 73) {
+                        canvas.drawText("C1", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                    }
+                }
+
             }
         }
         //fill cells by click event
@@ -142,8 +180,15 @@ public class PianoRoll extends View {
 
         for (int i = 1; i < numColumns; i++) {
             if (i % 4 == 0) {
+
                 canvas.drawLine(i * cellWidth - camera.getOffsetX(), 0 - camera.getOffsetY(),
                         i * cellWidth - camera.getOffsetX(), cHeight - camera.getOffsetY(), paintForColumn);
+                if(i%16==0){
+                    paintForColumn.setColor(Color.GREEN);
+                    canvas.drawLine(i * cellWidth - camera.getOffsetX(), 0 - camera.getOffsetY(),
+                            i * cellWidth - camera.getOffsetX(), cHeight - camera.getOffsetY(), paintForColumn);
+                    paintForColumn.setColor(Color.BLACK);
+                }
             } else {
                 canvas.drawLine(i * cellWidth - camera.getOffsetX(), 0 - camera.getOffsetY(),
                         i * cellWidth - camera.getOffsetX(), cHeight - camera.getOffsetY(), blackPaint);
@@ -183,6 +228,9 @@ public class PianoRoll extends View {
             if (camera.getOffsetY() >= 0 && camera.getOffsetY() <= cHeight - getHeight()) {
                 camera.addOffsetY(newOffsetY);
             }
+            if (camera.getOffsetX() >= 0 && camera.getOffsetX() <= cWidth - getWidth()) {
+                camera.addOffsetX(newOffsetX);
+            }
 
             Log.d("OFFSET", "OFFSEtY = " + camera.getOffsetY());
 
@@ -193,7 +241,7 @@ public class PianoRoll extends View {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
             if (clickDuration < MAX_CLICK_DURATION) {
-                int column = (int) (event.getX() / cellWidth);
+                int column = (int) ((camera.getOffsetX() + event.getX()) / cellWidth);
                 int row = (int) ((camera.getOffsetY() + event.getY()) / cellHeight);
 
                 Log.v("Cell is ", column + " " + row);
@@ -225,7 +273,9 @@ public class PianoRoll extends View {
     public boolean isHiglightMode() {
         return isHiglightMode;
     }
-    public int getOctave(int row){
-        return numColumns/7;
+
+    public int getOctave(int row) {
+
+        return numColumns / 12;
     }
 }

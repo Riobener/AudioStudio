@@ -28,4 +28,8 @@ public class Camera{
     public void addOffsetY(float newOffsetY){
         this.offsetY +=newOffsetY;
     }
+
+    public void addOffsetX(float newOffsetX) {
+        this.offsetX +=newOffsetX;
+    }
 }
