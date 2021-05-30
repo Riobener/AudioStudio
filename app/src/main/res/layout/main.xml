@@ -20,6 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new"></Button>
+    <Button
+        android:id="@+id/expandMeasures"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Expand Measures"></Button>
     <Spinner
         android:id="@+id/DriverSpinner"
         android:layout_width="wrap_content"

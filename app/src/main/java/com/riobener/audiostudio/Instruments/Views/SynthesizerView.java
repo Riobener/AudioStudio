@@ -142,6 +142,9 @@ public class SynthesizerView {
     public SynthInstrument getSynth(){
         return synthController.getSynth();
     }
+    public SynthController getSynthController(){
+        return synthController;
+    }
     private Drawable getImageForButton(Context context, String name, int width, int height){
         try {
             // get input stream

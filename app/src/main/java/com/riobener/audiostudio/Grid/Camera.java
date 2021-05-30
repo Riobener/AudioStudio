@@ -3,8 +3,7 @@ package com.riobener.audiostudio.Grid;
 public class Camera{
 
     private float offsetX, offsetY;
-    //The constructor. ix and iy is the initial offset. Useful if you are creating a game and need to change the initial offset to center around a starting position.
-    //Most of the time it will be enough to set the values to 0
+
     public Camera(float ix, float iy){
         this.offsetX = ix;
         this.offsetY = iy;
