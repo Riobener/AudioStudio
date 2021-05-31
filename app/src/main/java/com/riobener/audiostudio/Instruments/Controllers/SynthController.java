@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Vector;
 
 import nl.igorski.mwengine.core.BaseAudioEvent;
+import nl.igorski.mwengine.core.Delay;
 import nl.igorski.mwengine.core.Filter;
 import nl.igorski.mwengine.core.Phaser;
 import nl.igorski.mwengine.core.Pitch;
@@ -18,6 +19,7 @@ import nl.igorski.mwengine.core.SynthInstrument;
 import nl.igorski.mwengine.core.WaveForms;
 
 import static com.riobener.audiostudio.MainActivity.AMOUNT_OF_MEASURES;
+import static nl.igorski.mwengine.MWEngine.OUTPUT_CHANNELS;
 
 public class SynthController {
     /*SINE,
@@ -31,6 +33,7 @@ public class SynthController {
     private Filter _filter;
     SynthInstrument synth;
     Phaser phaser;
+    Delay delay;
     Note[][] noteMap;
     Vector<SynthEvent> synthEvents = new Vector<>();
 
@@ -43,12 +46,14 @@ public class SynthController {
 
     public SynthController() {
         synth = new SynthInstrument();
-        synth = new SynthInstrument();
-        synth.getOscillatorProperties(0).setWaveform(2); // sawtooth (see global.h for enumerations)
-        synth.getAdsr().setDecayTime(.1f);
-
-        phaser = new Phaser(.5f, .7f, .5f, 440.f, 1600.f);
-        synth.getAudioChannel().getProcessingChain().addProcessor(phaser);
+        delay = new Delay(250, 2000, .35f, .5f, OUTPUT_CHANNELS);
+        synth.getOscillatorProperties(0).setWaveform(5); // pulse width modulation
+        synth.getAdsr().setReleaseTime(0.15f);
+        synth.getAudioChannel().getProcessingChain().addProcessor(delay);
+        // adjust synthesizer volumes
+        synth.getAudioChannel().setVolume(.7f);
+        /*phaser = new Phaser(.5f, .7f, .5f, 440.f, 1600.f);
+        synth.getAudioChannel().getProcessingChain().addProcessor(phaser);*/
         initInstrument();
     }
 
@@ -61,14 +66,15 @@ public class SynthController {
             }
         }
     }
-    public void updateMapMeasures(){
 
-        Note[][] newNoteMap  = new Note[AMOUNT_OF_MEASURES][73];
+    public void updateMapMeasures() {
+
+        Note[][] newNoteMap = new Note[AMOUNT_OF_MEASURES][73];
         if (this.noteMap != null) {
             for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
                 for (int j = 0; j < 73; j++) {
-                    if(i<AMOUNT_OF_MEASURES/2)
-                    newNoteMap[i][j]=this.noteMap[i][j];
+                    if (i < AMOUNT_OF_MEASURES / 2)
+                        newNoteMap[i][j] = this.noteMap[i][j];
                     else
                         newNoteMap[i][j] = new Note();
                 }
@@ -81,7 +87,8 @@ public class SynthController {
             }
         }
     }
-    public void updateNoteMap(Note[][] noteMap){
+
+    public void updateNoteMap(Note[][] noteMap) {
         this.noteMap = new Note[AMOUNT_OF_MEASURES][73];
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
             for (int j = 0; j < 73; j++) {
@@ -89,7 +96,8 @@ public class SynthController {
             }
         }
     }
-    public Note[][] getNoteMap(){
+
+    public Note[][] getNoteMap() {
         return noteMap;
     }
 
@@ -97,7 +105,7 @@ public class SynthController {
         final SynthEvent event = new SynthEvent((float) frequency, position, duration, synth);
         event.calculateBuffers();
         synthEvents.add(event);
-        synth.updateEvents();
+        //synth.updateEvents();
     }
 
     public void updateEvents() {
@@ -125,6 +133,7 @@ public class SynthController {
                     } else if (j > 60 && j <= 72) {
                         octave = 1;
                     }
+                    Log.d("ASSSSSSSSF", "DURATION OF " + noteNames.get(j)+" in column "+ i + "  with duration of "+ noteMap[i][j].getDuration());
                     createSynthEvent(Pitch.note(noteNames.get(j), octave), i, noteMap[i][j].getDuration());
                 }
 

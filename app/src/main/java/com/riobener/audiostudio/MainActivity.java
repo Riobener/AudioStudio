@@ -79,7 +79,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     private static String LOG_TAG = "MWENGINE"; // logcat identifier
     private static int PERMISSIONS_CODE = 8081981;
 
-    /* public methods */
+
     public static int AMOUNT_OF_MEASURES = 16;
     /**
      * Called when the activity is created. This also fires
@@ -98,11 +98,15 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     Vector<SynthEvent> notes = new Vector<SynthEvent>();
     static int BASE_OCTAVE = 3;
     private List<String> noteNames = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B");
+    Button expandMeasures;
+    Button stopButton;
+    Button playButton;
+    Button newInstrument;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-            setContentView(R.layout.main);
+        setContentView(R.layout.main);
         inflater = getLayoutInflater();
         // these may not necessarily all be required for your use case (e.g. if you're not recording
         // from device audio inputs or reading/writing files) but are here for self-documentation
@@ -131,13 +135,16 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
             @Override
             public void onPageSelected(int position) {
-                notes.clear();
+                pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
+
+                pianoRoll.invalidate();
+                /*notes.clear();
                 SynthInstrument synth = manager.getInstrument(position);
                 Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
                 for (int i = 0; i < 24; ++i) {
                     int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
                     notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                }
+                }*/
             }
 
             @Override
@@ -149,7 +156,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
         pagerAdapter.addView(manager.createSynthView(getApplicationContext()), 0);
         pagerAdapter.notifyDataSetChanged();
-        Button newInstrument = findViewById(R.id.createPage);
+        newInstrument = findViewById(R.id.createPage);
         newInstrument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,48 +165,59 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         });
 
         initPiano();
-        Button playButton = findViewById(R.id.playButton);
+        playButton = findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(_sequencerPlaying!=true){
-                    _sequencerPlaying = true;
-                    _engine.getSequencerController().setPlaying(_sequencerPlaying);
-                }
-
-
+                startSequencer();
             }
         });
-        Button stopButton = findViewById(R.id.stopButton);
+        stopButton = findViewById(R.id.stopButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(_sequencerPlaying!=false) {
-                    _sequencerPlaying = false;
-                    _engine.getSequencerController().setPlaying(_sequencerPlaying);
-                    _engine.getSequencerController().rewind();
-                }
+                stopSequencer();
             }
         });
-        Button expandMeasures = findViewById(R.id.expandMeasures);
+        expandMeasures = findViewById(R.id.expandMeasures);
         expandMeasures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AMOUNT_OF_MEASURES*=2;
-                for(int i = 0; i<manager.size();i++){
-                    manager.getController(i).updateMapMeasures();
+                stopSequencer();
+                if (AMOUNT_OF_MEASURES <= 64) {
+                    AMOUNT_OF_MEASURES *= 2;
                 }
-                if(AMOUNT_OF_MEASURES==16)
+                for (int i = 0; i < manager.size(); i++) {
+                    manager.getController(i).updateMapMeasures();
+                    pianoRoll.loadNoteMap(manager.getController(i).getNoteMap());
+                    pianoRoll.invalidate();
+                }
+                if (AMOUNT_OF_MEASURES == 16)
                     _sequencerController.updateMeasures(1, STEPS_PER_MEASURE);
-                else if(AMOUNT_OF_MEASURES==32){
+                else if (AMOUNT_OF_MEASURES == 32) {
                     _sequencerController.updateMeasures(2, STEPS_PER_MEASURE);
-                }else if(AMOUNT_OF_MEASURES==64){
+                } else if (AMOUNT_OF_MEASURES == 64) {
                     _sequencerController.updateMeasures(4, STEPS_PER_MEASURE);
                 }
-                //pianoRoll.updateMeasures();
+
             }
         });
         initPianoRoll();
+    }
+
+    public void startSequencer() {
+        if (_sequencerPlaying != true) {
+            _sequencerPlaying = true;
+            _engine.getSequencerController().setPlaying(_sequencerPlaying);
+        }
+    }
+
+    public void stopSequencer() {
+        if (_sequencerPlaying != false) {
+            _sequencerPlaying = false;
+            _engine.getSequencerController().setPlaying(_sequencerPlaying);
+            _engine.getSequencerController().rewind();
+        }
     }
 
     public void initPiano() {
@@ -218,13 +236,13 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                 if (pianoSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     //Log.d("CURRENT ",pager.getCurrentItem()+"");
                     /* manager.getInstruments(pager.getCurrentItem());*/
-                    SynthInstrument synth = manager.getInstrument(pager.getCurrentItem());
+                    /*SynthInstrument synth = manager.getInstrument(pager.getCurrentItem());
 
                     Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
                     for (int i = 0; i < 24; ++i) {
                         int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
                         notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                    }
+                    }*/
 
                     pianoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
@@ -235,7 +253,8 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     }
 
     private Button highlightCell;
-    private Button expandNote;
+    private Button enlargeDuration;
+    private Button reduceDuration;
 
     private void initPianoRoll() {
         //Piano bottom sheet
@@ -251,28 +270,68 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                 //notes.clear();
                 pianoRoll.initNoteMap();
                 if (pianoRollSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    Log.d("ADWADA","CURRENT ITEM = "+pager.getCurrentItem());
+                    expandMeasures.setEnabled(false);
                     pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
                     pianoRoll.invalidate();
                     pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
+                    expandMeasures.setEnabled(true);
+                    pianoRoll.setHighLightMode(false);
                     pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
                     pianoRoll.invalidate();
                     pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             }
         });
-        highlightCell = findViewById(R.id.highLightCell);
+
+        enlargeDuration = findViewById(R.id.enlargeDuration);
+        enlargeDuration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pianoRoll.isHiglightMode()) {
+                    Note[][] noteMap = pianoRoll.getNoteMap();
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted())
+                                noteMap[i][j].enlargeDuration();
+                        }
+                    }
+                }
+                pianoRoll.invalidate();
+            }
+        });
+        reduceDuration = findViewById(R.id.reduceDuration);
+        reduceDuration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pianoRoll.isHiglightMode()) {
+                    Note[][] noteMap = pianoRoll.getNoteMap();
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted())
+                                noteMap[i][j].reduceDuration();
+                        }
+                    }
+                }
+                pianoRoll.invalidate();
+            }
+        });
+        highlightCell = findViewById(R.id.highLightMode);
         highlightCell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pianoRoll.isHiglightMode())
+                if (pianoRoll.isHiglightMode()) {
+                    enlargeDuration.setEnabled(false);
+                    reduceDuration.setEnabled(false);
                     pianoRoll.setHighLightMode(false);
-                else
+                } else {
+                    enlargeDuration.setEnabled(true);
+                    reduceDuration.setEnabled(true);
                     pianoRoll.setHighLightMode(true);
+                }
+                pianoRoll.invalidate();
             }
         });
-
     }
 
     @Override
@@ -450,7 +509,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         _synth2.getAudioChannel().setVolume(.7f);
 
         // STEP 2 : Sample events to play back a drum beat
-
+        //createSynthEvent(_synth2, Pitch.note("C", 2), 0, 16);
         createDrumEvent("hat", 2);  // hi-hat on the second 8th note after the first beat of the bar
         createDrumEvent("clap", 4);  // clap sound on the second beat of the bar
         createDrumEvent("hat", 6);  // hi-hat on the second 8th note after the second beat
@@ -711,11 +770,10 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
                     Log.d(LOG_TAG, "seq. position: " + sequencerPosition + ", buffer offset: " + aNotificationValue +
                             ", elapsed samples: " + elapsedSamples);
-                    if(sequencerPosition==15||
-                            sequencerPosition==31||
-                            sequencerPosition==63||
-                    sequencerPosition==0){
-                        if(pianoRoll.getNoteMap()!=null) {
+                    if (sequencerPosition == 15 ||
+                            sequencerPosition == 31 ||
+                            sequencerPosition == 63 ) {
+                        if (pianoRoll.getNoteMap() != null) {
                             manager.getController(pager.getCurrentItem()).updateNoteMap(pianoRoll.getNoteMap());
                             manager.getController(pager.getCurrentItem()).updateEvents();
                         }
@@ -756,7 +814,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         event.calculateBuffers();
 
 
-            _synth2Events.add(event);
+        _synth2Events.add(event);
     }
 
     /**

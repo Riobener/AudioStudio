@@ -1,5 +1,9 @@
 package com.riobener.audiostudio.Grid;
 
+import android.util.Log;
+
+import static com.riobener.audiostudio.MainActivity.AMOUNT_OF_MEASURES;
+
 public class Note {
     private int duration;
     private boolean isHighlighted;
@@ -10,7 +14,15 @@ public class Note {
         isHighlighted = false;
         isDrawable = false;
     }
-
+    public void enlargeDuration(){
+        if(duration<AMOUNT_OF_MEASURES)
+        duration++;
+        Log.d("TAGDUR","DURATION"+duration);
+    }
+    public void reduceDuration(){
+        if(duration>1)
+        duration--;
+    }
     public int getDuration() {
         return duration;
     }
@@ -33,5 +45,6 @@ public class Note {
 
     public void setDrawable(boolean drawable) {
         isDrawable = drawable;
+        duration=1;
     }
 }

@@ -21,28 +21,30 @@
         android:orientation="horizontal"
         android:background="#000000">
         <Button
-            android:id="@+id/highLightCell"
+            android:id="@+id/highLightMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Выделить"
+            android:text="Редактировать"
             android:textAllCaps="false"
             android:textSize="20dp"></Button>
         <Button
             android:layout_marginLeft="15dp"
-            android:id="@+id/deleteDuration"
+            android:id="@+id/reduceDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"
             android:textAllCaps="false"
-            android:textSize="20dp"></Button>
+            android:textSize="20dp"
+            android:enabled="false"></Button>
         <Button
             android:layout_marginLeft="15dp"
-            android:id="@+id/addDuration"
+            android:id="@+id/enlargeDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
             android:textAllCaps="false"
-            android:textSize="20dp"></Button>
+            android:textSize="20dp"
+            android:enabled="false"></Button>
 
 
 
