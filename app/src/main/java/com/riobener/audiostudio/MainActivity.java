@@ -135,16 +135,16 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
             @Override
             public void onPageSelected(int position) {
-                pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
+                //pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
 
                 pianoRoll.invalidate();
-                /*notes.clear();
+                notes.clear();
                 SynthInstrument synth = manager.getInstrument(position);
                 Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
                 for (int i = 0; i < 24; ++i) {
                     int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
                     notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                }*/
+                }
             }
 
             @Override
@@ -183,8 +183,9 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         expandMeasures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 stopSequencer();
-                if (AMOUNT_OF_MEASURES <= 64) {
+                if (AMOUNT_OF_MEASURES < 64) {
                     AMOUNT_OF_MEASURES *= 2;
                 }
                 for (int i = 0; i < manager.size(); i++) {
@@ -207,6 +208,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
     public void startSequencer() {
         if (_sequencerPlaying != true) {
+            refreshCurrentPattern();
             _sequencerPlaying = true;
             _engine.getSequencerController().setPlaying(_sequencerPlaying);
         }
@@ -236,13 +238,13 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                 if (pianoSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     //Log.d("CURRENT ",pager.getCurrentItem()+"");
                     /* manager.getInstruments(pager.getCurrentItem());*/
-                    /*SynthInstrument synth = manager.getInstrument(pager.getCurrentItem());
+                    SynthInstrument synth = manager.getInstrument(pager.getCurrentItem());
 
                     Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
                     for (int i = 0; i < 24; ++i) {
                         int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
                         notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                    }*/
+                    }
 
                     pianoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
@@ -251,7 +253,16 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             }
         });
     }
+    private void refreshCurrentPattern(){
+        if (pianoRoll.getNoteMap() != null) {
+            if(pianoRoll.isEdited()){
+                manager.getController(pager.getCurrentItem()).updateNoteMap(pianoRoll.getNoteMap());
+                manager.getController(pager.getCurrentItem()).updateEvents();
+                pianoRoll.setEdited(false);
+            }
 
+        }
+    }
     private Button highlightCell;
     private Button enlargeDuration;
     private Button reduceDuration;
@@ -289,6 +300,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             @Override
             public void onClick(View v) {
                 if (pianoRoll.isHiglightMode()) {
+                    pianoRoll.setEdited(true);
                     Note[][] noteMap = pianoRoll.getNoteMap();
                     for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
                         for (int j = 0; j < pianoRoll.getNumRows(); j++) {
@@ -305,6 +317,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             @Override
             public void onClick(View v) {
                 if (pianoRoll.isHiglightMode()) {
+                    pianoRoll.setEdited(true);
                     Note[][] noteMap = pianoRoll.getNoteMap();
                     for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
                         for (int j = 0; j < pianoRoll.getNumRows(); j++) {
@@ -773,10 +786,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                     if (sequencerPosition == 15 ||
                             sequencerPosition == 31 ||
                             sequencerPosition == 63 ) {
-                        if (pianoRoll.getNoteMap() != null) {
-                            manager.getController(pager.getCurrentItem()).updateNoteMap(pianoRoll.getNoteMap());
-                            manager.getController(pager.getCurrentItem()).updateEvents();
-                        }
+                        refreshCurrentPattern();
                     }
 
                     break;

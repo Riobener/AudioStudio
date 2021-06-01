@@ -28,6 +28,7 @@ public class PianoRoll extends View {
     private Paint expandedColor = new Paint();
     private Camera camera;
     private Note[][] noteMap;
+    private boolean isEdited;
 
     private boolean isHiglightMode = false;
 
@@ -50,7 +51,7 @@ public class PianoRoll extends View {
         drawingText.setColor(Color.BLACK);
         drawingText.setStrokeWidth(2);
         numRows = 73;
-
+        isEdited = false;
     }
 
     public Note[][] getNoteMap() {
@@ -91,6 +92,7 @@ public class PianoRoll extends View {
     }
 
     private void calculateDimensions() {
+
         cellWidth = getWidth() / 16;
         cellHeight = getHeight() / 16;
         cHeight = cellHeight * numRows;
@@ -213,7 +215,7 @@ public class PianoRoll extends View {
 
         for (int i = 1; i < numRows; i++) {
             canvas.drawLine(0 - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(),
-                    cWidth - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(), blackPaint);
+                    i*cWidth - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(), blackPaint);
         }
 
     }
@@ -254,6 +256,7 @@ public class PianoRoll extends View {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
             if (clickDuration < MAX_CLICK_DURATION) {
+
                 int column = (int) ((camera.getOffsetX() + event.getX()) / cellWidth);
                 int row = (int) ((camera.getOffsetY() + event.getY()) / cellHeight);
 
@@ -276,12 +279,21 @@ public class PianoRoll extends View {
                         }
                     }
                 }
+                isEdited = true;
                 invalidate();
             }
 
         }
         invalidate();
         return true;
+    }
+
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean edited) {
+        isEdited = edited;
     }
 
     public void setHighLightMode(boolean mode) {

@@ -36,7 +36,7 @@ public class SynthController {
     Delay delay;
     Note[][] noteMap;
     Vector<SynthEvent> synthEvents = new Vector<>();
-
+    private boolean isPatternChanged;
     List<String> noteNames = Arrays.asList("C", "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C",
             "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C",
             "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C",
@@ -52,7 +52,7 @@ public class SynthController {
         synth.getAudioChannel().getProcessingChain().addProcessor(delay);
         // adjust synthesizer volumes
         synth.getAudioChannel().setVolume(.7f);
-        /*phaser = new Phaser(.5f, .7f, .5f, 440.f, 1600.f);
+        /*phaser = new Phaser(.5f, .7f, .5f, 440.f, 1600.f) ;
         synth.getAudioChannel().getProcessingChain().addProcessor(phaser);*/
         initInstrument();
     }
@@ -89,7 +89,6 @@ public class SynthController {
     }
 
     public void updateNoteMap(Note[][] noteMap) {
-        this.noteMap = new Note[AMOUNT_OF_MEASURES][73];
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
             for (int j = 0; j < 73; j++) {
                 this.noteMap[i][j] = noteMap[i][j];
@@ -102,16 +101,20 @@ public class SynthController {
     }
 
     private void createSynthEvent(double frequency, int position, int duration) {
-        final SynthEvent event = new SynthEvent((float) frequency, position, duration, synth);
+        SynthEvent event = new SynthEvent((float) frequency, position, duration, synth);
         event.calculateBuffers();
         synthEvents.add(event);
         //synth.updateEvents();
     }
 
-    public void updateEvents() {
+    private void resetEvents() {
         for (SynthEvent event : synthEvents)
             event.delete();
         synthEvents.clear();
+    }
+
+    public void updateEvents() {
+        resetEvents();
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
 
             for (int j = 0; j < 73; j++) {
@@ -133,7 +136,7 @@ public class SynthController {
                     } else if (j > 60 && j <= 72) {
                         octave = 1;
                     }
-                    Log.d("ASSSSSSSSF", "DURATION OF " + noteNames.get(j)+" in column "+ i + "  with duration of "+ noteMap[i][j].getDuration());
+                    //Log.d("ASSSSSSSSF", "DURATION OF " + noteNames.get(j) + " in column " + i + "  with duration of " + noteMap[i][j].getDuration());
                     createSynthEvent(Pitch.note(noteNames.get(j), octave), i, noteMap[i][j].getDuration());
                 }
 
@@ -149,6 +152,7 @@ public class SynthController {
         synth = null;
         phaser = null;
     }
+
 
     public SynthInstrument getSynth() {
         return synth;

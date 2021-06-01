@@ -17,7 +17,7 @@ public class Note {
     public void enlargeDuration(){
         if(duration<AMOUNT_OF_MEASURES)
         duration++;
-        Log.d("TAGDUR","DURATION"+duration);
+        //Log.d("TAGDUR","DURATION"+duration);
     }
     public void reduceDuration(){
         if(duration>1)
