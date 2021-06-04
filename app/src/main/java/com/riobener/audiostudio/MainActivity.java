@@ -34,7 +34,10 @@ import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 import java.util.Vector;
 
 public final class MainActivity extends Activity implements PianoTouchListener {
@@ -253,9 +256,10 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             }
         });
     }
-    private void refreshCurrentPattern(){
+
+    private void refreshCurrentPattern() {
         if (pianoRoll.getNoteMap() != null) {
-            if(pianoRoll.isEdited()){
+            if (pianoRoll.isEdited()) {
                 manager.getController(pager.getCurrentItem()).updateNoteMap(pianoRoll.getNoteMap());
                 manager.getController(pager.getCurrentItem()).updateEvents();
                 pianoRoll.setEdited(false);
@@ -263,9 +267,16 @@ public final class MainActivity extends Activity implements PianoTouchListener {
 
         }
     }
+
     private Button highlightCell;
     private Button enlargeDuration;
     private Button reduceDuration;
+    private Button upButton;
+    private Button downButton;
+    private Button leftButton;
+    private Button rightButton;
+    private Button selectAll;
+    private Button deleteNoteButton;
 
     private void initPianoRoll() {
         //Piano bottom sheet
@@ -334,17 +345,193 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             @Override
             public void onClick(View v) {
                 if (pianoRoll.isHiglightMode()) {
-                    enlargeDuration.setEnabled(false);
-                    reduceDuration.setEnabled(false);
+                    setEditorButtonsState(false);
                     pianoRoll.setHighLightMode(false);
+
                 } else {
-                    enlargeDuration.setEnabled(true);
-                    reduceDuration.setEnabled(true);
+                    setEditorButtonsState(true);
                     pianoRoll.setHighLightMode(true);
                 }
                 pianoRoll.invalidate();
             }
         });
+        upButton = findViewById(R.id.upNote);
+        upButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveNotes("UP");
+            }
+        });
+        downButton = findViewById(R.id.downNote);
+        downButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveNotes("DOWN");
+            }
+        });
+        leftButton = findViewById(R.id.leftNote);
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveNotes("LEFT");
+            }
+        });
+        rightButton = findViewById(R.id.rightNote);
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveNotes("RIGHT");
+            }
+        });
+        selectAll = findViewById(R.id.selectAll);
+        selectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pianoRoll.isHiglightMode()) {
+                    pianoRoll.setEdited(true);
+                    Note[][] noteMap = pianoRoll.getNoteMap();
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isDrawable()) {
+                                noteMap[i][j].setHighlighted(true);
+                            }
+                        }
+                    }
+                }
+                pianoRoll.invalidate();
+            }
+        });
+        deleteNoteButton = findViewById(R.id.deleteNote);
+        deleteNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pianoRoll.isHiglightMode()) {
+                    pianoRoll.setEdited(true);
+                    Note[][] noteMap = pianoRoll.getNoteMap();
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted()) {
+                                noteMap[i][j].setHighlighted(false);
+                                noteMap[i][j].setDrawable(false);
+                                noteMap[i][j].setDuration(1);
+                            }
+                        }
+                    }
+                }
+                pianoRoll.invalidate();
+            }
+        });
+    }
+
+    private void moveNotes(String state) {
+        Stack<Integer> movableNotes = new Stack<>();
+        if (pianoRoll.isHiglightMode()) {
+            pianoRoll.setEdited(true);
+            Note[][] noteMap = pianoRoll.getNoteMap();
+            switch (state) {
+                case "UP":
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted()) {
+                                if (j - 1 > -1) {
+
+                                    noteMap[i][j - 1].setDrawable(true);
+                                    noteMap[i][j - 1].setHighlighted(true);
+                                    noteMap[i][j - 1].setDuration(noteMap[i][j].getDuration());
+                                    noteMap[i][j].setDrawable(false);
+                                    noteMap[i][j].setHighlighted(false);
+                                    noteMap[i][j].setDuration(1);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "DOWN":
+
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted()) {
+                                if (j + 1 < 73) {
+                                    movableNotes.push(noteMap[i][j].getDuration());
+                                    movableNotes.push(j + 1);
+                                    movableNotes.push(i);
+                                    noteMap[i][j].setDrawable(false);
+                                    noteMap[i][j].setHighlighted(false);
+                                    noteMap[i][j].setDuration(1);
+                                }
+
+                            }
+                        }
+                    }
+                    while (!movableNotes.isEmpty()) {
+
+                        int i = movableNotes.pop();
+                        int j = movableNotes.pop();
+                        int duration = movableNotes.pop();
+                        noteMap[i][j].setDrawable(true);
+                        noteMap[i][j].setHighlighted(true);
+                        noteMap[i][j].setDuration(duration);
+                    }
+                    break;
+                case "LEFT":
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted()) {
+                                if (i - 1 > -1) {
+
+                                    noteMap[i - 1][j].setDrawable(true);
+                                    noteMap[i - 1][j].setHighlighted(true);
+                                    noteMap[i - 1][j].setDuration(noteMap[i][j].getDuration());
+                                    noteMap[i][j].setDrawable(false);
+                                    noteMap[i][j].setHighlighted(false);
+                                    noteMap[i][j].setDuration(1);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "RIGHT":
+
+                    int newI = -2;
+                    for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                        for (int j = 0; j < pianoRoll.getNumRows(); j++) {
+                            if (noteMap[i][j].isHighlighted()) {
+
+                                if (i + 1 < AMOUNT_OF_MEASURES) {
+                                    movableNotes.push(noteMap[i][j].getDuration());
+                                    movableNotes.push(j);
+                                    movableNotes.push(i + 1);
+                                    noteMap[i][j].setDrawable(false);
+                                    noteMap[i][j].setHighlighted(false);
+                                    noteMap[i][j].setDuration(1);
+                                }
+                            }
+                        }
+                    }
+                    while (!movableNotes.isEmpty()) {
+
+                        int i = movableNotes.pop();
+                        int j = movableNotes.pop();
+                        int duration = movableNotes.pop();
+                        noteMap[i][j].setDrawable(true);
+                        noteMap[i][j].setHighlighted(true);
+                        noteMap[i][j].setDuration(duration);
+                    }
+                    break;
+            }
+        }
+        pianoRoll.invalidate();
+    }
+
+    private void setEditorButtonsState(boolean state) {
+        enlargeDuration.setEnabled(state);
+        reduceDuration.setEnabled(state);
+        upButton.setEnabled(state);
+        downButton.setEnabled(state);
+        leftButton.setEnabled(state);
+        rightButton.setEnabled(state);
+        selectAll.setEnabled(state);
+        deleteNoteButton.setEnabled(state);
     }
 
     @Override
@@ -785,7 +972,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                             ", elapsed samples: " + elapsedSamples);
                     if (sequencerPosition == 15 ||
                             sequencerPosition == 31 ||
-                            sequencerPosition == 63 ) {
+                            sequencerPosition == 63) {
                         refreshCurrentPattern();
                     }
 
