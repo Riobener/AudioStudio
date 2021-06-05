@@ -49,8 +49,6 @@ public class SynthesizerView {
     LinearLayout.LayoutParams wrapMatch = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.MATCH_PARENT);
 
-    SynthInstrument synth;
-
     ScrollView synthView;
     FlowLayout flowLayout;
     final int LABEL_TEXTSIZE = 25;
@@ -137,7 +135,6 @@ public class SynthesizerView {
         Random rnd = new Random();
         instrumentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         fullWRAP.setMargins(20,20,20,20);
-        synth = new SynthInstrument();
     }
     public SynthInstrument getSynth(){
         return synthController.getSynth();
