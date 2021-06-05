@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 
 import com.nex3z.flowlayout.FlowLayout;
+import com.riobener.audiostudio.Instruments.Controllers.Controller;
 import com.riobener.audiostudio.Instruments.Controllers.SynthController;
 import com.riobener.audiostudio.R;
 
@@ -41,7 +42,7 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 import nl.igorski.mwengine.core.SynthInstrument;
 
 //The class which creating view for synthesizer programmatically
-public class SynthesizerView {
+public class SynthesizerView extends InstrumentView {
     LinearLayout.LayoutParams fullWRAP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT);
     LinearLayout.LayoutParams fullMATCH = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -131,17 +132,14 @@ public class SynthesizerView {
     SynthController synthController;
 
     public SynthesizerView() {
+        instrumentType = "Synth";
         synthController = new SynthController();
         Random rnd = new Random();
         instrumentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         fullWRAP.setMargins(20,20,20,20);
     }
-    public SynthInstrument getSynth(){
-        return synthController.getSynth();
-    }
-    public SynthController getSynthController(){
-        return synthController;
-    }
+
+
     private Drawable getImageForButton(Context context, String name, int width, int height){
         try {
             // get input stream
@@ -174,6 +172,12 @@ public class SynthesizerView {
         }
         return null;
     }
+
+    @Override
+    public String getInstrumentType() {
+        return this.instrumentType;
+    }
+
     public View createView(Context context) {
         synthView = new ScrollView(context);
 
@@ -194,6 +198,17 @@ public class SynthesizerView {
 
         return synthView;
     }
+
+    @Override
+    public SynthInstrument getInstrument() {
+        return synthController.getSynth();
+    }
+
+    @Override
+    public Controller getController() {
+        return synthController;
+    }
+
     final float PARAM_PADDING = 80;
     private View createADSR(Context context) {
 

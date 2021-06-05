@@ -21,7 +21,7 @@ import nl.igorski.mwengine.core.WaveForms;
 import static com.riobener.audiostudio.MainActivity.AMOUNT_OF_MEASURES;
 import static nl.igorski.mwengine.MWEngine.OUTPUT_CHANNELS;
 
-public class SynthController {
+public class SynthController extends Controller {
     /*SINE,
     TRIANGLE,
     SAWTOOTH,

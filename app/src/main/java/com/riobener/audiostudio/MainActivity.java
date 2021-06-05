@@ -2,7 +2,9 @@ package com.riobener.audiostudio;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -140,14 +142,14 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             public void onPageSelected(int position) {
                 //pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
 
-                pianoRoll.invalidate();
+                /*pianoRoll.invalidate();
                 notes.clear();
-                SynthInstrument synth = manager.getInstrument(position);
+                SynthInstrument synth =(SynthInstrument) manager.getInstrument(position);
                 Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
                 for (int i = 0; i < 24; ++i) {
                     int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
                     notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                }
+                }*/
             }
 
             @Override
@@ -163,7 +165,22 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         newInstrument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addView(manager.createSynthView(getApplicationContext()));
+                final String[] instruments = {"Синтезатор", "Драм машина"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Выберите новый тип инструмента");
+                builder.setItems(instruments, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which==0){
+                            addView(manager.createSynthView(getApplicationContext()));
+                        }else{
+                            addView(manager.createDrumMachine(getApplicationContext()));
+                        }
+                    }
+                });
+                builder.show();
+
             }
         });
 
@@ -192,8 +209,9 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                     AMOUNT_OF_MEASURES *= 2;
                 }
                 for (int i = 0; i < manager.size(); i++) {
-                    manager.getController(i).updateMapMeasures();
-                    pianoRoll.loadNoteMap(manager.getController(i).getNoteMap());
+                    SynthController controller = (SynthController)manager.getController(i);
+                    controller.updateMapMeasures();
+                    pianoRoll.loadNoteMap(controller.getNoteMap());
                     pianoRoll.invalidate();
                 }
                 if (AMOUNT_OF_MEASURES == 16)
@@ -241,7 +259,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                 if (pianoSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     //Log.d("CURRENT ",pager.getCurrentItem()+"");
                     /* manager.getInstruments(pager.getCurrentItem());*/
-                    SynthInstrument synth = manager.getInstrument(pager.getCurrentItem());
+                    SynthInstrument synth = (SynthInstrument)manager.getInstrument(pager.getCurrentItem());
 
                     Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
                     for (int i = 0; i < 24; ++i) {
@@ -260,8 +278,9 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     private void refreshCurrentPattern() {
         if (pianoRoll.getNoteMap() != null) {
             if (pianoRoll.isEdited()) {
-                manager.getController(pager.getCurrentItem()).updateNoteMap(pianoRoll.getNoteMap());
-                manager.getController(pager.getCurrentItem()).updateEvents();
+                SynthController controller = (SynthController)manager.getController(pager.getCurrentItem());
+                controller.updateNoteMap(pianoRoll.getNoteMap());
+                controller.updateEvents();
                 pianoRoll.setEdited(false);
             }
 
@@ -291,15 +310,16 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             public void onClick(View v) {
                 //notes.clear();
                 pianoRoll.initNoteMap();
+                SynthController controller = (SynthController)manager.getController(pager.getCurrentItem());
                 if (pianoRollSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     expandMeasures.setEnabled(false);
-                    pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
+                    pianoRoll.loadNoteMap(controller.getNoteMap());
                     pianoRoll.invalidate();
                     pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
                     expandMeasures.setEnabled(true);
                     pianoRoll.setHighLightMode(false);
-                    pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
+                    pianoRoll.loadNoteMap(controller.getNoteMap());
                     pianoRoll.invalidate();
                     pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }

@@ -3,27 +3,36 @@ package com.riobener.audiostudio;
 import android.content.Context;
 import android.view.View;
 
+import com.riobener.audiostudio.Instruments.Controllers.Controller;
 import com.riobener.audiostudio.Instruments.Controllers.SynthController;
+import com.riobener.audiostudio.Instruments.Views.DrumMachine;
+import com.riobener.audiostudio.Instruments.Views.InstrumentView;
 import com.riobener.audiostudio.Instruments.Views.SynthesizerView;
 
 import java.util.ArrayList;
 
+import nl.igorski.mwengine.core.BaseInstrument;
 import nl.igorski.mwengine.core.SynthInstrument;
 
 public class InstrumentsManager {
 
-   private ArrayList<SynthesizerView> instruments = new ArrayList<>();
+   private ArrayList<InstrumentView> instruments = new ArrayList<>();
     public View createSynthView(Context context){
-        SynthesizerView synth = new SynthesizerView();
+        InstrumentView synth = new SynthesizerView();
         instruments.add(synth);
         return synth.createView(context);
     }
-
-    public SynthInstrument getInstrument(int index) {
-        return instruments.get(index).getSynth();
+    public View createDrumMachine(Context context){
+        InstrumentView drums = new DrumMachine();
+        instruments.add(drums);
+        return drums.createView(context);
     }
-    public SynthController getController(int index){
-        return instruments.get(index).getSynthController();
+    public BaseInstrument getInstrument(int index) {
+        return instruments.get(index).getInstrument();
+
+    }
+    public Controller getController(int index){
+        return instruments.get(index).getController();
     }
 
     public int size() {
