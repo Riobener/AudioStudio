@@ -9,6 +9,10 @@ public class Note {
     private boolean isHighlighted;
     private boolean isDrawable;
 
+    //if drumEvent
+    private String keySample;
+    private String sampleName;
+    private String filePath;
     public Note() {
         duration = 1;
         isHighlighted = false;
@@ -46,5 +50,29 @@ public class Note {
     public void setDrawable(boolean drawable) {
         isDrawable = drawable;
         duration=1;
+    }
+
+    public String getKeySample() {
+        return keySample;
+    }
+
+    public void setKeySample(String keySample) {
+        this.keySample = keySample;
+    }
+
+    public String getSampleName() {
+        return sampleName;
+    }
+
+    public void setSampleName(String sampleName) {
+        this.sampleName = sampleName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

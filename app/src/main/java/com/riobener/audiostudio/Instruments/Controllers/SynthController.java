@@ -36,7 +36,6 @@ public class SynthController extends Controller {
     Delay delay;
     Note[][] noteMap;
     Vector<SynthEvent> synthEvents = new Vector<>();
-    private boolean isPatternChanged;
     List<String> noteNames = Arrays.asList("C", "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C",
             "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C",
             "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C",

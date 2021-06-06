@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +30,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.convergencelabstfx.pianoview.PianoTouchListener;
 import com.convergencelabstfx.pianoview.PianoView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
 import com.riobener.audiostudio.Grid.Note;
 import com.riobener.audiostudio.Grid.PianoRoll;
 import com.riobener.audiostudio.Instruments.Controllers.SynthController;
@@ -35,14 +39,16 @@ import com.riobener.audiostudio.R;
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
-public final class MainActivity extends Activity implements PianoTouchListener {
+public class MainActivity extends Activity implements PianoTouchListener {
     /**
      * IMPORTANT : when creating native layer objects through JNI it
      * is important to remember that when the Java references go out of scope
@@ -64,7 +70,6 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     private Vector<SynthEvent> _synth2Events;
     private Vector<SampleEvent> _drumEvents;
     private SynthEvent _liveEvent;
-
     private boolean _sequencerPlaying = false;
     private boolean _isRecording = false;
     private boolean _inited = false;
@@ -80,12 +85,15 @@ public final class MainActivity extends Activity implements PianoTouchListener {
     private float minFilterCutoff = 50.0f;
     private float maxFilterCutoff;
 
-    private static int STEPS_PER_MEASURE = 16;  // amount of subdivisions within a single measure
+    public static int STEPS_PER_MEASURE = 16;  // amount of subdivisions within a single measure
     private static String LOG_TAG = "MWENGINE"; // logcat identifier
     private static int PERMISSIONS_CODE = 8081981;
 
 
     public static int AMOUNT_OF_MEASURES = 16;
+
+    public static int PAGER_HEIGHT;
+    public static int PAGER_WIDTH;
     /**
      * Called when the activity is created. This also fires
      * on screen orientation changes.
@@ -129,9 +137,11 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             else
                 requestPermissions(PERMISSIONS, PERMISSIONS_CODE);
         }
+
         pagerAdapter = new InstrumentPager();
         pager = (ViewPager) findViewById(R.id.view_pager);
         pager.setAdapter(pagerAdapter);
+
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -173,9 +183,9 @@ public final class MainActivity extends Activity implements PianoTouchListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(which==0){
-                            addView(manager.createSynthView(getApplicationContext()));
+                            addView(manager.createSynthView(MainActivity.this));
                         }else{
-                            addView(manager.createDrumMachine(getApplicationContext()));
+                            addView(manager.createDrumMachine(MainActivity.this, pager.getWidth(), pager.getHeight()));
                         }
                     }
                 });
@@ -225,6 +235,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
             }
         });
         initPianoRoll();
+
     }
 
     public void startSequencer() {
@@ -330,6 +341,7 @@ public final class MainActivity extends Activity implements PianoTouchListener {
         enlargeDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //openFilePicker();
                 if (pianoRoll.isHiglightMode()) {
                     pianoRoll.setEdited(true);
                     Note[][] noteMap = pianoRoll.getNoteMap();
@@ -1056,10 +1068,34 @@ public final class MainActivity extends Activity implements PianoTouchListener {
      * @param assetName  {String} assetName filename for the resource in the /assets folder
      * @param sampleName {String} identifier for the files WAV content inside the SampleManager
      */
-    private void loadWAVAsset(String assetName, String sampleName) {
+    public void loadWAVAsset(String assetName, String sampleName) {
         final Context ctx = getApplicationContext();
         JavaUtilities.createSampleFromAsset(
                 sampleName, ctx.getAssets(), ctx.getCacheDir().getAbsolutePath(), assetName
         );
+    }
+    /*private void openFilePicker(){
+        UnicornFilePicker.from(MainActivity.this)
+                .addConfigBuilder()
+                .selectMultipleFiles(false)
+                .showOnlyDirectory(true)
+                .setRootDirectory(Environment.getExternalStorageDirectory().getAbsolutePath())
+                .showHiddenFiles(false)
+                .setFilters(new String[]{"wav"})
+                .addItemDivider(true)
+                .theme(R.style.UnicornFilePicker_Dracula)
+                .build()
+                .forResult(Constants.REQ_UNICORN_FILE);
+
+    }*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            String file = uri.getPath();
+                Log.v("FILE", file);
+
+        }
     }
 }

@@ -20,10 +20,11 @@ public class InstrumentsManager {
     public View createSynthView(Context context){
         InstrumentView synth = new SynthesizerView();
         instruments.add(synth);
+
         return synth.createView(context);
     }
-    public View createDrumMachine(Context context){
-        InstrumentView drums = new DrumMachine();
+    public View createDrumMachine(Context context, int width, int height){
+        InstrumentView drums = new DrumMachine(width, height);
         instruments.add(drums);
         return drums.createView(context);
     }
