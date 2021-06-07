@@ -181,12 +181,17 @@ public class DrumMachine extends InstrumentView {
             @Override
             public void onClick(View v) {
 
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 1);
-                new SampleEvent().play();
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][1].getEvent()!=null)
+                        map[0][1].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 1);
+                }
             }
         });
         pad3 = new Button(context);
@@ -199,11 +204,17 @@ public class DrumMachine extends InstrumentView {
         pad3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 2);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][2].getEvent()!=null)
+                        map[0][2].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 2);
+                }
             }
         });
         pad4 = new Button(context);
@@ -216,11 +227,17 @@ public class DrumMachine extends InstrumentView {
         pad4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 3);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][3].getEvent()!=null)
+                        map[0][3].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 3);
+                }
             }
         });
         pad5 = new Button(context);
@@ -233,11 +250,17 @@ public class DrumMachine extends InstrumentView {
         pad5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 4);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][4].getEvent()!=null)
+                        map[0][4].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 4);
+                }
             }
         });
         pad6 = new Button(context);
@@ -250,11 +273,17 @@ public class DrumMachine extends InstrumentView {
         pad6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 5);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][5].getEvent()!=null)
+                        map[0][5].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 5);
+                }
             }
         });
         pad7 = new Button(context);
@@ -267,11 +296,17 @@ public class DrumMachine extends InstrumentView {
         pad7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 6);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][6].getEvent()!=null)
+                        map[0][6].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 6);
+                }
             }
         });
         pad8 = new Button(context);
@@ -284,11 +319,17 @@ public class DrumMachine extends InstrumentView {
         pad8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 7);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][7].getEvent()!=null)
+                        map[0][7].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 7);
+                }
             }
         });
         pad9 = new Button(context);
@@ -301,11 +342,17 @@ public class DrumMachine extends InstrumentView {
         pad9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 8);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][8].getEvent()!=null)
+                        map[0][8].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 8);
+                }
             }
         });
         row1.addView(pad1);
