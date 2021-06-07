@@ -2,17 +2,23 @@ package com.riobener.audiostudio.Midi;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.midi.MidiDevice;
 import android.media.midi.MidiDeviceInfo;
 import android.media.midi.MidiManager;
+import android.media.midi.MidiOutputPort;
+import android.media.midi.MidiReceiver;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import com.riobener.audiostudio.MainActivity;
+
+import java.io.IOException;
 
 public class MidiController {
     MidiManager manager;
@@ -36,7 +42,14 @@ public class MidiController {
                     String manufacturer = properties
                             .getString(MidiDeviceInfo.PROPERTY_MANUFACTURER);
                     Toast.makeText(context,"Устройство "+manufacturer+" добавлено!",Toast.LENGTH_LONG).show();
-
+                    manager.openDevice(info, device -> {
+                        if (device == null) {
+                            Toast.makeText(context,"MIDI " +info,Toast.LENGTH_SHORT).show();
+                        } else {
+                            MidiOutputPort outputPort = device.openOutputPort(0);
+                            outputPort.connect(new MyReceiver(context));
+                        }
+                    }, new Handler(Looper.getMainLooper()));
                 }
                 public void onDeviceRemoved( MidiDeviceInfo info ) {
 
@@ -45,6 +58,7 @@ public class MidiController {
 
         }
     }
+
     public MidiManager getManager() {
         return manager;
     }

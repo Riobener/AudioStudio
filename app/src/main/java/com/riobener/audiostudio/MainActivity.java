@@ -117,7 +117,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
     private InstrumentPager pagerAdapter = null;
     PianoView pianoView;
     SynthInstrument instrument = new SynthInstrument();
-    Vector<SynthEvent> notes = new Vector<SynthEvent>();
+    static Vector<SynthEvent> notes = new Vector<SynthEvent>();
     static int BASE_OCTAVE = 3;
     private List<String> noteNames = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B");
     Button expandMeasures;
@@ -162,14 +162,8 @@ public class MainActivity extends Activity implements PianoTouchListener {
             public void onPageSelected(int position) {
                 //pianoRoll.loadNoteMap(manager.getController(pager.getCurrentItem()).getNoteMap());
 
-                /*pianoRoll.invalidate();
-                notes.clear();
-                SynthInstrument synth =(SynthInstrument) manager.getInstrument(position);
-                Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
-                for (int i = 0; i < 24; ++i) {
-                    int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
-                    notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                }*/
+                pianoRoll.invalidate();
+                initPianoNotes();
             }
 
             @Override
@@ -248,14 +242,25 @@ public class MainActivity extends Activity implements PianoTouchListener {
         midiController = new MidiController(MainActivity.this);
         midiController.setupMidi();
         initSettings();
+        initPianoNotes();
 
     }
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+    /*@RequiresApi(api = Build.VERSION_CODES.M)
     public void refreshMidiStatus(){
         MidiDeviceInfo[] info = midiController.getInfos();
             if(info[0].getProperties().getString(MidiDeviceInfo.PROPERTY_NAME)!=null) {
 
             }
+    }*/
+    public void initPianoNotes(){
+        notes.clear();
+        SynthInstrument synth =(SynthInstrument) manager.getInstrument(pager.getCurrentItem());
+        Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
+        for (int i = 0; i < 88; ++i) {
+            int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
+            notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
+        }
     }
     public void startSequencer() {
         if (_sequencerPlaying != true) {
@@ -321,6 +326,14 @@ public class MainActivity extends Activity implements PianoTouchListener {
                                   }
         );
     }
+    public static void playNote(int noteIndex){
+
+            notes.get(noteIndex).play();
+    }
+    public static void stopNote(int noteIndex){
+
+            notes.get(noteIndex).stop();
+    }
     public void initPiano() {
         //Piano bottom sheet
         FrameLayout frameLayout = findViewById(R.id.pianoFrame);
@@ -335,15 +348,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
             public void onClick(View v) {
                 notes.clear();
                 if (pianoSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    //Log.d("CURRENT ",pager.getCurrentItem()+"");
-                    /* manager.getInstruments(pager.getCurrentItem());*/
-                    SynthInstrument synth = (SynthInstrument)manager.getInstrument(pager.getCurrentItem());
-
-                    Log.d("VOLUME  ", synth.getAudioChannel().getVolume() + "");
-                    for (int i = 0; i < 24; ++i) {
-                        int octave = (int) (BASE_OCTAVE + Math.ceil(i / 12));
-                        notes.add(new SynthEvent((float) Pitch.note(noteNames.get(i % 12), octave), synth));
-                    }
+                    initPianoNotes();
 
                     pianoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
