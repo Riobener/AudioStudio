@@ -2,6 +2,8 @@ package com.riobener.audiostudio.Grid;
 
 import android.util.Log;
 
+import nl.igorski.mwengine.core.SampleEvent;
+
 import static com.riobener.audiostudio.MainActivity.AMOUNT_OF_MEASURES;
 
 public class Note {
@@ -11,12 +13,21 @@ public class Note {
 
     //if drumEvent
     private String keySample;
-    private String sampleName;
     private String filePath;
+    SampleEvent event;
     public Note() {
+        keySample = "0";
+        filePath = "0";
         duration = 1;
         isHighlighted = false;
         isDrawable = false;
+        event =null;
+    }
+    public void setEvent(SampleEvent event){
+        this.event = event;
+    }
+    public SampleEvent getEvent(){
+        return this.event;
     }
     public void enlargeDuration(){
         if(duration<AMOUNT_OF_MEASURES)
@@ -58,14 +69,6 @@ public class Note {
 
     public void setKeySample(String keySample) {
         this.keySample = keySample;
-    }
-
-    public String getSampleName() {
-        return sampleName;
-    }
-
-    public void setSampleName(String sampleName) {
-        this.sampleName = sampleName;
     }
 
     public String getFilePath() {

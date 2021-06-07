@@ -14,6 +14,7 @@ import nl.igorski.mwengine.core.Filter;
 import nl.igorski.mwengine.core.Phaser;
 import nl.igorski.mwengine.core.Pitch;
 import nl.igorski.mwengine.core.RouteableOscillator;
+import nl.igorski.mwengine.core.SampleManager;
 import nl.igorski.mwengine.core.SynthEvent;
 import nl.igorski.mwengine.core.SynthInstrument;
 import nl.igorski.mwengine.core.WaveForms;
@@ -110,6 +111,7 @@ public class SynthController extends Controller {
         for (SynthEvent event : synthEvents)
             event.delete();
         synthEvents.clear();
+
     }
 
     public void updateEvents() {

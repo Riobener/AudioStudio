@@ -19,6 +19,7 @@
     <!-- these are required to write recorded audio onto the device storage -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.software.midi" android:required="true"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

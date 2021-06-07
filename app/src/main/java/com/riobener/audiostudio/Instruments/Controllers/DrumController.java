@@ -19,8 +19,7 @@ import static com.riobener.audiostudio.MainActivity.STEPS_PER_MEASURE;
 
 public class DrumController extends Controller {
     SampledInstrument sampler;
-    SynthInstrument synth;
-    Note[][] noteMap;
+    Note[][] drumMap;
     Vector<SampleEvent> sampleEvents = new Vector<>();
     public DrumController(){
         sampler = new SampledInstrument();
@@ -33,45 +32,47 @@ public class DrumController extends Controller {
 
 
     public void initInstrument() {
-        noteMap = new Note[AMOUNT_OF_MEASURES][9]; //standard size
+        drumMap = new Note[AMOUNT_OF_MEASURES][9]; //standard size
         sampleEvents = new Vector<SampleEvent>();
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
             for (int j = 0; j < 9; j++) {
-                noteMap[i][j] = new Note();
+                drumMap[i][j] = new Note();
             }
         }
     }
     public void updateMapMeasures() {
 
-        Note[][] newNoteMap = new Note[AMOUNT_OF_MEASURES][9];
-        if (this.noteMap != null) {
+        Note[][] newdrumMap = new Note[AMOUNT_OF_MEASURES][9];
+        if (this.drumMap != null) {
             for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (i < AMOUNT_OF_MEASURES / 2)
-                        newNoteMap[i][j] = this.noteMap[i][j];
+                        newdrumMap[i][j] = this.drumMap[i][j];
                     else
-                        newNoteMap[i][j] = new Note();
+                        newdrumMap[i][j] = new Note();
                 }
             }
-            this.noteMap = new Note[AMOUNT_OF_MEASURES][9];
+            this.drumMap = new Note[AMOUNT_OF_MEASURES][9];
             for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
-                for (int j = 0; j < 73; j++) {
-                    this.noteMap[i][j] = newNoteMap[i][j];
+                for (int j = 0; j < 9; j++) {
+                    this.drumMap[i][j] = newdrumMap[i][j];
                 }
             }
         }
     }
-    public void updateNoteMap(Note[][] noteMap) {
+    public void updateNoteMap(Note[][] drumMap) {
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
             for (int j = 0; j < 9; j++) {
-                this.noteMap[i][j] = noteMap[i][j];
+                this.drumMap[i][j] = drumMap[i][j];
             }
         }
     }
     public Note[][] getNoteMap() {
-        return noteMap;
+        return drumMap;
     }
-
+    public Vector<SampleEvent> getEvents(){
+        return sampleEvents;
+    }
     private void createDrumEvent(String key, int position) {
         final SampleEvent drumEvent = new SampleEvent(sampler);
         drumEvent.setSample(SampleManager.getSample(key));
@@ -80,14 +81,12 @@ public class DrumController extends Controller {
 
         sampleEvents.add(drumEvent);
     }
-    private void loadWAVAsset(String key, String samplePath) {
 
-        JavaUtilities.createSampleFromFile(key,samplePath);
-    }
     private void resetEvents() {
         for (SampleEvent event : sampleEvents)
             event.delete();
         sampleEvents.clear();
+
     }
     public void updateEvents() {
         resetEvents();
@@ -95,8 +94,14 @@ public class DrumController extends Controller {
 
             for (int j = 0; j < 9; j++) {
 
-                if (noteMap[i][j].isDrawable()) {
-                    createDrumEvent(noteMap[i][j].getKeySample(),i);
+                if(drumMap[i][j].getKeySample()!="0"){
+                    SampleEvent drumEvent = new SampleEvent(sampler);
+                    drumEvent.setSample(SampleManager.getSample(drumMap[i][j].getKeySample()));
+                    drumMap[i][j].setEvent(drumEvent);
+                if (drumMap[i][j].isDrawable()) {
+                        createDrumEvent(drumMap[i][j].getKeySample(),i);
+                    }
+
                 }
 
             }

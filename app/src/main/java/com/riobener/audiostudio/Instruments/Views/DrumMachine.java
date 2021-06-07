@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 
 import com.nex3z.flowlayout.FlowLayout;
+import com.riobener.audiostudio.Grid.Note;
 import com.riobener.audiostudio.Instruments.Controllers.Controller;
 import com.riobener.audiostudio.Instruments.Controllers.DrumController;
 import com.riobener.audiostudio.MainActivity;
@@ -31,9 +32,12 @@ import java.util.regex.Pattern;
 
 
 import nl.igorski.mwengine.core.BaseInstrument;
+import nl.igorski.mwengine.core.SampleEvent;
+import nl.igorski.mwengine.core.SampleManager;
 import nl.igorski.mwengine.core.SampledInstrument;
 
 import static android.app.Activity.RESULT_OK;
+import static com.riobener.audiostudio.MainActivity.AMOUNT_OF_MEASURES;
 
 //what a shit code here...
 public class DrumMachine extends InstrumentView {
@@ -87,7 +91,7 @@ public class DrumMachine extends InstrumentView {
         settingsLayout.setLayoutParams(drumsParams);
         settingsLayout.setOrientation(LinearLayout.HORIZONTAL);
         settingsLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        settingsLayout.setBackground(createColorShape());
+        //settingsLayout.setBackground(createColorShape());
         loadDrumPatch = new Button(context);
         loadDrumPatch.setText("Редактировать");
         loadDrumPatch.setAllCaps(false);
@@ -117,8 +121,8 @@ public class DrumMachine extends InstrumentView {
         LinearLayout.LayoutParams padsParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         padsParams.setMargins(50, 0, 50, 0);
-        int width = pagerWidth / 9 - 50;
-        int height = width;
+        int width = pagerWidth / 3 - 50;
+        int height = pagerHeight/3-50;
         LinearLayout.LayoutParams rowsParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         padsLayout = new LinearLayout(context);
@@ -145,14 +149,25 @@ public class DrumMachine extends InstrumentView {
         pad1.setTextSize(15);
         pad1.setWidth(width);
         pad1.setHeight(height);
+        pad1.setBackground(createColorShape());
+        pad1.setTextColor(Color.WHITE);
         pad1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("audio/x-wav");
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-                Activity activity = (Activity)context;
-                activity.startActivityForResult(chooseFile, 1000);
+                if(!isEditorMode){
+                    Note[][] map = drumController.getNoteMap();
+                    if(map[0][0].getEvent()!=null)
+                    map[0][0].getEvent().play();
+                }else{
+                    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                    chooseFile.setType("audio/x-wav");
+                    chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    Activity activity = (Activity)context;
+                    activity.startActivityForResult(chooseFile, 0);
+                }
+
+
+
             }
         });
         pad2 = new Button(context);
@@ -160,10 +175,18 @@ public class DrumMachine extends InstrumentView {
         pad2.setTextSize(15);
         pad2.setWidth(width);
         pad2.setHeight(height);
+        pad2.setBackground(createColorShape());
+        pad2.setTextColor(Color.WHITE);
         pad2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 1);
+                new SampleEvent().play();
             }
         });
         pad3 = new Button(context);
@@ -171,10 +194,16 @@ public class DrumMachine extends InstrumentView {
         pad3.setTextSize(15);
         pad3.setWidth(width);
         pad3.setHeight(height);
+        pad3.setBackground(createColorShape());
+        pad3.setTextColor(Color.WHITE);
         pad3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 2);
             }
         });
         pad4 = new Button(context);
@@ -182,10 +211,16 @@ public class DrumMachine extends InstrumentView {
         pad4.setTextSize(15);
         pad4.setWidth(width);
         pad4.setHeight(height);
+        pad4.setBackground(createColorShape());
+        pad4.setTextColor(Color.WHITE);
         pad4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 3);
             }
         });
         pad5 = new Button(context);
@@ -193,10 +228,16 @@ public class DrumMachine extends InstrumentView {
         pad5.setTextSize(15);
         pad5.setWidth(width);
         pad5.setHeight(height);
+        pad5.setBackground(createColorShape());
+        pad5.setTextColor(Color.WHITE);
         pad5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 4);
             }
         });
         pad6 = new Button(context);
@@ -204,10 +245,16 @@ public class DrumMachine extends InstrumentView {
         pad6.setTextSize(15);
         pad6.setWidth(width);
         pad6.setHeight(height);
+        pad6.setBackground(createColorShape());
+        pad6.setTextColor(Color.WHITE);
         pad6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 5);
             }
         });
         pad7 = new Button(context);
@@ -215,10 +262,16 @@ public class DrumMachine extends InstrumentView {
         pad7.setTextSize(15);
         pad7.setWidth(width);
         pad7.setHeight(height);
+        pad7.setBackground(createColorShape());
+        pad7.setTextColor(Color.WHITE);
         pad7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 6);
             }
         });
         pad8 = new Button(context);
@@ -226,10 +279,16 @@ public class DrumMachine extends InstrumentView {
         pad8.setTextSize(15);
         pad8.setWidth(width);
         pad8.setHeight(height);
+        pad8.setBackground(createColorShape());
+        pad8.setTextColor(Color.WHITE);
         pad8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 7);
             }
         });
         pad9 = new Button(context);
@@ -237,10 +296,16 @@ public class DrumMachine extends InstrumentView {
         pad9.setTextSize(15);
         pad9.setWidth(width);
         pad9.setHeight(height);
+        pad9.setBackground(createColorShape());
+        pad9.setTextColor(Color.WHITE);
         pad9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/x-wav");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(chooseFile, 8);
             }
         });
         row1.addView(pad1);
@@ -267,7 +332,7 @@ public class DrumMachine extends InstrumentView {
                     80, 80, 80, 80});
             shape.setColor(Color.BLACK);
 
-            shape.setStroke(10, instrumentColor);
+            shape.setStroke(5, instrumentColor);
             return shape;
         }
         return null;

@@ -30,7 +30,9 @@ public class InstrumentsManager {
     }
     public BaseInstrument getInstrument(int index) {
         return instruments.get(index).getInstrument();
-
+    }
+    public String getInstrumentType(int index){
+        return instruments.get(index).getInstrumentType();
     }
     public Controller getController(int index){
         return instruments.get(index).getController();

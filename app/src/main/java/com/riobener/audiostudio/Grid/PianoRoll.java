@@ -25,6 +25,7 @@ public class PianoRoll extends View {
     private Paint blackKeyRow = new Paint();
     private Paint paintForColumn = new Paint();
     private Paint drawingText = new Paint();
+    private Paint drumsText = new Paint();
     private Paint expandedColor = new Paint();
     private Camera camera;
     private Note[][] noteMap;
@@ -50,7 +51,8 @@ public class PianoRoll extends View {
         paintBorder.setStrokeWidth(10);
         drawingText.setColor(Color.BLACK);
         drawingText.setStrokeWidth(2);
-        numRows = 73;
+        drumsText.setColor(Color.GRAY);
+        drumsText.setStrokeWidth(1);
         isEdited = false;
     }
 
@@ -58,17 +60,33 @@ public class PianoRoll extends View {
         return noteMap;
     }
 
+    public void setNumRows(int rows) {
+        this.numRows = rows;
+    }
 
     public void loadNoteMap(Note[][] noteMap) {
-        this.noteMap = new Note[AMOUNT_OF_MEASURES][73];
-        if (noteMap != null) {
-            for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
-                for (int j = 0; j < 73; j++) {
-                    this.noteMap[i][j] = noteMap[i][j];
-                }
+        if (numRows == 73) {//synth
+            this.noteMap = new Note[AMOUNT_OF_MEASURES][73];
+            if (noteMap != null) {
+                for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                    for (int j = 0; j < 73; j++) {
+                        this.noteMap[i][j] = noteMap[i][j];
+                    }
 
+                }
+            }
+        } else {//drums
+            this.noteMap = new Note[AMOUNT_OF_MEASURES][9];
+            if (noteMap != null) {
+                for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                    for (int j = 0; j < 9; j++) {
+                        this.noteMap[i][j] = noteMap[i][j];
+                    }
+
+                }
             }
         }
+
 
     }
 
@@ -91,17 +109,29 @@ public class PianoRoll extends View {
         }
     }
 
-    private void calculateDimensions() {
+    public void calculateDimensions() {
+        if (numRows == 9) {
+            cellWidth = getWidth() / 16;
+            cellHeight = getHeight() / 9;
+            cHeight = cellHeight * numRows;
+            cWidth = cellWidth * AMOUNT_OF_MEASURES;
 
-        cellWidth = getWidth() / 16;
-        cellHeight = getHeight() / 16;
-        cHeight = cellHeight * numRows;
-        cWidth = cellWidth * AMOUNT_OF_MEASURES;
+            camera = new Camera(0, 0);
+            drumsText.setTextSize(cellHeight);
+            initNoteMap();
+            invalidate();
+        } else {
+            cellWidth = getWidth() / 16;
+            cellHeight = getHeight() / 16;
+            cHeight = cellHeight * numRows;
+            cWidth = cellWidth * AMOUNT_OF_MEASURES;
 
-        camera = new Camera(0, cellHeight * 37);
-        drawingText.setTextSize(cellHeight);
-        initNoteMap();
-        invalidate();
+            camera = new Camera(0, cellHeight * 37);
+            drawingText.setTextSize(cellHeight);
+            initNoteMap();
+            invalidate();
+        }
+
     }
 
     final int RECTANGLE_PADDING = 10;
@@ -128,42 +158,73 @@ public class PianoRoll extends View {
         }
 
         //drawing black keys
-        for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
-            for (int j = 0; j < numRows; j++) {
-                if (j == 2 || j == 4 || j == 6 || j == 9 || j == 11 //C7
-                        || j == 14 || j == 16 || j == 18 || j == 21 || j == 23
-                        || j == 26 || j == 28 || j == 30 || j == 33 || j == 35
-                        || j == 38 || j == 40 || j == 42 || j == 45 || j == 47
-                        || j == 50 || j == 52 || j == 54 || j == 57 || j == 59
-                        || j == 62 || j == 64 || j == 66 || j == 69 || j == 71) //C1
-                    canvas.drawRect(i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY(),
-                            (i + 1) * cellWidth - camera.getOffsetX(), (j + 1) * cellHeight - camera.getOffsetY(),
-                            blackKeyRow);
-                if (i == 0) {
-                    if (j == 1) {
-                        canvas.drawText("C7", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
-                    } else if (j == 13) {
-                        canvas.drawText("C6", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
-                    } else if (j == 25) {
-                        canvas.drawText("C5", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
-                    } else if (j == 37) {
-                        canvas.drawText("C4", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
-                    } else if (j == 49) {
-                        canvas.drawText("C3", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
-                    } else if (j == 61) {
-                        canvas.drawText("C2", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
-                    } else if (j == 72) {
-                        canvas.drawText("C1", i * cellWidth - camera.getOffsetX(), j * cellHeight + cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+        if (numRows != 9) {
+            for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                for (int j = 0; j < numRows; j++) {
+                    if (j == 2 || j == 4 || j == 6 || j == 9 || j == 11 //C7
+                            || j == 14 || j == 16 || j == 18 || j == 21 || j == 23
+                            || j == 26 || j == 28 || j == 30 || j == 33 || j == 35
+                            || j == 38 || j == 40 || j == 42 || j == 45 || j == 47
+                            || j == 50 || j == 52 || j == 54 || j == 57 || j == 59
+                            || j == 62 || j == 64 || j == 66 || j == 69 || j == 71) //C1
+                        canvas.drawRect(i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY(),
+                                (i + 1) * cellWidth - camera.getOffsetX(), (j + 1) * cellHeight - camera.getOffsetY(),
+                                blackKeyRow);
+                    if (i == 0) {
+                        if (j == 1) {
+                            canvas.drawText("C7", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        } else if (j == 13) {
+                            canvas.drawText("C6", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        } else if (j == 25) {
+                            canvas.drawText("C5", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        } else if (j == 37) {
+                            canvas.drawText("C4", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        } else if (j == 49) {
+                            canvas.drawText("C3", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        } else if (j == 61) {
+                            canvas.drawText("C2", i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        } else if (j == 72) {
+                            canvas.drawText("C1", i * cellWidth - camera.getOffsetX(), j * cellHeight + cellHeight - camera.getOffsetY() - TEXTY, drawingText);
+                        }
                     }
-                }
 
+                }
+            }
+        } else {
+            for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+                for (int j = 0; j < numRows; j++) {
+                    if (i == 0) {
+                        if (j == 1) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 2) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 3) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 4) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 5) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 6) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 7) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        } else if (j == 8) {
+                            canvas.drawText("pad " + j, i * cellWidth - camera.getOffsetX(), j * cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                            canvas.drawText("pad " + (j+1), i * cellWidth - camera.getOffsetX(), j * cellHeight+cellHeight - camera.getOffsetY() - TEXTY, drumsText);
+                        }
+
+
+                    }
+
+                }
             }
         }
+
         //fill cells by click event
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
 
             for (int j = 0; j < numRows; j++) {
-                if(isHiglightMode){
+                if (isHiglightMode) {
                     if (noteMap[i][j].isDrawable() && noteMap[i][j].isHighlighted()) {
                         canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
                                 (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
@@ -171,25 +232,25 @@ public class PianoRoll extends View {
                         canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
                                 (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
                                 blackPaint);
-                    }else if (noteMap[i][j].isDrawable() && !noteMap[i][j].isHighlighted()) {
+                    } else if (noteMap[i][j].isDrawable() && !noteMap[i][j].isHighlighted()) {
                         canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
                                 (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
                                 blackPaint);
                     }
-                }else{
-                    if(noteMap[i][j].isDrawable())
-                    canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
-                            (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
-                            blackPaint);
+                } else {
+                    if (noteMap[i][j].isDrawable())
+                        canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
+                                (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
+                                blackPaint);
                     noteMap[i][j].setHighlighted(false);
                 }
             }
         }
-        for(int i = 0; i<AMOUNT_OF_MEASURES;i++){
-            for(int j = 0; j<numRows;j++){
-                if(noteMap[i][j].getDuration()!=1&&noteMap[i][j].isDrawable()){
+        for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+            for (int j = 0; j < numRows; j++) {
+                if (noteMap[i][j].getDuration() != 1 && noteMap[i][j].isDrawable()) {
                     canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
-                            (i+noteMap[i][j].getDuration()) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
+                            (i + noteMap[i][j].getDuration()) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
                             expandedColor);
                 }
             }
@@ -215,7 +276,7 @@ public class PianoRoll extends View {
 
         for (int i = 1; i < numRows; i++) {
             canvas.drawLine(0 - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(),
-                    i*cWidth - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(), blackPaint);
+                    i * cWidth - camera.getOffsetX(), i * cellHeight - camera.getOffsetY(), blackPaint);
         }
 
     }
@@ -267,14 +328,14 @@ public class PianoRoll extends View {
                     } else {
                         noteMap[column][row].setDrawable(true);
                     }
-                    if(noteMap[column][row].isHighlighted()){
+                    if (noteMap[column][row].isHighlighted()) {
                         noteMap[column][row].setHighlighted(false);
                     }
                 } else if (isHiglightMode) {
-                    if(noteMap[column][row].isDrawable()){
-                        if(noteMap[column][row].isHighlighted()){
+                    if (noteMap[column][row].isDrawable()) {
+                        if (noteMap[column][row].isHighlighted()) {
                             noteMap[column][row].setHighlighted(false);
-                        }else{
+                        } else {
                             noteMap[column][row].setHighlighted(true);
                         }
                     }

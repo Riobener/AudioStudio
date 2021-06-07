@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:behavior_peekHeight="auto"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:behavior_hideable="true"
+    app:behavior_skipCollapsed="true"
+    android:layout_gravity="bottom"
+    android:background="#ffffff">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_gravity="center_horizontal"
+                android:textColor="#444444"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textAlignment="center"
+                android:text="Настройки текущего трека"
+                android:textSize="25dp"></TextView>
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_alignBaseline="@+id/bpmChanger"
+                    android:id="@+id/bpmText"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25dp"
+                    android:text="Изменить bpm трека:"></TextView>
+                <EditText
+                    android:maxLength="3"
+                    android:id="@+id/bpmChanger"
+                    android:textColor="#000000"
+                    android:layout_alignParentRight="true"
+                    android:text="120"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"
+                    android:inputType="number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"></EditText>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="2px"></View>
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/measuresSettings"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25dp"
+                    android:text="Увеличить количество тактов трека:"></TextView>
+                <TextView
+                    android:textColor="#444444"
+                    android:layout_below="@+id/measuresSettings"
+                    android:id="@+id/currentMeasures"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:text="Текущий размер тактов"></TextView>
+                <Button
+                    android:textSize="20dp"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/expandMeasures"
+                    android:textAllCaps="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Увеличить"></Button>
+            </RelativeLayout>
+
+        </LinearLayout>
+        <View
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="2px"></View>
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/midiSettingsText"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25dp"
+                    android:text="Выполнить поиск Midi устройств:"></TextView>
+                <TextView
+                    android:textColor="#444444"
+                    android:layout_below="@+id/midiSettingsText"
+                    android:id="@+id/midiStatus"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:text="Устройств не обнаружено"></TextView>
+                <Button
+                    android:layout_alignParentRight="true"
+                    android:text="Начать"
+                    android:textSize="20dp"
+                    android:textAllCaps="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"></Button>
+            </RelativeLayout>
+
+        </LinearLayout>
+        <View
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="2px"></View>
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/driverText"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25dp"
+                    android:text="Выбрать звуковой драйвер:"></TextView>
+                <TextView
+                    android:textColor="#444444"
+                    android:layout_below="@+id/driverText"
+                    android:id="@+id/driverNotation"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:text="Если не появился список доступных драйверов, значит ваше устройство их не поддерживает"></TextView>
+                <Spinner
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/DriverSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/drivers"
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</FrameLayout>

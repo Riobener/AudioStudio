@@ -8,20 +8,28 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.midi.MidiDeviceInfo;
+import android.media.midi.MidiManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -33,12 +41,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import com.riobener.audiostudio.Grid.Note;
 import com.riobener.audiostudio.Grid.PianoRoll;
+import com.riobener.audiostudio.Instruments.Controllers.Controller;
 import com.riobener.audiostudio.Instruments.Controllers.SynthController;
+import com.riobener.audiostudio.Midi.MidiController;
 import com.riobener.audiostudio.R;
 
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -88,12 +99,9 @@ public class MainActivity extends Activity implements PianoTouchListener {
     public static int STEPS_PER_MEASURE = 16;  // amount of subdivisions within a single measure
     private static String LOG_TAG = "MWENGINE"; // logcat identifier
     private static int PERMISSIONS_CODE = 8081981;
-
-
+    private int oldBPM = 120;
     public static int AMOUNT_OF_MEASURES = 16;
 
-    public static int PAGER_HEIGHT;
-    public static int PAGER_WIDTH;
     /**
      * Called when the activity is created. This also fires
      * on screen orientation changes.
@@ -101,6 +109,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
     BottomSheetBehavior pianoSheetBehavior;
     BottomSheetBehavior pianoRollSheetBehavior;
+    BottomSheetBehavior settingsSheetBehavior;
     PianoRoll pianoRoll;
     InstrumentsManager manager = new InstrumentsManager();
     LayoutInflater inflater;
@@ -115,7 +124,8 @@ public class MainActivity extends Activity implements PianoTouchListener {
     Button stopButton;
     Button playButton;
     Button newInstrument;
-
+    MidiController midiController;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,7 +229,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
                     AMOUNT_OF_MEASURES *= 2;
                 }
                 for (int i = 0; i < manager.size(); i++) {
-                    SynthController controller = (SynthController)manager.getController(i);
+                    Controller controller = (Controller) manager.getController(i);
                     controller.updateMapMeasures();
                     pianoRoll.loadNoteMap(controller.getNoteMap());
                     pianoRoll.invalidate();
@@ -235,9 +245,18 @@ public class MainActivity extends Activity implements PianoTouchListener {
             }
         });
         initPianoRoll();
+        midiController = new MidiController(MainActivity.this);
+        midiController.setupMidi();
+        initSettings();
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void refreshMidiStatus(){
+        MidiDeviceInfo[] info = midiController.getInfos();
+            if(info[0].getProperties().getString(MidiDeviceInfo.PROPERTY_NAME)!=null) {
 
+            }
+    }
     public void startSequencer() {
         if (_sequencerPlaying != true) {
             refreshCurrentPattern();
@@ -246,14 +265,62 @@ public class MainActivity extends Activity implements PianoTouchListener {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void stopSequencer() {
         if (_sequencerPlaying != false) {
             _sequencerPlaying = false;
             _engine.getSequencerController().setPlaying(_sequencerPlaying);
             _engine.getSequencerController().rewind();
+
         }
     }
+    public void initSettings(){
+        FrameLayout frameLayout = findViewById(R.id.settingsFrame);
+        settingsSheetBehavior = BottomSheetBehavior.from(frameLayout);
+        settingsSheetBehavior.setDraggable(false);
+        settingsSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+         Button startSettings = findViewById(R.id.settingsButton);
 
+        startSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (settingsSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    settingsSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    settingsSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
+        EditText bpmChanger = findViewById(R.id.bpmChanger);
+
+        bpmChanger.setOnKeyListener(new View.OnKeyListener()
+                                  {
+                                      public boolean onKey(View v, int keyCode, KeyEvent event)
+                                      {
+
+                                          if(event.getAction() == KeyEvent.ACTION_DOWN &&
+                                                  (keyCode == KeyEvent.KEYCODE_ENTER))
+                                          {
+
+                                              // сохраняем текст, введённый до нажатия Enter в переменную
+                                              String bpmCount = bpmChanger.getText().toString();
+                                              int bpmInInt = Integer.parseInt(bpmCount);
+                                                if(bpmInInt>=60&&bpmInInt<240){
+                                                    bpmChanger.setText(bpmInInt+"");
+                                                    oldBPM=bpmInInt;
+                                                    _engine.getSequencerController().setTempo(bpmInInt, 4, 4); // update to match new tempo in 4/4 time
+                                                }else{
+                                                    bpmChanger.setText(oldBPM+"");
+                                                    Toast.makeText(MainActivity.this,"Только выше 60 и ниже 240!",Toast.LENGTH_LONG).show();
+                                                }
+
+                                              return true;
+                                          }
+                                          return false;
+                                      }
+                                  }
+        );
+    }
     public void initPiano() {
         //Piano bottom sheet
         FrameLayout frameLayout = findViewById(R.id.pianoFrame);
@@ -286,10 +353,11 @@ public class MainActivity extends Activity implements PianoTouchListener {
         });
     }
 
+
     private void refreshCurrentPattern() {
         if (pianoRoll.getNoteMap() != null) {
             if (pianoRoll.isEdited()) {
-                SynthController controller = (SynthController)manager.getController(pager.getCurrentItem());
+                Controller controller = manager.getController(pager.getCurrentItem());
                 controller.updateNoteMap(pianoRoll.getNoteMap());
                 controller.updateEvents();
                 pianoRoll.setEdited(false);
@@ -321,10 +389,22 @@ public class MainActivity extends Activity implements PianoTouchListener {
             public void onClick(View v) {
                 //notes.clear();
                 pianoRoll.initNoteMap();
-                SynthController controller = (SynthController)manager.getController(pager.getCurrentItem());
+                if(manager.getInstrumentType(pager.getCurrentItem())=="Synth"){
+                    /*Toast.makeText(MainActivity.this,"IT IS SYNTH",Toast.LENGTH_LONG).show();*/
+                    pianoRoll.setNumRows(73);
+                    pianoRoll.calculateDimensions();
+                    pianoRoll.invalidate();
+                }else{
+                    Toast.makeText(MainActivity.this,"IT IS DRUMS",Toast.LENGTH_LONG).show();
+                    pianoRoll.setNumRows(9);
+                    pianoRoll.calculateDimensions();
+                    pianoRoll.invalidate();
+                }
+                Controller controller = manager.getController(pager.getCurrentItem());
                 if (pianoRollSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     expandMeasures.setEnabled(false);
                     pianoRoll.loadNoteMap(controller.getNoteMap());
+                    Toast.makeText(MainActivity.this,""+pianoRoll.getNumRows(),Toast.LENGTH_LONG).show();
                     pianoRoll.invalidate();
                     pianoRollSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
@@ -694,8 +774,8 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
         // Load some samples from the packaged assets folder into the SampleManager
 
-        loadWAVAsset("hat.wav", "hat");
-        loadWAVAsset("clap.wav", "clap");
+        /*loadWAVAsset("hat.wav", "hat");
+        loadWAVAsset("clap.wav", "clap");*/
 
         // create a lowpass filter to catch all low rumbling and a limiter to prevent clipping of output :)
 
@@ -742,12 +822,12 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
         // STEP 2 : Sample events to play back a drum beat
         //createSynthEvent(_synth2, Pitch.note("C", 2), 0, 16);
-        createDrumEvent("hat", 2);  // hi-hat on the second 8th note after the first beat of the bar
+        /*createDrumEvent("hat", 2);  // hi-hat on the second 8th note after the first beat of the bar
         createDrumEvent("clap", 4);  // clap sound on the second beat of the bar
         createDrumEvent("hat", 6);  // hi-hat on the second 8th note after the second beat
         createDrumEvent("hat", 10); // hi-hat on the second 8th note after the third beat
         createDrumEvent("clap", 12); // clap sound on the third beat of the bar
-        createDrumEvent("hat", 14); // hi-hat on the second 8th note after the fourth beat
+        createDrumEvent("hat", 14); // hi-hat on the second 8th note after the fourth beat*/
 
         // a C note to be synthesized live when holding down the corresponding button
 
@@ -1074,6 +1154,10 @@ public class MainActivity extends Activity implements PianoTouchListener {
                 sampleName, ctx.getAssets(), ctx.getCacheDir().getAbsolutePath(), assetName
         );
     }
+    public void loadWAVPath(String keySample, String filePath) {
+        final Context ctx = getApplicationContext();
+        JavaUtilities.createSampleFromFile(keySample,filePath);
+    }
     /*private void openFilePicker(){
         UnicornFilePicker.from(MainActivity.this)
                 .addConfigBuilder()
@@ -1091,11 +1175,25 @@ public class MainActivity extends Activity implements PianoTouchListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000 && resultCode == RESULT_OK) {
+        Note[][] map = manager.getController(pager.getCurrentItem()).getNoteMap();
+        if (resultCode == RESULT_OK) {
             Uri uri = data.getData();
             String file = uri.getPath();
                 Log.v("FILE", file);
 
+            String[] separated = file.split(":");
+
+            Log.v("FILE", separated[0]);
+            Log.v("FILE", separated[1]);
+            file = "/storage/emulated/0/"+separated[1];
+            for(int i = 0; i<AMOUNT_OF_MEASURES;i++){
+                map[i][requestCode].setFilePath(file);
+                map[i][requestCode].setKeySample("pad"+requestCode+1);
+            }
+            SampleManager.removeSample("pad"+requestCode+1,true);
+            loadWAVPath("pad"+requestCode+1, file);
+            manager.getController(pager.getCurrentItem()).updateEvents();
         }
     }
+
 }
