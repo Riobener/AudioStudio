@@ -71,6 +71,15 @@ public class DrumController extends Controller {
             }
         }
     }
+    @Override
+    public boolean isMuted() {
+        return sampler.getAudioChannel().getMuted();
+    }
+    @Override
+    public void muteInstrument(boolean state) {
+        sampler.getAudioChannel().setMuted(state);
+    }
+
     public Note[][] getNoteMap() {
         return drumMap;
     }

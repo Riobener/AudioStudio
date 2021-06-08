@@ -91,17 +91,17 @@
             android:text="Stop"
             android:layout_marginLeft="10dp"
             android:textAllCaps="false"></Button>
-        <Button
+        <!--<Button
+            android:layout_marginLeft="15dp"
+            android:id="@+id/RecordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/recordButton"
-            android:text="Record"
-            android:layout_marginLeft="10dp"
+            android:text="@string/rec_btn_on"
             android:textAllCaps="false"
-            android:layout_weight="1"></Button>
+            android:layout_weight="1"/>-->
         <TextView
             android:id="@+id/trackName"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/pianoRollButton"
             android:layout_weight="1"
-            android:text="PRoll"
+            android:text="Piano Roll"
             android:textAllCaps="false"></Button>
         <Button
             android:layout_marginLeft="10dp"
@@ -126,14 +126,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Piano"></Button>
-        <Button
+        <!--<Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mixer"
             android:text="Mixer"
             android:layout_marginLeft="10dp"
             android:textAllCaps="false"
-            android:layout_weight="1"></Button>
+            android:layout_weight="1"></Button>-->
 
 
     </LinearLayout>

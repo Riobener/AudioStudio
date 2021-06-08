@@ -86,7 +86,14 @@ public class SynthController extends Controller {
             }
         }
     }
-
+    @Override
+    public boolean isMuted() {
+        return synth.getAudioChannel().getMuted();
+    }
+    @Override
+    public void muteInstrument(boolean state) {
+        synth.getAudioChannel().setMuted(state);
+    }
     public void updateMapMeasures() {
 
         Note[][] newNoteMap = new Note[AMOUNT_OF_MEASURES][73];

@@ -44,6 +44,7 @@ import com.riobener.audiostudio.Grid.PianoRoll;
 import com.riobener.audiostudio.Instruments.Controllers.Controller;
 import com.riobener.audiostudio.Instruments.Controllers.DrumController;
 import com.riobener.audiostudio.Instruments.Controllers.SynthController;
+import com.riobener.audiostudio.Instruments.Views.InstrumentView;
 import com.riobener.audiostudio.Midi.MidiController;
 import com.riobener.audiostudio.R;
 
@@ -90,6 +91,8 @@ public class MainActivity extends Activity implements PianoTouchListener {
     private boolean _sequencerPlaying = false;
     private boolean _isRecording = false;
     private boolean _inited = false;
+    Button muteCurrent;
+    Button muteAll;
 
     // AAudio is only supported from Android 8/Oreo onwards.
     private boolean _supportsAAudio = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O;
@@ -301,6 +304,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
         initSettings();
         initPianoNotes();
         initInstrumentNameChanger();
+        initMuteButtons();
 
     }
 
@@ -422,7 +426,50 @@ public class MainActivity extends Activity implements PianoTouchListener {
         if (isSynth)
             notes.get(noteIndex).stop();
     }
+    public void  initMuteButtons(){
+        muteAll = findViewById(R.id.soundOnlyThis);
+        muteCurrent = findViewById(R.id.muteInstrument);
+        muteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controller controller = manager.getController(pager.getCurrentItem());
+                if(controller.isMuted()){
+                    controller.muteInstrument(false);
+                    controller.setOnlyPlaying(true);
+                    for(InstrumentView i:manager.getInstruments()){
+                            if(controller!=i.getController())
+                            i.getController().muteInstrument(true);
+                    }
+                }else if(controller.isOnlyPlaying()){
+                    for(InstrumentView i:manager.getInstruments()){
+                        if(controller!=i.getController()){
+                            i.getController().muteInstrument(false);
+                            i.getController().setOnlyPlaying(false);
+                        }
 
+                    }
+                }else{
+                    for(InstrumentView i:manager.getInstruments()){
+                        if(controller!=i.getController())
+                            i.getController().muteInstrument(true);
+                    }
+                    controller.setOnlyPlaying(true);
+                }
+
+            }
+        });
+        muteCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controller controller = manager.getController(pager.getCurrentItem());
+                if(controller.isMuted()){
+                    controller.muteInstrument(false);
+                }else{
+                    controller.muteInstrument(true);
+                }
+            }
+        });
+    }
     public void initPiano() {
         //Piano bottom sheet
         FrameLayout frameLayout = findViewById(R.id.pianoFrame);
@@ -870,27 +917,12 @@ public class MainActivity extends Activity implements PianoTouchListener {
         _drumEvents = new Vector<SampleEvent>();
 
         setupSong();
-        //findViewById( R.id.recordButton ).setOnClickListener( new RecordOutputHandler() );
-        // STEP 3 : start your engine!
-        // Starts engines render thread (NOTE: sequencer is still paused)
-        // this ensures that audio will be output as appropriate (e.g. when
-        // playing live events / starting sequencer and playing the song)
 
         _engine.start();
+        //findViewById( R.id.RecordButton ).setOnClickListener( new RecordOutputHandler() );
 
-        // STEP 4 : attach event handlers to the UI elements (see main.xml layout)
 
-        /*findViewById( R.id.PlayPauseButton ).setOnClickListener( new PlayClickHandler() );
-        findViewById( R.id.RecordButton ).setOnClickListener( new RecordOutputHandler() );
-        findViewById( R.id.LiveNoteButton ).setOnTouchListener( new LiveNoteHandler() );
-        findViewById( R.id.RecordInputButton ).setOnTouchListener( new RecordInputHandler() );
 
-        (( SeekBar ) findViewById( R.id.FilterCutoffSlider )).setOnSeekBarChangeListener( new FilterCutOffChangeHandler() );
-        (( SeekBar ) findViewById( R.id.SynthDecaySlider )).setOnSeekBarChangeListener( new SynthDecayChangeHandler() );
-        (( SeekBar ) findViewById( R.id.MixSlider )).setOnSeekBarChangeListener( new DelayMixChangeHandler() );
-        (( SeekBar ) findViewById( R.id.PitchSlider )).setOnSeekBarChangeListener( new PitchChangeHandler() );
-        (( SeekBar ) findViewById( R.id.TempoSlider )).setOnSeekBarChangeListener( new TempoChangeHandler() );
-        (( SeekBar ) findViewById( R.id.VolumeSlider )).setOnSeekBarChangeListener( new VolumeChangeHandler() );*/
 
         if (!_supportsAAudio) {
             findViewById(R.id.DriverSpinner).setVisibility(View.GONE);
@@ -1013,42 +1045,15 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
     private class RecordOutputHandler implements View.OnClickListener {
         @Override
-        public void onClick(View v) {
+        public void onClick( View v ) {
             _isRecording = !_isRecording;
             _engine.setRecordingState(
-                    _isRecording, Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/audio_studio.wav"
+                    _isRecording, Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/mwengine_output.wav"
             );
-            ((Button) v).setText(_isRecording ? R.string.rec_btn_off : R.string.rec_btn_on);
+            (( Button ) v ).setText( _isRecording ? R.string.rec_btn_off : R.string.rec_btn_on );
         }
     }
 
-
-    private class TempoChangeHandler implements SeekBar.OnSeekBarChangeListener {
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            final float minTempo = 40f;     // minimum allowed tempo is 40 BPM
-            final float maxTempo = 260f;    // maximum allowed tempo is 260 BPM
-            final float newTempo = (progress / 100f) * (maxTempo - minTempo) + minTempo;
-            _engine.getSequencerController().setTempo(newTempo, 4, 4); // update to match new tempo in 4/4 time
-        }
-
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
-
-        public void onStopTrackingTouch(SeekBar seekBar) {
-        }
-    }
-
-    private class VolumeChangeHandler implements SeekBar.OnSeekBarChangeListener {
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            _engine.setVolume(progress / 100f);
-        }
-
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
-
-        public void onStopTrackingTouch(SeekBar seekBar) {
-        }
-    }
 
     /* state change message listener */
 
