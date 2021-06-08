@@ -14,6 +14,8 @@ public abstract class InstrumentView {
     public abstract String getInstrumentType();
 
     public abstract View createView(Context context);
+    public abstract View getView();
+    public abstract void makeViewNull();
     public abstract BaseInstrument getInstrument();
     public abstract Controller getController();
 }

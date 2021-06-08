@@ -27,6 +27,7 @@ public class PianoRoll extends View {
     private Paint drawingText = new Paint();
     private Paint drumsText = new Paint();
     private Paint expandedColor = new Paint();
+    private Paint playingPaint = new Paint();
     private Camera camera;
     private Note[][] noteMap;
     private boolean isEdited;
@@ -54,6 +55,9 @@ public class PianoRoll extends View {
         drumsText.setColor(Color.GRAY);
         drumsText.setStrokeWidth(1);
         isEdited = false;
+        playingPaint.setColor(Color.rgb(102, 102, 255));
+        playingPaint.setStrokeWidth(3);
+        playingPaint.setStyle(Paint.Style.STROKE);
     }
 
     public Note[][] getNoteMap() {
@@ -244,6 +248,15 @@ public class PianoRoll extends View {
                                 blackPaint);
                     noteMap[i][j].setHighlighted(false);
                 }
+            }
+        }
+        for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {
+            for (int j = 0; j < numRows; j++) {
+                    if (noteMap[i][j].isPlaying()) {
+                        canvas.drawRect(i * cellWidth + RECTANGLE_PADDING - camera.getOffsetX(), j * cellHeight + RECTANGLE_PADDING - camera.getOffsetY(),
+                                (i + 1) * cellWidth - RECTANGLE_PADDING - camera.getOffsetX(), (j + 1) * cellHeight - RECTANGLE_PADDING - camera.getOffsetY(),
+                                playingPaint);
+                    }
             }
         }
         for (int i = 0; i < AMOUNT_OF_MEASURES; i++) {

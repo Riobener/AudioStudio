@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Environment;
@@ -11,11 +12,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 import androidx.core.content.ContextCompat;
 
@@ -48,6 +51,7 @@ public class DrumMachine extends InstrumentView {
     int instrumentColor;
     LinearLayout drumsView;
     Button loadDrumPatch;
+    SeekBar volume;
     DrumController drumController;
     //Drum pads
     LinearLayout padsLayout;
@@ -101,10 +105,25 @@ public class DrumMachine extends InstrumentView {
                 isEditorMode = !isEditorMode;
             }
         });
+        volume = new SeekBar(context);
+        volume.setLayoutParams(new ViewGroup.LayoutParams(pagerWidth/6, ViewGroup.LayoutParams.MATCH_PARENT));
+        volume.setBackground(createColorShape());
+
         settingsLayout.addView(loadDrumPatch);
+        settingsLayout.addView(volume);
         drumsView.addView(settingsLayout);
         drumsView.addView(createDrumPads(context));
         return drumsView;
+    }
+
+    @Override
+    public View getView() {
+        return drumsView;
+    }
+    @Override
+    public void makeViewNull() {
+        this.drumController = null;
+        this.drumsView = null;
     }
 
     @Override

@@ -20,6 +20,8 @@ import com.riobener.audiostudio.MainActivity;
 
 import java.io.IOException;
 
+import static com.riobener.audiostudio.MainActivity.MIDI_IS_AVAILABLE;
+
 public class MidiController {
     MidiManager manager;
     Context context;
@@ -44,15 +46,17 @@ public class MidiController {
                     Toast.makeText(context,"Устройство "+manufacturer+" добавлено!",Toast.LENGTH_LONG).show();
                     manager.openDevice(info, device -> {
                         if (device == null) {
+                            MIDI_IS_AVAILABLE = false;
                             Toast.makeText(context,"MIDI " +info,Toast.LENGTH_SHORT).show();
                         } else {
                             MidiOutputPort outputPort = device.openOutputPort(0);
                             outputPort.connect(new MyReceiver(context));
+                            MIDI_IS_AVAILABLE = true;
                         }
                     }, new Handler(Looper.getMainLooper()));
                 }
                 public void onDeviceRemoved( MidiDeviceInfo info ) {
-
+                    MIDI_IS_AVAILABLE= false;
                 }
             }, new Handler(Looper.getMainLooper()));
 

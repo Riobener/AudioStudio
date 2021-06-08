@@ -10,12 +10,14 @@ public class Note {
     private int duration;
     private boolean isHighlighted;
     private boolean isDrawable;
+    private boolean isPlaying;
 
     //if drumEvent
     private String keySample;
     private String filePath;
     SampleEvent event;
     public Note() {
+        isPlaying = false;
         keySample = "0";
         filePath = "0";
         duration = 1;
@@ -32,7 +34,7 @@ public class Note {
     public void enlargeDuration(){
         if(duration<AMOUNT_OF_MEASURES)
         duration++;
-        //Log.d("TAGDUR","DURATION"+duration);
+
     }
     public void reduceDuration(){
         if(duration>1)
@@ -41,7 +43,12 @@ public class Note {
     public int getDuration() {
         return duration;
     }
-
+    public boolean isPlaying(){
+        return isPlaying;
+    }
+    public void setPlaying(boolean state){
+        this.isPlaying = state;
+    }
     public void setDuration(int duration) {
         this.duration = duration;
     }

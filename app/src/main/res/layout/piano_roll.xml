@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="Редактировать"
             android:textAllCaps="false"
-            android:textSize="15dp"></Button>
+            android:textSize="10dp"></Button>
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/selectAll"
@@ -48,56 +48,56 @@
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/reduceDuration"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="-"
             android:textAllCaps="false"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:enabled="false"></Button>
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/enlargeDuration"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="+"
             android:textAllCaps="false"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:enabled="false"></Button>
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/upNote"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="↑"
             android:textAllCaps="false"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:enabled="false"></Button>
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/downNote"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="↓"
             android:textAllCaps="false"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:enabled="false"></Button>
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/leftNote"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="←"
             android:textAllCaps="false"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:enabled="false"></Button>
         <Button
             android:layout_marginLeft="15dp"
             android:id="@+id/rightNote"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="→"
             android:textAllCaps="false"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:enabled="false"></Button>
 
 

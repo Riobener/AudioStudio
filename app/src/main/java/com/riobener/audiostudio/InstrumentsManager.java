@@ -18,18 +18,31 @@ public class InstrumentsManager {
 
    private ArrayList<InstrumentView> instruments = new ArrayList<>();
     public View createSynthView(Context context){
-        InstrumentView synth = new SynthesizerView();
-        instruments.add(synth);
+        InstrumentView instrument = new SynthesizerView();
+        instruments.add(instrument);
 
-        return synth.createView(context);
+        return instrument.createView(context);
+    }
+    public ArrayList<InstrumentView> getInstruments(){
+        return instruments;
+    }
+    public void removeInstrument(int index){
+        instruments.get(index).getController().flushInstrument();
+        instruments.get(index).makeViewNull();
+        instruments.remove(index);
     }
     public View createDrumMachine(Context context, int width, int height){
         InstrumentView drums = new DrumMachine(width, height);
         instruments.add(drums);
         return drums.createView(context);
     }
+
+
     public BaseInstrument getInstrument(int index) {
         return instruments.get(index).getInstrument();
+    }
+    public View getInstrumentView(int index){
+        return instruments.get(index).getView();
     }
     public String getInstrumentType(int index){
         return instruments.get(index).getInstrumentType();

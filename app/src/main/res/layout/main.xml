@@ -10,7 +10,7 @@
     android:id="@+id/topPanel"
     android:background="#000000">
     <EditText
-        android:maxLength="20"
+        android:maxLength="12"
         android:layout_marginLeft="20dp"
         android:id="@+id/instrumentName"
         android:layout_alignBaseline="@id/createPage"
@@ -27,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:spinnerMode="dropdown"
+        android:textAllCaps="false"
         android:text="Settings"></Button>
 
     <Button
@@ -34,8 +35,17 @@
         android:id="@+id/createPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+">
+        android:textAllCaps="false"
+        android:text="Добавить инструмент">
     </Button>
+    <!--<Button
+        android:layout_toLeftOf="@+id/createPage"
+        android:id="@+id/deletePage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="Удалить">
+    </Button>-->
     <Button
         android:layout_toRightOf="@id/instrumentName"
         android:id="@+id/muteInstrument"

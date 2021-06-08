@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-/**
- * Created by mikeafc on 15/11/26.
- */
-public class InstrumentPager extends PagerAdapter {
+
+public class InstrumentPager extends PagerAdapter
+{
     // This holds all the currently displayable views, in order from left to right.
     private ArrayList<View> views = new ArrayList<View>();
 
@@ -95,7 +94,7 @@ public class InstrumentPager extends PagerAdapter {
     // The app should call this to remove pages; not used by ViewPager.
     public int removeView (ViewPager pager, View v)
     {
-        return removeView (pager, views.indexOf (v));
+        return removeView (pager, views.indexOf(v));
     }
 
     //-----------------------------------------------------------------------------
@@ -124,4 +123,9 @@ public class InstrumentPager extends PagerAdapter {
     {
         return views.get (position);
     }
+
+    // Other relevant methods:
+
+    // finishUpdate - called by the ViewPager - we don't care about what pages the
+    // pager is displaying so we don't use this method.
 }

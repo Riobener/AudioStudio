@@ -6,6 +6,7 @@ import com.riobener.audiostudio.Grid.Note;
 
 import java.util.Vector;
 
+import nl.igorski.mwengine.core.BaseAudioEvent;
 import nl.igorski.mwengine.core.JavaUtilities;
 import nl.igorski.mwengine.core.Pitch;
 import nl.igorski.mwengine.core.SampleEvent;
@@ -16,12 +17,15 @@ import nl.igorski.mwengine.core.SynthInstrument;
 
 import static com.riobener.audiostudio.MainActivity.AMOUNT_OF_MEASURES;
 import static com.riobener.audiostudio.MainActivity.STEPS_PER_MEASURE;
+import static com.riobener.audiostudio.MainActivity.TOTAL_COUNT_OF_INSTRUMENTS;
 
 public class DrumController extends Controller {
     SampledInstrument sampler;
     Note[][] drumMap;
     Vector<SampleEvent> sampleEvents = new Vector<>();
+
     public DrumController(){
+        this.name = "Drums" + TOTAL_COUNT_OF_INSTRUMENTS;
         sampler = new SampledInstrument();
         initInstrument();
     }
@@ -87,6 +91,14 @@ public class DrumController extends Controller {
             event.delete();
         sampleEvents.clear();
 
+    }
+    public void flushInstrument(){
+        for (final BaseAudioEvent event : sampleEvents)
+            event.delete();
+        sampleEvents.clear();
+        sampler.delete();
+        sampler = null;
+        drumMap = null;
     }
     public void updateEvents() {
         resetEvents();
