@@ -283,7 +283,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
         initInstrumentNameChanger();
         initMuteButtons();
         initThread();
-        exitIntent = new Intent(MainActivity.this,LoginActivity.class);
+        /*exitIntent = new Intent(MainActivity.this,LoginActivity.class);
         exitFromAccount = findViewById(R.id.exitFromAccount);
         exitFromAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,7 +292,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
                 startActivity(exitIntent);
                 finish();
             }
-        });
+        });*/
         initFullScreen();
 
     }

@@ -32,17 +32,17 @@
         android:theme="@style/Theme.AudioStudio">
         <activity android:name=".MainActivity"
             android:screenOrientation="landscape">
-
-
-        </activity>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="landscape"
-            tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="landscape"
+            tools:ignore="Instantiatable">
+
         </activity>
     </application>
 

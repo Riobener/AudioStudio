@@ -156,12 +156,12 @@
             </RelativeLayout>
 
         </LinearLayout>
-        <View
+        <!--<View
             android:layout_marginTop="10dp"
             android:background="@drawable/bottom_line"
             android:layout_width="match_parent"
-            android:layout_height="2px"></View>
-        <LinearLayout
+            android:layout_height="2px"></View>-->
+        <!--<LinearLayout
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:orientation="horizontal"
@@ -197,7 +197,7 @@
                     android:text="Выйти"></Button>
             </RelativeLayout>
 
-        </LinearLayout>
+        </LinearLayout>-->
     </LinearLayout>
     </ScrollView>
 </FrameLayout>
