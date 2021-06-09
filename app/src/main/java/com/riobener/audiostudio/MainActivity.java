@@ -7,27 +7,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.media.midi.MidiDeviceInfo;
-import android.media.midi.MidiManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -39,32 +32,20 @@ import com.convergencelabstfx.pianoview.PianoTouchListener;
 import com.convergencelabstfx.pianoview.PianoView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.riobener.audiostudio.Grid.Note;
 import com.riobener.audiostudio.Grid.PianoRoll;
 import com.riobener.audiostudio.Instruments.Controllers.Controller;
-import com.riobener.audiostudio.Instruments.Controllers.DrumController;
-import com.riobener.audiostudio.Instruments.Controllers.SynthController;
 import com.riobener.audiostudio.Instruments.Views.InstrumentView;
 import com.riobener.audiostudio.Midi.MidiController;
-import com.riobener.audiostudio.R;
 
 import nl.igorski.mwengine.MWEngine;
 import nl.igorski.mwengine.core.*;
 
-import java.security.Key;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
-
-import static java.lang.Math.log10;
-import static nl.igorski.mwengine.core.MWEngineCoreJNI.LevelUtility_RMS;
-import static nl.igorski.mwengine.core.MWEngineCoreJNI.new_LevelUtility;
 
 public class MainActivity extends Activity implements PianoTouchListener {
     /**
@@ -76,12 +57,6 @@ public class MainActivity extends Activity implements PianoTouchListener {
      */
     private Limiter _limiter;
     private LPFHPFilter _lpfhpf;
-    private SynthInstrument _synth1;
-    private SynthInstrument _synth2;
-    private SampledInstrument _sampler;
-    private Filter _filter;
-    private Phaser _phaser;
-    private Delay _delay;
     private MWEngine _engine;
     private SequencerController _sequencerController;
     private Vector<SynthEvent> _synth1Events;
@@ -93,7 +68,8 @@ public class MainActivity extends Activity implements PianoTouchListener {
     private boolean _inited = false;
     Button muteCurrent;
     Button muteAll;
-
+    Button exitFromAccount;
+    Intent exitIntent;
     // AAudio is only supported from Android 8/Oreo onwards.
     private boolean _supportsAAudio = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O;
     private Drivers.types _audioDriver = _supportsAAudio ? Drivers.types.AAUDIO : Drivers.types.OPENSL;
@@ -144,6 +120,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         inflater = getLayoutInflater();
         // these may not necessarily all be required for your use case (e.g. if you're not recording
         // from device audio inputs or reading/writing files) but are here for self-documentation
@@ -305,7 +282,31 @@ public class MainActivity extends Activity implements PianoTouchListener {
         initPianoNotes();
         initInstrumentNameChanger();
         initMuteButtons();
+        initThread();
+        exitIntent = new Intent(MainActivity.this,LoginActivity.class);
+        exitFromAccount = findViewById(R.id.exitFromAccount);
+        exitFromAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(exitIntent);
+                finish();
+            }
+        });
+        initFullScreen();
 
+    }
+    private void initThread(){
+
+        Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+                pianoRoll.invalidate();
+                handler.postDelayed(this, 10);
+            }
+        };
+
+        handler.postDelayed(r, 10);
     }
 
     /*@RequiresApi(api = Build.VERSION_CODES.M)
@@ -339,7 +340,15 @@ public class MainActivity extends Activity implements PianoTouchListener {
                                      }
         );
     }
-
+    public void initFullScreen(){
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
     public void initPianoNotes() {
         if (isSynth) {
             notes.clear();
@@ -355,7 +364,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
     public void startSequencer() {
         if (_sequencerPlaying != true) {
-            refreshCurrentPattern();
+            //refreshCurrentPattern();
             _sequencerPlaying = true;
             _engine.getSequencerController().setPlaying(_sequencerPlaying);
         }
@@ -919,7 +928,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
         setupSong();
 
         _engine.start();
-        //findViewById( R.id.RecordButton ).setOnClickListener( new RecordOutputHandler() );
+        findViewById( R.id.RecordButton ).setOnClickListener( new RecordOutputHandler() );
 
 
 
@@ -965,49 +974,13 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
         _engine.pause();
 
-        // calling 'delete()' on a BaseAudioEvent invokes the
-        // native layer destructor (and removes it from the sequencer)
-
-        for (final BaseAudioEvent event : _synth1Events)
-            event.delete();
-        for (final BaseAudioEvent event : _synth2Events)
-            event.delete();
-        for (final BaseAudioEvent event : _drumEvents)
-            event.delete();
-
-        // clear Vectors so all references to the events are broken
-
-        _synth1Events.clear();
-        _synth2Events.clear();
-        _drumEvents.clear();
-
-        // detach all processors from engine's master bus
-
-        _engine.getMasterBusProcessors().reset();
-
-        // calling 'delete()' on all instruments invokes the native layer destructor
-        // (and frees memory allocated to their resources, e.g. AudioChannels, Processors)
-
-        _synth1.delete();
-        _synth2.delete();
-        _sampler.delete();
-
-        // allow these to be garbage collected
-
-        _synth1 = null;
-        _synth2 = null;
-        _sampler = null;
-
-        // and these (garbage collection invokes native layer destructors, so we'll let
-        // these processors be cleared lazily)
-
-        _filter = null;
-        _phaser = null;
-        _delay = null;
         _lpfhpf = null;
-
+        _limiter = null;
         // flush sample memory allocated in the SampleManager
         SampleManager.flushSamples();
+        for(InstrumentView i:manager.getInstruments()){
+            i.getController().flushInstrument();
+        }
     }
 
     @Override
@@ -1044,11 +1017,13 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
 
     private class RecordOutputHandler implements View.OnClickListener {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onClick( View v ) {
             _isRecording = !_isRecording;
+
             _engine.setRecordingState(
-                    _isRecording, Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/mwengine_output.wav"
+                    _isRecording, Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/audio_studio.wav"
             );
             (( Button ) v ).setText( _isRecording ? R.string.rec_btn_off : R.string.rec_btn_on );
         }
@@ -1081,8 +1056,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
                     break;
             }
         }
-
-        public void handleNotification(final int aNotificationId, final int aNotificationValue) {
+                public void handleNotification(final int aNotificationId, final int aNotificationValue) {
             switch (_notificationEnums[aNotificationId]) {
                 case SEQUENCER_POSITION_UPDATED:
 
@@ -1118,22 +1092,14 @@ public class MainActivity extends Activity implements PianoTouchListener {
                             map[sequencerPosition][i].setPlaying(true);
                         }
 
-                    runOnUiThread(new Runnable() {
 
-                        @Override
-                        public void run() {
-
-                            pianoRoll.invalidate();
-
-                        }
-                    });
                 case RECORDED_SNIPPET_READY:
-                    runOnUiThread(new Runnable() {
+                    /*runOnUiThread(new Runnable() {
                         public void run() {
                             // we run the saving on a different thread to prevent buffer under runs while rendering audio
                             _engine.saveRecordedSnippet(aNotificationValue); // notification value == snippet buffer index
                         }
-                    });
+                    });*/
                     break;
                 case RECORDED_SNIPPET_SAVED:
                     Log.d(LOG_TAG, "Recorded snippet " + aNotificationValue + " saved to storage");

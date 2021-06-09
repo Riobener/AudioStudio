@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#000000"
+    >
+
+    <ImageView
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/loginIcon"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:text="Авторизация"
+        android:textSize="40dp"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="15dp"
+        android:background="@mipmap/back"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:hint="Почта"
+        android:textColorHint="#ffffff"
+        android:textColor="#ffffff"
+        android:textColorHighlight="#ffffff"
+        />
+    <EditText
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:hint="Пароль"
+        android:textColorHint="#ffffff"
+        android:textColor="#ffffff"
+        android:textColorHighlight="#ffffff"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password">
+        <Button
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:id="@+id/auth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:text="Войти"
+            android:textAllCaps="false"
+            android:layout_weight="2"/>
+        <Button
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Регистрация"
+            android:textAllCaps="false"
+            android:textSize="25dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -108,6 +108,23 @@ public class DrumMachine extends InstrumentView {
         volume = new SeekBar(context);
         volume.setLayoutParams(new ViewGroup.LayoutParams(pagerWidth/6, ViewGroup.LayoutParams.MATCH_PARENT));
         volume.setBackground(createColorShape());
+        volume.setMax(200);
+        volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                drumController.getSampler().getAudioChannel().setVolume((float)progress/100);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         settingsLayout.addView(loadDrumPatch);
         settingsLayout.addView(volume);

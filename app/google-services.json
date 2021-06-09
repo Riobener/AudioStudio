@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "155470254044",
+    "project_id": "audiostudio-71582",
+    "storage_bucket": "audiostudio-71582.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155470254044:android:504d4d822d481f2906c919",
+        "android_client_info": {
+          "package_name": "com.riobener.audiostudio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155470254044-v55qmk27hd4f862rnn9t4req68i62psd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM4IXRXtrS4-rB8_vyKdVOxCfeMgEgojE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155470254044-v55qmk27hd4f862rnn9t4req68i62psd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

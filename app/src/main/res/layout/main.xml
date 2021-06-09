@@ -9,18 +9,7 @@
     android:orientation="horizontal"
     android:id="@+id/topPanel"
     android:background="#000000">
-    <EditText
-        android:maxLength="12"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/instrumentName"
-        android:layout_alignBaseline="@id/createPage"
-        android:layout_toRightOf="@id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:textSize="15dp"
-        android:text="Название инструмента ">
-    </EditText>
+
     <Button
         android:layout_alignParentLeft="true"
         android:id="@+id/settingsButton"
@@ -47,7 +36,7 @@
         android:text="Удалить">
     </Button>-->
     <Button
-        android:layout_toRightOf="@id/instrumentName"
+        android:layout_toRightOf="@id/settingsButton"
         android:id="@+id/muteInstrument"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,26 +80,28 @@
             android:text="Stop"
             android:layout_marginLeft="10dp"
             android:textAllCaps="false"></Button>
-        <!--<Button
-            android:layout_marginLeft="15dp"
+        <Button
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
             android:id="@+id/RecordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/rec_btn_on"
             android:textAllCaps="false"
-            android:layout_weight="1"/>-->
-        <TextView
-            android:id="@+id/trackName"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="15dp"
+            android:layout_weight="1"/>
+        <EditText
+            android:layout_weight="7"
+            android:maxLength="12"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/instrumentName"
+            android:layout_alignBaseline="@id/createPage"
+            android:layout_toRightOf="@id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:maxLength="20"
-            android:text="      "
             android:textColor="#ffffff"
-            android:textAllCaps="false"
-            android:textSize="15dp"></TextView>
+            android:textSize="15dp"
+            android:text="Название инструмента ">
+        </EditText>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

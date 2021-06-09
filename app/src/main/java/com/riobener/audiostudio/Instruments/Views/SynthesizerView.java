@@ -301,7 +301,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                attackText.setText("Attack");
             }
 
             @Override
@@ -340,7 +340,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                decayText.setText("Decay");
             }
 
             @Override
@@ -379,7 +379,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                sustainText.setText("Sustain");
             }
 
             @Override
@@ -418,7 +418,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                releaseText.setText("Release");
             }
 
             @Override
@@ -493,7 +493,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                octaveText.setText("Octave");
             }
 
             @Override
@@ -536,7 +536,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                detuneText.setText("Detune");
             }
 
             @Override
@@ -694,7 +694,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                octaveText1.setText("Octave");
             }
 
             @Override
@@ -732,7 +732,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                detuneText1.setText("Detune");
             }
 
             @Override
@@ -852,7 +852,7 @@ public class SynthesizerView extends InstrumentView {
         volume.setCircleStrokeWidth(40);
         volume.setCircleProgressColor(instrumentColor);
         volume.setPointerColor(instrumentColor);
-        volume.setMax(10f);
+        volume.setMax(2f);
         volume.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
@@ -862,7 +862,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                volumeText.setText("Volume");
             }
 
             @Override
@@ -957,7 +957,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                cutoffText.setText("Cutoff");
             }
 
             @Override
@@ -994,7 +994,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                resoText.setText("Reso");
             }
 
             @Override
@@ -1068,7 +1068,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                amountText.setText("Amount");
             }
 
             @Override
@@ -1098,7 +1098,7 @@ public class SynthesizerView extends InstrumentView {
         outBar.setCircleStrokeWidth(40);
         outBar.setCircleProgressColor(instrumentColor);
         outBar.setPointerColor(instrumentColor);
-        outBar.setMax(16);
+        outBar.setMax(64);
         outBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
@@ -1108,7 +1108,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                outText.setText("Out mix");
             }
 
             @Override
@@ -1242,7 +1242,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                reverbText.setText("Reverb");
             }
 
             @Override
@@ -1280,7 +1280,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                delayText.setText("Delay");
             }
 
             @Override
@@ -1346,7 +1346,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                rateText.setText("Rate");
             }
 
             @Override
@@ -1384,7 +1384,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                depthText.setText("Depth");
             }
 
             @Override
@@ -1422,7 +1422,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                feedbackText.setText("Feedback");
             }
 
             @Override
@@ -1523,24 +1523,24 @@ public class SynthesizerView extends InstrumentView {
         sineChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(squarChooser.isChecked()){
+
                     synthController.setLFOWave(0);
-                }
+
             }
         });
         trinChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(squarChooser.isChecked()){
+
                     synthController.setLFOWave(1);
-                }
+
             }
         });
 
         toggleLFO.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(toggleLFO.getText()=="Off"&&toggleFilter.getText()=="On"){
+                if(toggleLFO.getText()=="Off"){
                     synthController.enableLFO(true);
                     toggleLFO.setText("On");
                     toggleLFO.setChecked(true);
@@ -1574,7 +1574,7 @@ public class SynthesizerView extends InstrumentView {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
+                lfoText.setText("LFO");
             }
 
             @Override
@@ -1584,7 +1584,7 @@ public class SynthesizerView extends InstrumentView {
         });
         lfoText = new TextView(context);
         lfoText.setTextSize(TEXT_SIZE);
-        lfoText.setText("1");
+        lfoText.setText("LFO");
         lfoText.setAllCaps(false);
         lfoText.setGravity(Gravity.CENTER);
         lfoText.setTextColor(Color.WHITE);

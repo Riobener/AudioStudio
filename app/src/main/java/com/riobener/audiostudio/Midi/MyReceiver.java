@@ -26,9 +26,6 @@ public class MyReceiver extends MidiReceiver {
             @Override
             public void run() {
 
-                /*Toast.makeText(context,"Channel "+data[0],Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,"Note ON "+data[1],Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,"Note "+data[2],Toast.LENGTH_SHORT).show();*/
                 if(data[1]==-112){
                     MainActivity.playNote(data[2]+1-36);
                 }else if(data[1]==-128){
