@@ -40,12 +40,12 @@ public class AllPassDelay {
     this(MWEngineCoreJNI.new_AllPassDelay(), true);
   }
 
-  public void delay(SWIGTYPE_p_SAMPLE_TYPE aDelay) {
-    MWEngineCoreJNI.AllPassDelay_delay(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(aDelay));
+  public void delay(double aDelay) {
+    MWEngineCoreJNI.AllPassDelay_delay(swigCPtr, this, aDelay);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE update(SWIGTYPE_p_SAMPLE_TYPE aSample) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.AllPassDelay_update(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(aSample)), true);
+  public double update(double aSample) {
+    return MWEngineCoreJNI.AllPassDelay_update(swigCPtr, this, aSample);
   }
 
 }

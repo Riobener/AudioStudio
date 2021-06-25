@@ -56,8 +56,8 @@ public class BufferUtility {
     return MWEngineCoreJNI.BufferUtility_getBitRate(sampleRate, bitDepth, channels);
   }
 
-  public static int calculateBufferLength(SWIGTYPE_p_SAMPLE_TYPE aMinRate) {
-    return MWEngineCoreJNI.BufferUtility_calculateBufferLength__SWIG_0(SWIGTYPE_p_SAMPLE_TYPE.getCPtr(aMinRate));
+  public static int calculateBufferLength(double aMinRate) {
+    return MWEngineCoreJNI.BufferUtility_calculateBufferLength__SWIG_0(aMinRate);
   }
 
   public static int calculateBufferLength(int milliSeconds) {
@@ -84,18 +84,18 @@ public class BufferUtility {
     return MWEngineCoreJNI.BufferUtility_getBPMbySamples(length, amountOfBars, sampleRate);
   }
 
-  public static SWIGTYPE_p_std__vectorT_SAMPLE_TYPE_p_t createSampleBuffers(int amountOfChannels, int bufferSize) {
+  public static SWIGTYPE_p_std__vectorT_double_p_t createSampleBuffers(int amountOfChannels, int bufferSize) {
     long cPtr = MWEngineCoreJNI.BufferUtility_createSampleBuffers(amountOfChannels, bufferSize);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_std__vectorT_SAMPLE_TYPE_p_t(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_std__vectorT_double_p_t(cPtr, false);
   }
 
-  public static SWIGTYPE_p_SAMPLE_TYPE generateSilentBuffer(int bufferSize) {
+  public static SWIGTYPE_p_double generateSilentBuffer(int bufferSize) {
     long cPtr = MWEngineCoreJNI.BufferUtility_generateSilentBuffer(bufferSize);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_SAMPLE_TYPE(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
   }
 
-  public static void bufferToFile(String filename, SWIGTYPE_p_SAMPLE_TYPE buffer, int bufferLength) {
-    MWEngineCoreJNI.BufferUtility_bufferToFile(filename, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(buffer), bufferLength);
+  public static void bufferToFile(String filename, SWIGTYPE_p_double buffer, int bufferLength) {
+    MWEngineCoreJNI.BufferUtility_bufferToFile(filename, SWIGTYPE_p_double.getCPtr(buffer), bufferLength);
   }
 
   public BufferUtility() {

@@ -40,24 +40,24 @@ public class AllPass {
     this(MWEngineCoreJNI.new_AllPass(), true);
   }
 
-  public void setBuffer(SWIGTYPE_p_SAMPLE_TYPE buf, int size) {
-    MWEngineCoreJNI.AllPass_setBuffer(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(buf), size);
+  public void setBuffer(SWIGTYPE_p_double buf, int size) {
+    MWEngineCoreJNI.AllPass_setBuffer(swigCPtr, this, SWIGTYPE_p_double.getCPtr(buf), size);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE process(SWIGTYPE_p_SAMPLE_TYPE input) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.AllPass_process(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(input)), true);
+  public double process(double input) {
+    return MWEngineCoreJNI.AllPass_process(swigCPtr, this, input);
   }
 
   public void mute() {
     MWEngineCoreJNI.AllPass_mute(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getFeedback() {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.AllPass_getFeedback(swigCPtr, this), true);
+  public double getFeedback() {
+    return MWEngineCoreJNI.AllPass_getFeedback(swigCPtr, this);
   }
 
-  public void setFeedback(SWIGTYPE_p_SAMPLE_TYPE val) {
-    MWEngineCoreJNI.AllPass_setFeedback(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(val));
+  public void setFeedback(double val) {
+    MWEngineCoreJNI.AllPass_setFeedback(swigCPtr, this, val);
   }
 
 }

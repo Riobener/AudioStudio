@@ -39,11 +39,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="landscape"
-            tools:ignore="Instantiatable">
-
-        </activity>
     </application>
 
 </manifest>

@@ -175,10 +175,10 @@ public class MainActivity extends Activity implements PianoTouchListener {
         newInstrument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String[] instruments = {"Синтезатор", "Драм машина"};
+                final String[] instruments = {"Synthesizer", "Drum machine"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Выберите вид инструмента");
+                builder.setTitle("Select the instrument:");
                 builder.setItems(instruments, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -330,7 +330,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
                                                      manager.getController(pager.getCurrentItem()).setName(nameGetter);
                                                  } else {
                                                      nameChanger.setText(oldName + "");
-                                                     Toast.makeText(MainActivity.this, "Длина названия от 5 до 20!", Toast.LENGTH_LONG).show();
+                                                     Toast.makeText(MainActivity.this, "Only from 5 to 20 characters!", Toast.LENGTH_LONG).show();
                                                  }
 
                                                  return true;
@@ -414,7 +414,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
                                                     _engine.getSequencerController().setTempo(bpmInInt, 4, 4); // update to match new tempo in 4/4 time
                                                 } else {
                                                     bpmChanger.setText(oldBPM + "");
-                                                    Toast.makeText(MainActivity.this, "Только выше 60 и ниже 240!", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(MainActivity.this, "Only from 60 to 240 bpm!", Toast.LENGTH_LONG).show();
                                                 }
 
                                                 return true;
@@ -883,7 +883,10 @@ public class MainActivity extends Activity implements PianoTouchListener {
             }
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        //nothing
+    }
     /**
      * Called when the activity is destroyed. This also fires
      * on screen orientation changes, hence the override as we need
@@ -905,7 +908,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
         // STEP 1 : preparing the native audio engine
 
-        _engine = new MWEngine(getApplicationContext(), new StateObserver());
+        _engine = new MWEngine( new StateObserver());
         MWEngine.optimizePerformance(this);
 
         // get the recommended buffer size for this device (NOTE : lower buffer sizes may
@@ -935,6 +938,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
         if (!_supportsAAudio) {
             findViewById(R.id.DriverSpinner).setVisibility(View.GONE);
+            findViewById(R.id.driverLayout).setVisibility(View.GONE);
         } else {
             ((Spinner) findViewById(R.id.DriverSpinner)).setOnItemSelectedListener(new DriverChangeHandler());
         }
@@ -984,34 +988,33 @@ public class MainActivity extends Activity implements PianoTouchListener {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        Log.d(LOG_TAG, "window focus changed for MWEngineActivity, has focus > " + hasFocus);
+    public void onWindowFocusChanged( boolean hasFocus ) {
+        Log.d( LOG_TAG, "window focus changed for MWEngineActivity, has focus > " + hasFocus );
 
-        if (!hasFocus) {
+        if ( !hasFocus ) {
             // suspending the app - halt audio rendering in MWEngine Thread to save CPU cycles
-            if (_engine != null)
-                _engine.pause();
-        } else {
+            if ( _engine != null )
+                _engine.stop();
+        }
+        else {
             // returning to the app
-            if (!_inited)
-                init();            // initialize this example application
+            if ( !_inited )
+                init();          // initialize this example application
             else
-                _engine.unpause(); // resumes existing audio rendering thread
+                _engine.start(); // resumes audio rendering
         }
     }
 
     /* event handlers */
 
     private class DriverChangeHandler implements AdapterView.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
             String selectedValue = parent.getItemAtPosition(pos).toString();
             _audioDriver = selectedValue.toLowerCase().equals("aaudio") ? Drivers.types.AAUDIO : Drivers.types.OPENSL;
-            _engine.setAudioDriver(_audioDriver);
+            _engine.setAudioDriver( _audioDriver );
         }
-
         @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
+        public void onNothingSelected(AdapterView<?> arg0) {}
     }
 
 
@@ -1034,25 +1037,17 @@ public class MainActivity extends Activity implements PianoTouchListener {
 
     private class StateObserver implements MWEngine.IObserver {
         private final Notifications.ids[] _notificationEnums = Notifications.ids.values(); // cache the enumerations (from native layer) as int Array
-
-        public void handleNotification(final int aNotificationId) {
-            switch (_notificationEnums[aNotificationId]) {
+        public void handleNotification( final int aNotificationId ) {
+            switch ( _notificationEnums[ aNotificationId ]) {
                 case ERROR_HARDWARE_UNAVAILABLE:
-                    Log.d(LOG_TAG, "ERROR : received driver error callback from native layer");
-                    // re-initialize thread
-                    if (_engine.canRestartEngine()) {
-                        _engine.dispose();
-                        _engine.createOutput(SAMPLE_RATE, BUFFER_SIZE, OUTPUT_CHANNELS, _audioDriver);
-                        _engine.start();
-                    } else {
-                        Log.d(LOG_TAG, "exceeded maximum amount of retries. Cannot continue using audio engine");
-                    }
+                    Log.d( LOG_TAG, "ERROR : received driver error callback from native layer" );
+                    _engine.dispose();
                     break;
                 case MARKER_POSITION_REACHED:
-                    Log.d(LOG_TAG, "Marker position has been reached");
+                    Log.d( LOG_TAG, "Marker position has been reached" );
                     break;
                 case RECORDING_COMPLETED:
-                    Log.d(LOG_TAG, "Recording has completed");
+                    Log.d( LOG_TAG, "Recording has completed" );
                     break;
             }
         }
@@ -1075,6 +1070,7 @@ public class MainActivity extends Activity implements PianoTouchListener {
                             sequencerPosition == 45 ||
                             sequencerPosition == 63) {
                         refreshCurrentPattern();
+
                     }
                     Note[][] map = manager.getController(pager.getCurrentItem()).getNoteMap();
 
@@ -1091,15 +1087,15 @@ public class MainActivity extends Activity implements PianoTouchListener {
                         for(int i = 0; i<pianoRoll.getNumRows();i++){
                             map[sequencerPosition][i].setPlaying(true);
                         }
-
-
+                    /*Log.d(LOG_TAG, "LEVEL METER " + LevelUtility.linear(manager.getInstrument(0).getAudioChannel(),0));*/
+                    break;
                 case RECORDED_SNIPPET_READY:
-                    /*runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         public void run() {
                             // we run the saving on a different thread to prevent buffer under runs while rendering audio
                             _engine.saveRecordedSnippet(aNotificationValue); // notification value == snippet buffer index
                         }
-                    });*/
+                    });
                     break;
                 case RECORDED_SNIPPET_SAVED:
                     Log.d(LOG_TAG, "Recorded snippet " + aNotificationValue + " saved to storage");

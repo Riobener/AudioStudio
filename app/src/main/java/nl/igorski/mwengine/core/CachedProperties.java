@@ -36,20 +36,20 @@ public class CachedProperties {
     }
   }
 
-  public void setEnvelope(SWIGTYPE_p_SAMPLE_TYPE value) {
-    MWEngineCoreJNI.CachedProperties_envelope_set(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(value));
+  public void setEnvelope(double value) {
+    MWEngineCoreJNI.CachedProperties_envelope_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getEnvelope() {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.CachedProperties_envelope_get(swigCPtr, this), true);
+  public double getEnvelope() {
+    return MWEngineCoreJNI.CachedProperties_envelope_get(swigCPtr, this);
   }
 
-  public void setReleaseLevel(SWIGTYPE_p_SAMPLE_TYPE value) {
-    MWEngineCoreJNI.CachedProperties_releaseLevel_set(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(value));
+  public void setReleaseLevel(double value) {
+    MWEngineCoreJNI.CachedProperties_releaseLevel_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getReleaseLevel() {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.CachedProperties_releaseLevel_get(swigCPtr, this), true);
+  public double getReleaseLevel() {
+    return MWEngineCoreJNI.CachedProperties_releaseLevel_get(swigCPtr, this);
   }
 
   public void setEnvelopeOffset(int value) {
@@ -60,12 +60,12 @@ public class CachedProperties {
     return MWEngineCoreJNI.CachedProperties_envelopeOffset_get(swigCPtr, this);
   }
 
-  public void setPhaseIncr(SWIGTYPE_p_SAMPLE_TYPE value) {
-    MWEngineCoreJNI.CachedProperties_phaseIncr_set(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(value));
+  public void setPhaseIncr(double value) {
+    MWEngineCoreJNI.CachedProperties_phaseIncr_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getPhaseIncr() {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.CachedProperties_phaseIncr_get(swigCPtr, this), true);
+  public double getPhaseIncr() {
+    return MWEngineCoreJNI.CachedProperties_phaseIncr_get(swigCPtr, this);
   }
 
   public void setArpeggioPosition(int value) {
@@ -84,12 +84,12 @@ public class CachedProperties {
     return MWEngineCoreJNI.CachedProperties_arpeggioStep_get(swigCPtr, this);
   }
 
-  public void setOscillatorPhases(SWIGTYPE_p_std__vectorT_SAMPLE_TYPE_t value) {
-    MWEngineCoreJNI.CachedProperties_oscillatorPhases_set(swigCPtr, this, SWIGTYPE_p_std__vectorT_SAMPLE_TYPE_t.getCPtr(value));
+  public void setOscillatorPhases(SWIGTYPE_p_std__vectorT_double_t value) {
+    MWEngineCoreJNI.CachedProperties_oscillatorPhases_set(swigCPtr, this, SWIGTYPE_p_std__vectorT_double_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_std__vectorT_SAMPLE_TYPE_t getOscillatorPhases() {
-    return new SWIGTYPE_p_std__vectorT_SAMPLE_TYPE_t(MWEngineCoreJNI.CachedProperties_oscillatorPhases_get(swigCPtr, this), true);
+  public SWIGTYPE_p_std__vectorT_double_t getOscillatorPhases() {
+    return new SWIGTYPE_p_std__vectorT_double_t(MWEngineCoreJNI.CachedProperties_oscillatorPhases_get(swigCPtr, this), true);
   }
 
   public CachedProperties() {

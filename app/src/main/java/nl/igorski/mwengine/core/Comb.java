@@ -40,32 +40,32 @@ public class Comb {
     this(MWEngineCoreJNI.new_Comb(), true);
   }
 
-  public void setBuffer(SWIGTYPE_p_SAMPLE_TYPE buf, int size) {
-    MWEngineCoreJNI.Comb_setBuffer(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(buf), size);
+  public void setBuffer(SWIGTYPE_p_double buf, int size) {
+    MWEngineCoreJNI.Comb_setBuffer(swigCPtr, this, SWIGTYPE_p_double.getCPtr(buf), size);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE process(SWIGTYPE_p_SAMPLE_TYPE input) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.Comb_process(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(input)), true);
+  public double process(double input) {
+    return MWEngineCoreJNI.Comb_process(swigCPtr, this, input);
   }
 
   public void mute() {
     MWEngineCoreJNI.Comb_mute(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getDamp() {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.Comb_getDamp(swigCPtr, this), true);
+  public double getDamp() {
+    return MWEngineCoreJNI.Comb_getDamp(swigCPtr, this);
   }
 
-  public void setDamp(SWIGTYPE_p_SAMPLE_TYPE val) {
-    MWEngineCoreJNI.Comb_setDamp(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(val));
+  public void setDamp(double val) {
+    MWEngineCoreJNI.Comb_setDamp(swigCPtr, this, val);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getFeedback() {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.Comb_getFeedback(swigCPtr, this), true);
+  public double getFeedback() {
+    return MWEngineCoreJNI.Comb_getFeedback(swigCPtr, this);
   }
 
-  public void setFeedback(SWIGTYPE_p_SAMPLE_TYPE val) {
-    MWEngineCoreJNI.Comb_setFeedback(swigCPtr, this, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(val));
+  public void setFeedback(double val) {
+    MWEngineCoreJNI.Comb_setFeedback(swigCPtr, this, val);
   }
 
 }

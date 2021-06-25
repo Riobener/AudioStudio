@@ -76,9 +76,9 @@ public class Tremolo extends BaseProcessor {
     MWEngineCoreJNI.Tremolo_setRightDecay(swigCPtr, this, aDecay);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getTableForChannel(int aChannelNum) {
+  public SWIGTYPE_p_double getTableForChannel(int aChannelNum) {
     long cPtr = MWEngineCoreJNI.Tremolo_getTableForChannel(swigCPtr, this, aChannelNum);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_SAMPLE_TYPE(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
   }
 
   public boolean isStereo() {

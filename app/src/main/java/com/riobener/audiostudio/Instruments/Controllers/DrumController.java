@@ -86,6 +86,7 @@ public class DrumController extends Controller {
     public Vector<SampleEvent> getEvents(){
         return sampleEvents;
     }
+
     private void createDrumEvent(String key, int position) {
         final SampleEvent drumEvent = new SampleEvent(sampler);
         drumEvent.setSample(SampleManager.getSample(key));

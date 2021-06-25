@@ -36,16 +36,20 @@ public class LevelUtility {
     }
   }
 
-  public static SWIGTYPE_p_SAMPLE_TYPE RMS(AudioChannel audioChannel, int channelNum) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.LevelUtility_RMS(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum), true);
+  public static double max(AudioChannel audioChannel, int channelNum) {
+    return MWEngineCoreJNI.LevelUtility_max(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum);
   }
 
-  public static SWIGTYPE_p_SAMPLE_TYPE dBSPL(AudioChannel audioChannel, int channelNum) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.LevelUtility_dBSPL(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum), true);
+  public static float RMS(AudioChannel audioChannel, int channelNum) {
+    return MWEngineCoreJNI.LevelUtility_RMS(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum);
   }
 
-  public static SWIGTYPE_p_SAMPLE_TYPE linear(AudioChannel audioChannel, int channelNum) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.LevelUtility_linear(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum), true);
+  public static float dBSPL(AudioChannel audioChannel, int channelNum) {
+    return MWEngineCoreJNI.LevelUtility_dBSPL(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum);
+  }
+
+  public static float linear(AudioChannel audioChannel, int channelNum) {
+    return MWEngineCoreJNI.LevelUtility_linear(AudioChannel.getCPtr(audioChannel), audioChannel, channelNum);
   }
 
   public LevelUtility() {

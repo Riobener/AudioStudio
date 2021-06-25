@@ -163,9 +163,9 @@ public class AudioChannel {
     MWEngineCoreJNI.AudioChannel_createOutputBuffer(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_AudioBuffer getOutputBuffer() {
+  public SWIGTYPE_p_ResizableAudioBuffer getOutputBuffer() {
     long cPtr = MWEngineCoreJNI.AudioChannel_getOutputBuffer(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_AudioBuffer(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_ResizableAudioBuffer(cPtr, false);
   }
 
   public void mixBuffer(SWIGTYPE_p_AudioBuffer bufferToMixInto, float mixVolume) {

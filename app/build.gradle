@@ -31,7 +31,7 @@ android {
 
                 arguments "-DINCLUDE_AAUDIO_LIBRARY=" + ( minSdkVersion.getApiLevel() >= 26 ).toString()
 
-
+                arguments "-DRUN_TESTS=" + getRunTests()
 
                 cFlags   "-O3"
                 cppFlags "-std=c++14 -Werror -Wno-deprecated-declarations -fexceptions -frtti"
@@ -43,7 +43,7 @@ android {
             path "CMakeLists.txt"
         }
     }
-    if ( project.hasProperty( "RELEASE_STORE_FILE" )) {
+   /* if ( project.hasProperty( "RELEASE_STORE_FILE" )) {
         signingConfigs {
             release {
                 storeFile file(RELEASE_STORE_FILE)
@@ -52,7 +52,7 @@ android {
                 keyPassword RELEASE_KEY_PASSWORD
             }
         }
-    }
+    }*/
     buildTypes {
         release {
             minifyEnabled false
@@ -85,7 +85,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
 
-
+clean.doFirst {
+    delete fileTree("src/main/java/nl/igorski/mwengine/core") { include '**/*.java' }
+}
 
 allprojects {
     repositories {

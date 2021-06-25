@@ -121,12 +121,12 @@ public class BaseSynthEvent extends BaseAudioEvent {
     return (cPtr == 0) ? null : new CachedProperties(cPtr, false);
   }
 
-  public SWIGTYPE_p_SAMPLE_TYPE getPhaseForOscillator(int aOscillatorNum) {
-    return new SWIGTYPE_p_SAMPLE_TYPE(MWEngineCoreJNI.BaseSynthEvent_getPhaseForOscillator(swigCPtr, this, aOscillatorNum), true);
+  public double getPhaseForOscillator(int aOscillatorNum) {
+    return MWEngineCoreJNI.BaseSynthEvent_getPhaseForOscillator(swigCPtr, this, aOscillatorNum);
   }
 
-  public void setPhaseForOscillator(int aOscillatorNum, SWIGTYPE_p_SAMPLE_TYPE aPhase) {
-    MWEngineCoreJNI.BaseSynthEvent_setPhaseForOscillator(swigCPtr, this, aOscillatorNum, SWIGTYPE_p_SAMPLE_TYPE.getCPtr(aPhase));
+  public void setPhaseForOscillator(int aOscillatorNum, double aPhase) {
+    MWEngineCoreJNI.BaseSynthEvent_setPhaseForOscillator(swigCPtr, this, aOscillatorNum, aPhase);
   }
 
   public void setLastWriteIndex(int value) {

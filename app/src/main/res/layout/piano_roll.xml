@@ -24,7 +24,7 @@
             android:id="@+id/highLightMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Редактировать"
+            android:text="Edit"
             android:textAllCaps="false"
             android:textSize="15dp"></Button>
         <Button
@@ -32,7 +32,7 @@
             android:id="@+id/selectAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Выделить все"
+            android:text="Select all"
             android:textAllCaps="false"
             android:textSize="15dp"
             android:enabled="false"></Button>
@@ -41,7 +41,7 @@
             android:id="@+id/deleteNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Удалить"
+            android:text="Delete"
             android:textAllCaps="false"
             android:textSize="15dp"
             android:enabled="false"></Button>

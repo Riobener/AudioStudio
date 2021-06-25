@@ -29,12 +29,9 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:textAlignment="center"
-                android:text="Настройки текущего трека"
+                android:text="Settings"
                 android:textSize="25dp"></TextView>
         </LinearLayout>
-
-
-
 
         <LinearLayout
             android:layout_marginRight="20dp"
@@ -53,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25dp"
-                    android:text="Изменить bpm трека:"></TextView>
+                    android:text="Change track bpm:"></TextView>
                 <EditText
                     android:maxLength="3"
                     android:id="@+id/bpmChanger"
@@ -90,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25dp"
-                    android:text="Увеличить количество тактов трека:"></TextView>
+                    android:text="Expand measures:"></TextView>
                 <TextView
                     android:textColor="#444444"
                     android:layout_below="@+id/measuresSettings"
@@ -99,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
-                    android:text="Текущий размер тактов"></TextView>
+                    android:text="Increasing the measures of track"></TextView>
                 <Button
                     android:textSize="20dp"
                     android:layout_alignParentRight="true"
@@ -107,7 +104,7 @@
                     android:textAllCaps="false"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Увеличить"></Button>
+                    android:text="Expand"></Button>
             </RelativeLayout>
 
         </LinearLayout>
@@ -118,6 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="2px"></View>
         <LinearLayout
+            android:id="@+id/driverLayout"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:orientation="horizontal"
@@ -134,16 +132,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25dp"
-                    android:text="Выбрать звуковой драйвер:"></TextView>
-                <TextView
-                    android:textColor="#444444"
-                    android:layout_below="@+id/driverText"
-                    android:id="@+id/driverNotation"
-                    android:layout_alignParentLeft="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="10dp"
-                    android:text="Если не появился список доступных драйверов, значит ваше устройство их не поддерживает"></TextView>
+                    android:text="Select audio driver:"></TextView>
+
                 <Spinner
                     android:layout_alignParentRight="true"
                     android:id="@+id/DriverSpinner"

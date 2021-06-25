@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2020 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2013-2021 Igor Zinken - https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -29,7 +29,6 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Build;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Process;
 import android.util.Log;
@@ -37,7 +36,7 @@ import android.view.WindowManager;
 
 import nl.igorski.mwengine.core.*;
 
-public final class MWEngine extends Thread
+public final class MWEngine
 {
     /**
      * interface to receive state change messages from the engine
@@ -78,9 +77,8 @@ public final class MWEngine extends Thread
         void handleNotification( int aNotificationId, int aNotificationValue );
     }
 
-    private static MWEngine INSTANCE;
+    private static MWEngine INSTANCE; // we only allow a single instance to be constructed for resource optimization
     private IObserver       _observer;
-    private Context         _context;
 
     private SequencerController _sequencerController;
 
@@ -95,28 +93,21 @@ public final class MWEngine extends Thread
 
     /* engine / thread states */
 
-    private boolean _nativeEngineRunning = false;
-    private int     _nativeEngineRetries = 0;
     private boolean _initialCreation     = true;
-    private boolean _disposed            = false;
-    private boolean _threadStarted       = false;
     private boolean _isRunning           = false;
-    private boolean _paused              = false;
-    private final Object _pauseLock      = new Object();
 
     /**
      * The Java-side bridge to manage all native layer components
      * of the MWEngine audio engine
      *
-     * @param aContext {Context} current application context
      * @param aObserver {MWEngine.IObserver} observer that will monitor engine states
      */
-    public MWEngine( Context aContext, IObserver aObserver ) {
-        if ( INSTANCE != null ) throw new Error( "MWEngine already instantiated" );
-
-        INSTANCE   = this;
-        _context   = aContext;
-        _observer  = aObserver;
+    public MWEngine( IObserver aObserver ) {
+        if ( INSTANCE != null ) {
+            throw new Error( "There is already an MWEngine instance registered. dispose() the earlier instance if it is no longer used." );
+        }
+        INSTANCE  = this;
+        _observer = aObserver;
 
         MWEngineCore.init(); // registers the interface between this Java class and the native code
     }
@@ -186,8 +177,6 @@ public final class MWEngine extends Thread
 
         _sequencerController = new SequencerController();
         _sequencerController.prepare( 120.0f, 4, 4 );
-
-        _disposed = false;
     }
 
     public void setup( int aSampleRate, int aBufferSize, int aOutputChannels ) {
@@ -197,15 +186,11 @@ public final class MWEngine extends Thread
 
         AudioEngine.setup( BUFFER_SIZE, SAMPLE_RATE, OUTPUT_CHANNELS );
 
-        if ( !_isRunning || !_nativeEngineRunning ) return;
-
-        // TODO: synchronize native layer class instances that cached above values??
-        pause();   // toggling paused state of the thread will stop the engine
-        unpause(); // and upon restart, initialize it with the new settings
-    }
-
-    public static MWEngine getInstance() {
-        return INSTANCE;
+        if ( !_isRunning ) {
+            return;
+        }
+        stop();  // TODO: instead of stop/start, synchronize native layer class instances that cached above values??
+        start(); // restart engine to initialize it with the new settings
     }
 
     public float getVolume() {
@@ -321,30 +306,17 @@ public final class MWEngine extends Thread
 
     public void reset() {
         AudioEngine.reset();
-        _nativeEngineRetries = 0;
     }
 
     public void setAudioDriver( Drivers.types audioDriver ) {
         if ( AUDIO_DRIVER == audioDriver ) return;
 
         AUDIO_DRIVER = audioDriver;
-        _nativeEngineRetries = 0;
 
-        if ( !_isRunning || !_nativeEngineRunning ) return;
+        if ( !_isRunning ) return;
 
-        pause();   // toggling paused state of the thread will stop the engine
-        unpause(); // and upon restart, initialize it with the new settings
-    }
-
-    /**
-     * queries whether we can try to restart the engine
-     * in case an error has occurred, note this will also
-     * increment the amount of retries
-     *
-     * @return {boolean}
-     */
-    public boolean canRestartEngine() {
-        return ++_nativeEngineRetries < 5;
+        stop();  // toggling paused state of the thread will stop the engine
+        start(); // and upon restart, initialize it with the new settings
     }
 
     /**
@@ -352,98 +324,51 @@ public final class MWEngine extends Thread
      * This halts the audio rendering and stops the Thread
      */
     public void dispose() {
-        _disposed  = true;
         _isRunning = false;
 
-        pause();
+        stop();
         reset();
 
         _observer = null;
-        _context  = null;
         INSTANCE  = null;
     }
 
     /* threading */
 
-    @Override
     public void start() {
+        if ( _isRunning ) {
+            return;
+        }
+        Log.d( "MWENGINE", "starting native audio rendering thread @ " + SAMPLE_RATE + " Hz using " + BUFFER_SIZE + " samples per buffer" );
+
+        MWEngineCore.init(); // (re-)register JNI interface to match current/updated JNI environment (e.g. after app suspend/focus change)
+        AudioEngine.start( AUDIO_DRIVER );
+
+        _isRunning = true;
+    }
+
+    public void stop() {
         if ( !_isRunning ) {
-            if ( !_threadStarted )
-                super.start();
-
-            _threadStarted = true;
-            _isRunning     = true;
+            return;
         }
-        else {
-            unpause();
-        }
+        AudioEngine.stop();
+        _isRunning = false;
     }
 
     /**
-     * invoke when the application suspends, this
-     * halts the execution of the audio rendering and causes the
-     * Thread to free CPU resources
+     * @deprecated use stop() instead
      */
+    @Deprecated
     public void pause() {
-        _paused = true;
-
-        // halt the audio rendering in the native layer of the engine
-        if ( _nativeEngineRunning ) AudioEngine.stop();
+        stop();
     }
 
     /**
-     * invoke when the application regains focus
+     * @deprecated use start() instead
      */
+    @Deprecated
     public void unpause() {
-        _paused = false;
-
-        synchronized ( _pauseLock ) {
-            _pauseLock.notify();
-        }
-    }
-
-    public void run() {
-        Log.d( "MWENGINE", "starting MWEngine render thread" );
-
-        Process.setThreadPriority( Process.THREAD_PRIORITY_URGENT_AUDIO );
-        handleThreadStartTimeout();
-
-        while ( _isRunning ) {
-            // start the native rendering thread
-            if ( !_paused && !_nativeEngineRunning ) {
-                Log.d( "MWENGINE", "starting native audio rendering thread @ " + SAMPLE_RATE + " Hz using " + BUFFER_SIZE + " samples per buffer" );
-
-                _nativeEngineRunning = true;
-                MWEngineCore.init(); // (re-)register JNI interface to match current/updated JNI environment (e.g. after app suspend/focus change)
-                AudioEngine.start( AUDIO_DRIVER );
-            }
-
-            // the remainder of this function body is blocked
-            // as long as the native thread is running, getting here
-            // implies engine has been stopped (see pause()) or an
-            // error occurred
-
-            _nativeEngineRunning = false;
-
-            Log.d( "MWENGINE", "native audio rendering thread halted" );
-
-            if ( _paused && !_disposed ) {
-                try {
-                    Thread.sleep( 50L ); // slight timeout to avoid deadlocks when attempting to lock
-                }
-                catch ( Exception e ) {}
-
-                // obtain lock and wait until it is released by unpause()
-                synchronized ( _pauseLock ) {
-                    while ( _paused ) {
-                        try {
-                            _pauseLock.wait();
-                        }
-                        catch ( InterruptedException e ) {}
-                    }
-                }
-            }
-        }
+        start();
     }
 
     /* helper functions */
@@ -454,24 +379,6 @@ public final class MWEngine extends Thread
 
         // convert milliseconds to sample buffer size
         return ( int ) (( amountOfMinutes * 60000 ) * ( SAMPLE_RATE / 1000 ));
-    }
-
-    /**
-     * rare bug : occasionally the audio engine won't start, closing / reopening
-     * the application tends to work....
-     *
-     * this poor man's check checks whether the bridge has submitted its connection
-     * message from the native layer after a short timeout
-     */
-    private void handleThreadStartTimeout() {
-        if ( _nativeEngineRunning ) return;
-        final Handler handler = new Handler( _context.getMainLooper() );
-        handler.postDelayed( new Runnable() {
-            public void run() {
-                if ( !_disposed && !_nativeEngineRunning)
-                    _observer.handleNotification( Notifications.ids.ERROR_THREAD_START.ordinal() );
-            }
-        }, 2000 );
     }
 
     /* native bridge methods */

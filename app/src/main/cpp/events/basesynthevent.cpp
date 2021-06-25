@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * * Copyright (c) 2013-2021 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2013-2021 Igor Zinken - https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -211,14 +211,9 @@ void BaseSynthEvent::calculateBuffers()
         _hasMinLength = false;                          // keeping track if the min length has been rendered
     }
 
-    // buffer is only instantiated once as it is the size of the engines BUFFER_SIZE
-    // (this event will not be cached in its entirety but will repeatedly render snippets into its buffer)
-
-    if ( _buffer == nullptr )
-        _buffer = new AudioBuffer( AudioEngineProps::OUTPUT_CHANNELS, AudioEngineProps::BUFFER_SIZE );
-
-    if ( isSequenced && _synthInstrument != nullptr )
-         _synthInstrument->synthesizer->initializeEventProperties( this, true );
+    if ( isSequenced && _synthInstrument != nullptr ) {
+        _synthInstrument->synthesizer->initializeEventProperties( this, true );
+    }
 }
 
 /**
@@ -246,6 +241,8 @@ void BaseSynthEvent::mixBuffer( AudioBuffer* outputBuffer, int bufferPos,
     // extended by a positive release time on the instruments ADSR envelope
     int eventEnd = getEventEnd();
 
+    ResizableAudioBuffer* tempBuffer = getEmptyTempBuffer( outputBuffer->bufferSize );
+
     if (( bufferPos >= _eventStart || bufferEndPos > _eventStart ) &&
           bufferPos < eventEnd )
     {
@@ -262,13 +259,13 @@ void BaseSynthEvent::mixBuffer( AudioBuffer* outputBuffer, int bufferPos,
         else {
             released = false;
         }
-        // unset previous buffer contents
-        _buffer->silenceBuffers();
-        // render the snippet
-        _synthInstrument->synthesizer->render( _buffer, this );
 
-        // note we merge using 1.0 as mix volume (event volume was applied during synthesis)
-        outputBuffer->mergeBuffers( _buffer, 0, writeOffset, 1.0 );
+        // render the snippet into the temp buffer
+        _synthInstrument->synthesizer->render( tempBuffer, this );
+
+        // merge temp buffer into the output buffer
+        // note we merge using 1.0 as mix volume as the events volume was applied during synthesis
+        outputBuffer->mergeBuffers( tempBuffer, 0, writeOffset, 1.0 );
 
         // reset of event properties at end of write
         if ( lastWriteIndex >= _eventLength )
@@ -285,17 +282,17 @@ void BaseSynthEvent::mixBuffer( AudioBuffer* outputBuffer, int bufferPos,
         if (( minBufferPosition >= _eventStart || ( minBufferPosition + totalSamplesToWrite ) > _eventStart ) &&
               minBufferPosition < eventEnd )
         {
-            // render the snippet from the starts
+            // render the snippet from the start
             calculateBuffers();
             lastWriteIndex = 0;
 
             // TODO: specify total render range in ::render method ? this would avoid unnecessary buffer merging ;)
             // also synthesizer now renders a full output buffer size (wasteful)
 
-            _synthInstrument->synthesizer->render( _buffer, this ); // overwrites previous buffer contents
+            _synthInstrument->synthesizer->render( tempBuffer, this ); // overwrites previous buffer contents
 
             // note we merge using 1.0 as mix volume (event volume was applied during synthesis)
-            outputBuffer->mergeBuffers( _buffer, 0, loopOffset, 1.0 );
+            outputBuffer->mergeBuffers( tempBuffer, 0, loopOffset, 1.0 );
 
             // update the last write index so the next iteration can pick up
             // rendering from the last audible sample
@@ -314,7 +311,8 @@ void BaseSynthEvent::mixBuffer( AudioBuffer* outputBuffer )
     lock();
 
     int bufferSize = outputBuffer->bufferSize;
-    _synthInstrument->synthesizer->render( outputBuffer, this );
+    ResizableAudioBuffer* tempBuffer = getEmptyTempBuffer( bufferSize );
+    _synthInstrument->synthesizer->render( tempBuffer, this );
 
     // keep track of the rendered samples, in case of a key up event
     // we still want to have the sound ring for the minimum period
@@ -341,14 +339,16 @@ void BaseSynthEvent::mixBuffer( AudioBuffer* outputBuffer )
 
                 for ( int i = bufferSize - amt; i < bufferSize; ++i )
                 {
-                    for ( int c = 0, nc = _buffer->amountOfChannels; c < nc; ++c )
-                        _buffer->getBufferForChannel( c )[ i ] *= amp;
-
+                    for ( int c = 0, nc = tempBuffer->amountOfChannels; c < nc; ++c ) {
+                        tempBuffer->getBufferForChannel( c )[ i ] *= amp;
+                    }
                     amp -= envIncr;
                 }
             }
         }
     }
+    // merge temp buffer into output buffer
+    outputBuffer->mergeBuffers( tempBuffer, 0, 0, 1.0 );
     unlock();
 }
 
@@ -386,6 +386,14 @@ void BaseSynthEvent::triggerRelease()
     // phases, let the release envelope operate from the current level
     cachedProps.releaseLevel   = cachedProps.envelope;
     cachedProps.envelopeOffset = _synthInstrument->adsr->getReleaseStartOffset();
+}
+
+ResizableAudioBuffer* BaseSynthEvent::getEmptyTempBuffer( int bufferSize )
+{
+    ResizableAudioBuffer* tempBuffer = _synthInstrument->synthesizer->getTempBuffer();
+    tempBuffer->silenceBuffers();     // unset previous buffer contents
+    tempBuffer->resize( bufferSize ); // equalize buffer sizes
+    return tempBuffer;
 }
 
 /**

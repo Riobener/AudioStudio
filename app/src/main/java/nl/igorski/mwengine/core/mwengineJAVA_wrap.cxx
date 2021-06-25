@@ -1206,14 +1206,14 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AudioChann
 SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AudioChannel_1getOutputBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   MWEngine::AudioChannel *arg1 = (MWEngine::AudioChannel *) 0 ;
-  AudioBuffer *result = 0 ;
+  ResizableAudioBuffer *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AudioChannel **)&jarg1; 
-  result = (AudioBuffer *)(arg1)->getOutputBuffer();
-  *(AudioBuffer **)&jresult = result; 
+  result = (ResizableAudioBuffer *)(arg1)->getOutputBuffer();
+  *(ResizableAudioBuffer **)&jresult = result; 
   return jresult;
 }
 
@@ -3836,44 +3836,32 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_new_1AllP
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPassDelay_1delay(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPassDelay_1delay(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::AllPassDelay *arg1 = (MWEngine::AllPassDelay *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AllPassDelay **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   (arg1)->delay(arg2);
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPassDelay_1update(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPassDelay_1update(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jdouble jresult = 0 ;
   MWEngine::AllPassDelay *arg1 = (MWEngine::AllPassDelay *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   SAMPLE_TYPE result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AllPassDelay **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return 0;
-  }
-  arg2 = *argp2; 
-  result = (arg1)->update(arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  arg2 = (SAMPLE_TYPE)jarg2; 
+  result = (SAMPLE_TYPE)(arg1)->update(arg2);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
@@ -4335,25 +4323,19 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1s
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1process(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1process(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jdouble jresult = 0 ;
   MWEngine::AllPass *arg1 = (MWEngine::AllPass *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   SAMPLE_TYPE result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AllPass **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return 0;
-  }
-  arg2 = *argp2; 
-  result = (arg1)->process(arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  arg2 = (SAMPLE_TYPE)jarg2; 
+  result = (SAMPLE_TYPE)(arg1)->process(arg2);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
@@ -4369,8 +4351,8 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1m
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1getFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1getFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
   MWEngine::AllPass *arg1 = (MWEngine::AllPass *) 0 ;
   SAMPLE_TYPE result;
   
@@ -4378,27 +4360,21 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AllPass **)&jarg1; 
-  result = (arg1)->getFeedback();
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE)(arg1)->getFeedback();
+  jresult = (jdouble)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1setFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_AllPass_1setFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::AllPass *arg1 = (MWEngine::AllPass *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AllPass **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   (arg1)->setFeedback(arg2);
 }
 
@@ -4440,25 +4416,19 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1setB
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1process(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1process(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jdouble jresult = 0 ;
   MWEngine::Comb *arg1 = (MWEngine::Comb *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   SAMPLE_TYPE result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::Comb **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return 0;
-  }
-  arg2 = *argp2; 
-  result = (arg1)->process(arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  arg2 = (SAMPLE_TYPE)jarg2; 
+  result = (SAMPLE_TYPE)(arg1)->process(arg2);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
@@ -4474,8 +4444,8 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1mute
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1getDamp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1getDamp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
   MWEngine::Comb *arg1 = (MWEngine::Comb *) 0 ;
   SAMPLE_TYPE result;
   
@@ -4483,33 +4453,27 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1get
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::Comb **)&jarg1; 
-  result = (arg1)->getDamp();
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE)(arg1)->getDamp();
+  jresult = (jdouble)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1setDamp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1setDamp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::Comb *arg1 = (MWEngine::Comb *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::Comb **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   (arg1)->setDamp(arg2);
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1getFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1getFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
   MWEngine::Comb *arg1 = (MWEngine::Comb *) 0 ;
   SAMPLE_TYPE result;
   
@@ -4517,27 +4481,21 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1get
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::Comb **)&jarg1; 
-  result = (arg1)->getFeedback();
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE)(arg1)->getFeedback();
+  jresult = (jdouble)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1setFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_Comb_1setFeedback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::Comb *arg1 = (MWEngine::Comb *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::Comb **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   (arg1)->setFeedback(arg2);
 }
 
@@ -5152,20 +5110,14 @@ SWIGEXPORT jint JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BufferUtil
 }
 
 
-SWIGEXPORT jint JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BufferUtility_1calculateBufferLength_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+SWIGEXPORT jint JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BufferUtility_1calculateBufferLength_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jdouble jarg1) {
   jint jresult = 0 ;
   SAMPLE_TYPE arg1 ;
-  SAMPLE_TYPE *argp1 ;
   int result;
   
   (void)jenv;
   (void)jcls;
-  argp1 = *(SAMPLE_TYPE **)&jarg1; 
-  if (!argp1) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return 0;
-  }
-  arg1 = *argp1; 
+  arg1 = (SAMPLE_TYPE)jarg1; 
   result = (int)MWEngine::BufferUtility::calculateBufferLength(arg1);
   jresult = (jint)result; 
   return jresult;
@@ -5318,7 +5270,7 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BufferUtil
   }
   arg2 = *(SAMPLE_TYPE **)&jarg2; 
   arg3 = (int)jarg3; 
-  MWEngine::BufferUtility::bufferToFile((char const *)arg1,(SAMPLE_TYPE const *)arg2,arg3);
+  MWEngine::BufferUtility::bufferToFile((char const *)arg1,(double const *)arg2,arg3);
   if (arg1) jenv->ReleaseStringUTFChars(jarg1, (const char *)arg1);
 }
 
@@ -5451,8 +5403,8 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BulkCacher
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1RMS(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1max(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jdouble jresult = 0 ;
   MWEngine::AudioChannel *arg1 = (MWEngine::AudioChannel *) 0 ;
   int arg2 ;
   SAMPLE_TYPE result;
@@ -5462,42 +5414,59 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtil
   (void)jarg1_;
   arg1 = *(MWEngine::AudioChannel **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = MWEngine::LevelUtility::RMS(arg1,arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE)MWEngine::LevelUtility::max(arg1,arg2);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1dBSPL(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jfloat JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1RMS(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
   MWEngine::AudioChannel *arg1 = (MWEngine::AudioChannel *) 0 ;
   int arg2 ;
-  SAMPLE_TYPE result;
+  float result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AudioChannel **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = MWEngine::LevelUtility::dBSPL(arg1,arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (float)MWEngine::LevelUtility::RMS(arg1,arg2);
+  jresult = (jfloat)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1linear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jfloat JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1dBSPL(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
   MWEngine::AudioChannel *arg1 = (MWEngine::AudioChannel *) 0 ;
   int arg2 ;
-  SAMPLE_TYPE result;
+  float result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::AudioChannel **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = MWEngine::LevelUtility::linear(arg1,arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (float)MWEngine::LevelUtility::dBSPL(arg1,arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_LevelUtility_1linear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  MWEngine::AudioChannel *arg1 = (MWEngine::AudioChannel *) 0 ;
+  int arg2 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(MWEngine::AudioChannel **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float)MWEngine::LevelUtility::linear(arg1,arg2);
+  jresult = (jfloat)result; 
   return jresult;
 }
 
@@ -7817,27 +7786,21 @@ SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseCachea
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1envelope_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1envelope_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::CachedProperties *arg1 = (MWEngine::CachedProperties *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::CachedProperties **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   if (arg1) (arg1)->envelope = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1envelope_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1envelope_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
   MWEngine::CachedProperties *arg1 = (MWEngine::CachedProperties *) 0 ;
   SAMPLE_TYPE result;
   
@@ -7845,33 +7808,27 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedPro
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::CachedProperties **)&jarg1; 
-  result =  ((arg1)->envelope);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE) ((arg1)->envelope);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1releaseLevel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1releaseLevel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::CachedProperties *arg1 = (MWEngine::CachedProperties *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::CachedProperties **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   if (arg1) (arg1)->releaseLevel = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1releaseLevel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1releaseLevel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
   MWEngine::CachedProperties *arg1 = (MWEngine::CachedProperties *) 0 ;
   SAMPLE_TYPE result;
   
@@ -7879,8 +7836,8 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedPro
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::CachedProperties **)&jarg1; 
-  result =  ((arg1)->releaseLevel);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE) ((arg1)->releaseLevel);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
@@ -7913,27 +7870,21 @@ SWIGEXPORT jint JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProp
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1phaseIncr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1phaseIncr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   MWEngine::CachedProperties *arg1 = (MWEngine::CachedProperties *) 0 ;
   SAMPLE_TYPE arg2 ;
-  SAMPLE_TYPE *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::CachedProperties **)&jarg1; 
-  argp2 = *(SAMPLE_TYPE **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (SAMPLE_TYPE)jarg2; 
   if (arg1) (arg1)->phaseIncr = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1phaseIncr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedProperties_1phaseIncr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
   MWEngine::CachedProperties *arg1 = (MWEngine::CachedProperties *) 0 ;
   SAMPLE_TYPE result;
   
@@ -7941,8 +7892,8 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_CachedPro
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::CachedProperties **)&jarg1; 
-  result =  ((arg1)->phaseIncr);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE) ((arg1)->phaseIncr);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
@@ -8370,8 +8321,8 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseSynth
 }
 
 
-SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseSynthEvent_1getPhaseForOscillator(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jdouble JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseSynthEvent_1getPhaseForOscillator(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jdouble jresult = 0 ;
   MWEngine::BaseSynthEvent *arg1 = (MWEngine::BaseSynthEvent *) 0 ;
   int arg2 ;
   SAMPLE_TYPE result;
@@ -8381,29 +8332,23 @@ SWIGEXPORT jlong JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseSynth
   (void)jarg1_;
   arg1 = *(MWEngine::BaseSynthEvent **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = (arg1)->getPhaseForOscillator(arg2);
-  *(SAMPLE_TYPE **)&jresult = new SAMPLE_TYPE((const SAMPLE_TYPE &)result); 
+  result = (SAMPLE_TYPE)(arg1)->getPhaseForOscillator(arg2);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseSynthEvent_1setPhaseForOscillator(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3) {
+SWIGEXPORT void JNICALL Java_nl_igorski_mwengine_core_MWEngineCoreJNI_BaseSynthEvent_1setPhaseForOscillator(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jdouble jarg3) {
   MWEngine::BaseSynthEvent *arg1 = (MWEngine::BaseSynthEvent *) 0 ;
   int arg2 ;
   SAMPLE_TYPE arg3 ;
-  SAMPLE_TYPE *argp3 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MWEngine::BaseSynthEvent **)&jarg1; 
   arg2 = (int)jarg2; 
-  argp3 = *(SAMPLE_TYPE **)&jarg3; 
-  if (!argp3) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null SAMPLE_TYPE");
-    return ;
-  }
-  arg3 = *argp3; 
+  arg3 = (SAMPLE_TYPE)jarg3; 
   (arg1)->setPhaseForOscillator(arg2,arg3);
 }
 
