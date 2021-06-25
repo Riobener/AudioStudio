@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="app/src/main/res/mipmap-mdpi/back.png">
+  <img width="410" height="260" src="app/src/main/res/mipmap/logo.png">
 </p>
 
 # Audio Studio
